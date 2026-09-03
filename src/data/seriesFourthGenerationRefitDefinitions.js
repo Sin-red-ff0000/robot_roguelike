@@ -4,8 +4,8 @@
 // of each series while making the name motif, development logic, growth curve,
 // customization aptitude and deliberate weaknesses explicit.
 
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.8';
-import { MANUFACTURERS } from './manufacturers.js?v=3.8';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.9';
+import { MANUFACTURERS } from './manufacturers.js?v=3.9';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 const GROUP_LABELS = { output:'出力系', mobility:'駆動系', control:'制御系', engine:'機関系', compute:'演算系', sensor:'センサー系', ai:'AI系' };

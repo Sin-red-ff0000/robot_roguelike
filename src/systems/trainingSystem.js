@@ -1,8 +1,8 @@
-import { GAME_CONFIG } from '../config.js?v=3.8';
-import { STAT_GROUPS } from '../data/statDefinitions.js?v=3.8';
-import { TRAINING_TYPES } from '../data/trainingDefinitions.js?v=3.8';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.8';
-import { clamp, randomFloat, weightedPick } from '../utils/random.js?v=3.8';
+import { GAME_CONFIG } from '../config.js?v=3.9';
+import { STAT_GROUPS } from '../data/statDefinitions.js?v=3.9';
+import { TRAINING_TYPES } from '../data/trainingDefinitions.js?v=3.9';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.9';
+import { clamp, randomFloat, weightedPick } from '../utils/random.js?v=3.9';
 
 export function rollTrainingLevel(highLevelBias = 0) {
   return weightedPick([

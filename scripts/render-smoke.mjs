@@ -105,6 +105,7 @@ if (!app.html.includes('series-dex-summary')) throw new Error('series encycloped
 if (!app.html.includes('series-dex-search') || !app.html.includes('series-dex-discovery') || !app.html.includes('series-dex-generation')) throw new Error('series encyclopedia search/filter controls missing');
 if (!app.html.includes('メーカー比較') || !app.html.includes('series-compare-a') || !app.html.includes('series-compare-b')) throw new Error('manufacturer comparison missing');
 if (!app.html.includes('第7世代 (#121～140)')) throw new Error('seventh generation filter missing');
+if (!app.html.includes('第8世代 (#141～160)')) throw new Error('eighth generation filter missing');
 
 settingsViewButton.click();
 if (!app.html.includes('能力解説') || !app.html.includes('ステータス・戦闘指標を詳しく見る')) throw new Error('status guide missing');
@@ -117,6 +118,7 @@ if (!app.html.includes('robot-nickname')) throw new Error('nickname editor missi
 if (!app.html.includes('data-unit-detail-tab="weapons"')) throw new Error('weapon aptitude tab missing');
 if (!app.html.includes('radar-chart')) throw new Error('unit radar chart missing');
 if (!app.html.includes('metric-bar-chart')) throw new Error('unit base bar chart missing');
+if (!app.html.includes('基礎 ×')) throw new Error('base ability multiplier missing');
 if (!app.html.includes('unit-detail-selector')) throw new Error('unit detail selector missing');
 if (!app.html.includes('unit-overview-dashboard')) throw new Error('compact unit overview dashboard missing');
 if (!app.html.includes('基礎7グループ平均 68%') || !app.html.includes('試合時の性能ブレ')) throw new Error('clear overall/reliability explanation missing');

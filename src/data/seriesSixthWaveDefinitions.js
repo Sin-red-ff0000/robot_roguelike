@@ -3,9 +3,9 @@
 // but series whose three-year growth, customization response and preferred battle plan
 // are deliberately tied together.
 
-import { MANUFACTURERS } from './manufacturers.js?v=3.8';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.8';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=3.8';
+import { MANUFACTURERS } from './manufacturers.js?v=3.9';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.9';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=3.9';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
 const GROUP_LABEL = { output:'出力', mobility:'駆動', control:'制御', engine:'機関', compute:'演算', sensor:'センサー', ai:'AI' };
