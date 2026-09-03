@@ -1,28 +1,28 @@
-import { GAME_CONFIG } from './config.js?v=3.5';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.5';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.5';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.5';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.5';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.5';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.5';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.5';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.5';
-import { simulateBattle } from './systems/battleSystem.js?v=3.5';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.5';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.5';
-import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.5';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.5';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.5';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.5';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.5';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.5';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.5';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.5';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.5';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.5';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.5';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.5';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.5';
+import { GAME_CONFIG } from './config.js?v=3.6';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.6';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.6';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.6';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.6';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.6';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.6';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.6';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.6';
+import { simulateBattle } from './systems/battleSystem.js?v=3.6';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.6';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.6';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.6';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.6';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.6';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.6';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.6';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.6';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.6';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.6';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.6';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.6';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.6';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.6';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.6';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -34,7 +34,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.5';
+} from './systems/teamMatchSystem.js?v=3.6';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -66,6 +66,14 @@ const uiState = {
   unitDetailTab: 'overview',
   teamRadarOpen: false,
   seriesDexManufacturer: 'all',
+  seriesDexSearch: '',
+  seriesDexDiscovery: 'all',
+  seriesDexGeneration: 'all',
+  seriesDexGrowth: 'all',
+  seriesDexCustom: 'all',
+  seriesDexSort: 'number',
+  seriesCompareMakerA: MANUFACTURERS[0]?.id ?? '',
+  seriesCompareMakerB: MANUFACTURERS[1]?.id ?? MANUFACTURERS[0]?.id ?? '',
   statusGuideOpen: false,
 };
 
@@ -1601,28 +1609,75 @@ function renderSeriesEncyclopedia() {
   const rows = seriesRecords(state);
   const summary = seriesDiscoverySummary(state, rows);
   const statusLabel = { seen:'遭遇', joined:'加入', retired:'育成完了', hall:'殿堂', unseen:'未発見' };
-  const selector = `<div class="series-dex-toolbar"><label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー進捗</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label><small>敵として見ただけなら「遭遇」、自軍加入で詳細情報が開示されます。</small></div>`;
+  const joinedStatuses = new Set(['joined','retired','hall']);
+  const makerMap = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
+  const generationOf = (row) => Math.max(1, Math.ceil(Number(row.seriesNumber ?? 1) / 20));
+  const visibleName = (row) => state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
+  const growthOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.growthCurveId, row.profile?.growthCurve?.label]).filter(([id,label]) => id && label)).entries()]
+    .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
+  const customOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.customAptitudeId, row.profile?.customAptitude?.label]).filter(([id,label]) => id && label)).entries()]
+    .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
+
+  const selector = `<div class="series-dex-toolbar series-dex-toolbar-advanced">
+    <label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label>
+    <label class="series-dex-search-field">シリーズ検索<div><input id="series-dex-search" type="search" value="${escapeHtml(uiState.seriesDexSearch)}" placeholder="名称・思想・特徴"><button type="button" id="series-dex-search-apply" class="mini-button">検索</button></div></label>
+    <label>発見状況<select id="series-dex-discovery"><option value="all" ${uiState.seriesDexDiscovery==='all'?'selected':''}>すべて</option><option value="discovered" ${uiState.seriesDexDiscovery==='discovered'?'selected':''}>発見済み</option><option value="unseen" ${uiState.seriesDexDiscovery==='unseen'?'selected':''}>未発見</option><option value="seen" ${uiState.seriesDexDiscovery==='seen'?'selected':''}>遭遇のみ</option><option value="joined" ${uiState.seriesDexDiscovery==='joined'?'selected':''}>自軍加入済み</option><option value="completed" ${uiState.seriesDexDiscovery==='completed'?'selected':''}>育成完了</option><option value="hall" ${uiState.seriesDexDiscovery==='hall'?'selected':''}>殿堂</option></select></label>
+    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
+    <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
+    <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
+    <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
+    <button type="button" id="series-dex-clear" class="ghost compact-button series-dex-clear">条件クリア</button>
+  </div>
+  <p class="series-dex-help">名称検索は発見済み系列だけが対象です。成長曲線・カスタム適性は自軍加入で解析済みの系列だけを絞り込みます。</p>`;
+
   const summaryHtml = `<div class="series-dex-summary"><div><span>発見</span><strong>${summary.discovered}</strong><small>/ ${summary.total}</small></div><div><span>遭遇のみ</span><strong>${summary.seen}</strong></div><div><span>自軍加入</span><strong>${summary.joined + summary.retired + summary.hall}</strong></div><div><span>育成完了</span><strong>${summary.retired + summary.hall}</strong></div><div><span>殿堂</span><strong>${summary.hall}</strong></div></div>`;
-  if (uiState.seriesDexManufacturer === 'all') {
-    const makerProgress = MANUFACTURERS.map((maker) => {
-      const makerRows = rows.filter((row) => row.manufacturerId === maker.id);
-      const discovered = makerRows.filter((row) => row.discovery !== 'unseen').length;
-      const joined = makerRows.filter((row) => ['joined','retired','hall'].includes(row.discovery)).length;
-      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(maker.name)}</strong><span>${discovered}/80 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${(discovered/80*100).toFixed(1)}%"></b></i></button>`;
-    }).join('');
-    return `${selector}${summaryHtml}<div class="series-dex-progress-grid">${makerProgress}</div>`;
-  }
-  const maker = MANUFACTURERS.find((item) => item.id === uiState.seriesDexManufacturer) ?? MANUFACTURERS[0];
-  const makerRows = rows.filter((row) => row.manufacturerId === maker.id).sort((a,b)=>a.seriesNumber-b.seriesNumber);
-  const items = makerRows.map((row) => {
-    if (row.discovery === 'unseen') return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>#${row.seriesNumber} ???</strong><small>未解析</small><em>大会・新人加入で発見</em></div>`;
+
+  const search = String(uiState.seriesDexSearch ?? '').trim().toLocaleLowerCase('ja');
+  const hasAdvancedFilter = Boolean(search || uiState.seriesDexDiscovery !== 'all' || uiState.seriesDexGeneration !== 'all' || uiState.seriesDexGrowth !== 'all' || uiState.seriesDexCustom !== 'all' || uiState.seriesDexSort !== 'number');
+  let filteredRows = rows.filter((row) => uiState.seriesDexManufacturer === 'all' || row.manufacturerId === uiState.seriesDexManufacturer);
+  filteredRows = filteredRows.filter((row) => {
+    if (uiState.seriesDexDiscovery === 'discovered' && row.discovery === 'unseen') return false;
+    if (uiState.seriesDexDiscovery === 'unseen' && row.discovery !== 'unseen') return false;
+    if (uiState.seriesDexDiscovery === 'seen' && row.discovery !== 'seen') return false;
+    if (uiState.seriesDexDiscovery === 'joined' && !joinedStatuses.has(row.discovery)) return false;
+    if (uiState.seriesDexDiscovery === 'completed' && !['retired','hall'].includes(row.discovery)) return false;
+    if (uiState.seriesDexDiscovery === 'hall' && row.discovery !== 'hall') return false;
+    if (uiState.seriesDexGeneration !== 'all' && generationOf(row) !== Number(uiState.seriesDexGeneration)) return false;
+    if (uiState.seriesDexGrowth !== 'all' && !(row.joined > 0 && row.profile?.growthCurveId === uiState.seriesDexGrowth)) return false;
+    if (uiState.seriesDexCustom !== 'all' && !(row.joined > 0 && row.profile?.customAptitudeId === uiState.seriesDexCustom)) return false;
+    if (search) {
+      if (row.discovery === 'unseen') return false;
+      const maker = makerMap.get(row.manufacturerId);
+      const basic = [visibleName(row), row.nameKana, row.nameLatin, maker?.name, maker?.nameEn, row.seriesNumber].join(' ').toLocaleLowerCase('ja');
+      const deep = row.joined > 0 ? [row.profile?.summary, row.profile?.marketPosition, row.profile?.concept, row.profile?.namingConcept, row.profile?.developmentBackground, row.profile?.engineeringNotes, row.profile?.trainingNotes, row.profile?.weaponDoctrine, row.profile?.intrinsicTrait?.label, row.profile?.growthCurve?.label, row.profile?.customAptitude?.label].join(' ').toLocaleLowerCase('ja') : '';
+      if (!`${basic} ${deep}`.includes(search)) return false;
+    }
+    return true;
+  });
+
+  const discoveryRank = { hall:5, retired:4, joined:3, seen:2, unseen:1 };
+  filteredRows.sort((a,b) => {
+    if (uiState.seriesDexSort === 'name') return String(visibleName(a)).localeCompare(String(visibleName(b)), 'ja');
+    if (uiState.seriesDexSort === 'discovery') return (discoveryRank[b.discovery] ?? 0) - (discoveryRank[a.discovery] ?? 0) || b.joined-a.joined;
+    if (uiState.seriesDexSort === 'wins') return b.wins-a.wins || b.joined-a.joined;
+    if (uiState.seriesDexSort === 'winrate') { const ar=a.wins/Math.max(1,a.wins+a.losses), br=b.wins/Math.max(1,b.wins+b.losses); return br-ar || (b.wins+b.losses)-(a.wins+a.losses); }
+    if (uiState.seriesDexSort === 'average') return b.averageOverall-a.averageOverall || b.joined-a.joined;
+    if (uiState.seriesDexSort === 'best') return b.bestOverall-a.bestOverall || b.joined-a.joined;
+    const makerA = MANUFACTURERS.findIndex((m)=>m.id===a.manufacturerId), makerB = MANUFACTURERS.findIndex((m)=>m.id===b.manufacturerId);
+    return makerA-makerB || a.seriesNumber-b.seriesNumber;
+  });
+
+  const renderRow = (row, includeMaker = false) => {
+    const maker = makerMap.get(row.manufacturerId);
+    const makerLabel = includeMaker ? `${escapeHtml(maker?.name ?? row.manufacturerId)} / ` : '';
+    if (row.discovery === 'unseen') return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>${makerLabel}#${row.seriesNumber} ???</strong><small>第${generationOf(row)}世代 / 未解析</small><em>大会・新人加入で発見</em></div>`;
     const games=row.wins+row.losses; const rate=games?`${(row.wins/games*100).toFixed(1)}%`:'---';
     const visibleDeep = row.joined > 0;
-    const seriesName = state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
-    if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
+    const seriesName = visibleName(row);
+    if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / 詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
     const lore = row.profile ?? {};
     return `<details class="series-dex-expand ${row.discovery}">
-      <summary class="series-dex-row"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>${escapeHtml(lore.marketPosition ?? '')} / ${escapeHtml(lore.intrinsicTrait?.label ?? '')} / ${escapeHtml(lore.growthCurve?.label ?? '')} / ${escapeHtml(lore.customAptitude?.label ?? '')}</small><em>加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}</em></summary>
+      <summary class="series-dex-row"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / ${escapeHtml(lore.marketPosition ?? '')} / ${escapeHtml(lore.growthCurve?.label ?? '')} / ${escapeHtml(lore.customAptitude?.label ?? '')}</small><em>加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}</em></summary>
       <div class="series-dex-lore">
         <p><b>系列要約</b>${escapeHtml(lore.summary ?? '')}</p>
         ${lore.namingConcept ? `<p><b>名称と設計モチーフ</b>${escapeHtml(lore.namingConcept)}</p>` : ''}
@@ -1632,11 +1687,65 @@ function renderSeriesEncyclopedia() {
         ${lore.weaponDoctrine ? `<p><b>兵装ドクトリン</b>${escapeHtml(lore.weaponDoctrine)}</p>` : ''}
       </div>
     </details>`;
-  }).join('');
-  const found = makerRows.filter((row) => row.discovery !== 'unseen').length;
-  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(maker.name)}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/80</b></div><div class="series-dex-full-list">${items}</div>`;
-}
+  };
 
+  const makerCompareStats = (makerId) => {
+    const maker = makerMap.get(makerId) ?? MANUFACTURERS[0];
+    const makerRows = rows.filter((row)=>row.manufacturerId===maker.id);
+    const joinedRows = makerRows.filter((row)=>row.joined>0);
+    const units = joinedRows.reduce((sum,row)=>sum+row.joined,0);
+    const wins = joinedRows.reduce((sum,row)=>sum+row.wins,0);
+    const losses = joinedRows.reduce((sum,row)=>sum+row.losses,0);
+    const totalOverall = joinedRows.reduce((sum,row)=>sum+Number(row.totalOverall??0),0);
+    const best = [...joinedRows].sort((a,b)=>b.bestOverall-a.bestOverall)[0];
+    const modeLabel = (getter) => {
+      const count = new Map();
+      for (const row of joinedRows) { const value=getter(row); if (!value) continue; count.set(value,(count.get(value)??0)+1); }
+      return [...count.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0] ?? '未解析';
+    };
+    return {
+      maker,
+      discovered:makerRows.filter((row)=>row.discovery!=='unseen').length,
+      joinedSeries:joinedRows.length,
+      completed:makerRows.filter((row)=>['retired','hall'].includes(row.discovery)).length,
+      hall:makerRows.filter((row)=>row.discovery==='hall').length,
+      units,wins,losses,
+      winRate:wins+losses ? wins/(wins+losses)*100 : null,
+      average:units ? totalOverall/units : null,
+      best,
+      growth:modeLabel((row)=>row.profile?.growthCurve?.label),
+      custom:modeLabel((row)=>row.profile?.customAptitude?.label),
+      trait:modeLabel((row)=>row.profile?.intrinsicTrait?.label),
+    };
+  };
+  const compareCard = (stats, side) => `<article class="series-maker-compare-card ${side}"><span>${escapeHtml(stats.maker.theme)}系メーカー</span><h4>${escapeHtml(stats.maker.name)}</h4><p>${escapeHtml(stats.maker.philosophy)}</p><div class="series-maker-compare-metrics"><div><small>発見</small><strong>${stats.discovered}/100</strong></div><div><small>加入系列</small><strong>${stats.joinedSeries}</strong></div><div><small>育成完了</small><strong>${stats.completed}</strong></div><div><small>殿堂</small><strong>${stats.hall}</strong></div><div><small>自軍機体</small><strong>${stats.units}</strong></div><div><small>通算勝率</small><strong>${stats.winRate===null?'---':`${stats.winRate.toFixed(1)}%`}</strong></div><div><small>平均総合</small><strong>${stats.average===null?'---':stats.average.toFixed(1)}</strong></div><div><small>最高総合</small><strong>${stats.best?stats.best.bestOverall.toFixed(1):'---'}</strong></div></div><dl><div><dt>よく育てた成長曲線</dt><dd>${escapeHtml(stats.growth)}</dd></div><div><dt>よく育てた改修適性</dt><dd>${escapeHtml(stats.custom)}</dd></div><div><dt>よく見た固有特性</dt><dd>${escapeHtml(stats.trait)}</dd></div>${stats.best?`<div><dt>最高系列</dt><dd>${escapeHtml(visibleName(stats.best))} / ${escapeHtml(stats.best.bestRobotName||'---')}</dd></div>`:''}</dl></article>`;
+  const compareA = makerCompareStats(uiState.seriesCompareMakerA || MANUFACTURERS[0]?.id);
+  const compareB = makerCompareStats(uiState.seriesCompareMakerB || MANUFACTURERS[1]?.id || MANUFACTURERS[0]?.id);
+  const compareHtml = `<details class="series-maker-compare" open><summary>メーカー比較</summary><div class="series-maker-compare-controls"><label>比較A<select id="series-compare-a">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareA.maker.id===maker.id?'selected':''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label><b>VS</b><label>比較B<select id="series-compare-b">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareB.maker.id===maker.id?'selected':''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label></div><div class="series-maker-compare-grid">${compareCard(compareA,'a')}${compareCard(compareB,'b')}</div><small class="series-maker-compare-note">比較値はあなたのセーブ内で実際に加入・育成した機体の実績。未加入系列の内部性能は比較に使用しません。</small></details>`;
+
+  if (uiState.seriesDexManufacturer === 'all' && !hasAdvancedFilter) {
+    const makerProgress = MANUFACTURERS.map((maker) => {
+      const makerRows = rows.filter((row) => row.manufacturerId === maker.id);
+      const discovered = makerRows.filter((row) => row.discovery !== 'unseen').length;
+      const joined = makerRows.filter((row) => joinedStatuses.has(row.discovery)).length;
+      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(maker.name)}</strong><span>${discovered}/100 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${discovered}%"></b></i></button>`;
+    }).join('');
+    return `${selector}${summaryHtml}${compareHtml}<div class="series-dex-progress-grid">${makerProgress}</div>`;
+  }
+
+  const totalMatches = filteredRows.length;
+  const displayRows = filteredRows.slice(0, 300);
+  const includeMaker = uiState.seriesDexManufacturer === 'all';
+  const listHtml = displayRows.map((row)=>renderRow(row, includeMaker)).join('') || '<p class="history-empty">条件に一致するシリーズはありません。</p>';
+  const truncation = totalMatches > displayRows.length ? `<small class="series-dex-result-limit">結果が多いため先頭300件を表示しています。メーカー・世代・発見状況などでさらに絞り込めます。</small>` : '';
+  const resultHead = `<div class="series-dex-result-head"><strong>${totalMatches}系列</strong><span>${includeMaker?'全メーカー検索':'メーカー内検索'} / 最大300件表示</span></div>`;
+  if (uiState.seriesDexManufacturer === 'all') return `${selector}${summaryHtml}${compareHtml}${resultHead}${truncation}<div class="series-dex-full-list global-results">${listHtml}</div>`;
+
+  const maker = makerMap.get(uiState.seriesDexManufacturer) ?? MANUFACTURERS[0];
+  const makerRows = rows.filter((row)=>row.manufacturerId===maker.id);
+  const found = makerRows.filter((row)=>row.discovery!=='unseen').length;
+  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(maker.name)}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/100</b></div>${resultHead}${truncation}<div class="series-dex-full-list">${listHtml}</div>`;
+}
 function renderHallOfFame() {
   const entries = state.hallOfFame ?? [];
   if (!entries.length) return '<p class="history-empty">殿堂入り機体はまだありません。売却履歴から任意の機体を登録できます。</p>';
@@ -2288,6 +2397,27 @@ function render() {
   bindUiValue('#part-ability-filter', 'partAbility');
   bindUiValue('#part-sort', 'partSort');
   bindUiValue('#series-dex-maker', 'seriesDexManufacturer');
+  bindUiValue('#series-dex-discovery', 'seriesDexDiscovery');
+  bindUiValue('#series-dex-generation', 'seriesDexGeneration');
+  bindUiValue('#series-dex-growth', 'seriesDexGrowth');
+  bindUiValue('#series-dex-custom', 'seriesDexCustom');
+  bindUiValue('#series-dex-sort', 'seriesDexSort');
+  bindUiValue('#series-compare-a', 'seriesCompareMakerA');
+  bindUiValue('#series-compare-b', 'seriesCompareMakerB');
+  document.querySelector('#series-dex-search-apply')?.addEventListener('click', () => {
+    uiState.seriesDexSearch = String(document.querySelector('#series-dex-search')?.value ?? '').trim();
+    render();
+  });
+  document.querySelector('#series-dex-search')?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    uiState.seriesDexSearch = String(event.currentTarget?.value ?? '').trim();
+    render();
+  });
+  document.querySelector('#series-dex-clear')?.addEventListener('click', () => {
+    Object.assign(uiState, { seriesDexSearch:'', seriesDexDiscovery:'all', seriesDexGeneration:'all', seriesDexGrowth:'all', seriesDexCustom:'all', seriesDexSort:'number' });
+    render();
+  });
   document.querySelectorAll('[data-series-maker]').forEach((button) => { button.addEventListener('click', () => { uiState.seriesDexManufacturer = button.dataset.seriesMaker || 'all'; render(); }); });
   document.querySelector('#part-filter-clear')?.addEventListener('click', () => {
     Object.assign(uiState, { partRarity: 'all', partType: 'all', partManufacturer: 'all', partAbility: 'all', partSort: 'rarityDesc' });

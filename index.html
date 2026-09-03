@@ -11,8 +11,8 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <link rel="icon" type="image/png" href="./icons/icon-192.png" />
-    <title>AI戦闘ロボット育成ローグライク v3.5</title>
-      <link rel="stylesheet" href="./src/styles.css?v=3.5" />
+    <title>AI戦闘ロボット育成ローグライク v3.6</title>
+      <link rel="stylesheet" href="./src/styles.css?v=3.6" />
   </head>
   <body>
     <div id="app"><div class="startup-loading">ゲームを起動しています…</div></div>
@@ -42,11 +42,11 @@
       };
       window.addEventListener('error', (event) => showStartupError(event.error || event.message));
       window.addEventListener('unhandledrejection', (event) => showStartupError(event.reason));
-      import('./src/main.js?v=3.5').catch(showStartupError);
+      import('./src/main.js?v=3.6').catch(showStartupError);
       if ('serviceWorker' in navigator && location.protocol !== 'file:') {
         window.addEventListener('load', async () => {
           try {
-            const registration = await navigator.serviceWorker.register('./sw.js?v=3.5', { updateViaCache: 'none' });
+            const registration = await navigator.serviceWorker.register('./sw.js?v=3.6', { updateViaCache: 'none' });
             await registration.update();
           } catch (error) {
             console.warn('Service Worker registration failed:', error);

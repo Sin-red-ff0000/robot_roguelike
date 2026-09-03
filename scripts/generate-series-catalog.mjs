@@ -6,7 +6,7 @@ import { WEAPON_CATEGORIES } from '../src/data/weaponDefinitions.js';
 const weaponNames = (keys = []) => keys.length ? keys.map((key) => WEAPON_CATEGORIES[key]?.label ?? key).join(' / ') : '指定なし';
 const escapeCell = (value) => String(value ?? '').replaceAll('|', '｜').replaceAll('\n', ' ');
 const lines = [
-  '# SERIES CATALOG v3.5',
+  '# SERIES CATALOG v3.6',
   '',
   `20メーカー × 100シリーズ = 合計${SERIES_DEFINITIONS.length}シリーズ。`,
   '',

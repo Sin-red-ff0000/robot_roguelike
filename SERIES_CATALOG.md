@@ -1,4 +1,4 @@
-# SERIES CATALOG v3.5
+# SERIES CATALOG v3.6
 
 20メーカー × 100シリーズ = 合計2000シリーズ。
 

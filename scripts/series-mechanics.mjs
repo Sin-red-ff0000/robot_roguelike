@@ -1,7 +1,7 @@
-import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.5';
-import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.5';
-import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.5';
-import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.5';
+import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.6';
+import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.6';
+import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.6';
+import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.6';
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function almost(actual, expected, tolerance = 0.001) { return Math.abs(actual - expected) <= tolerance; }
@@ -107,5 +107,5 @@ console.log(JSON.stringify({
   growth,
   custom,
   appliedDelta,
-  note:'v3.5 verifies the fifth-generation ignition/plateau/rebound/pulse curves and blank/weaponExtreme/riskLab/manufacturerPlus custom aptitudes in addition to the v3.4 mechanics audit.'
+  note:'v3.6 keeps the v3.5 growth/custom mechanics unchanged; the v3.4-v3.5 mechanics audit remains green while v3.6 focuses on encyclopedia UI.'
 }, null, 2));

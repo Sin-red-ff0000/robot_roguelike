@@ -1,8 +1,8 @@
-import { GAME_CONFIG } from '../config.js?v=3.5';
-import { BASE_SYNERGY_RULES, RESISTANCE_BANDS } from '../data/battleRules.js?v=3.5';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.5';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.5';
-import { clamp, randomFloat, shuffle } from '../utils/random.js?v=3.5';
+import { GAME_CONFIG } from '../config.js?v=3.6';
+import { BASE_SYNERGY_RULES, RESISTANCE_BANDS } from '../data/battleRules.js?v=3.6';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.6';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.6';
+import { clamp, randomFloat, shuffle } from '../utils/random.js?v=3.6';
 
 function hasAbility(robot, id) {
   return robot.specialAbilities?.includes(id) ?? false;

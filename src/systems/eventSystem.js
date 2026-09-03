@@ -1,9 +1,9 @@
-import { GAME_CONFIG } from '../config.js?v=3.5';
-import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.5';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.5';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.5';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=3.5';
-import { generateCustomPart } from './partSystem.js?v=3.5';
+import { GAME_CONFIG } from '../config.js?v=3.6';
+import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.6';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.6';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.6';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=3.6';
+import { generateCustomPart } from './partSystem.js?v=3.6';
 import {
   addAbility,
   describeAbilityChange,
@@ -13,9 +13,9 @@ import {
   randomUpgradableAbility,
   removeAbility,
   upgradeAbility,
-} from './specialAbilitySystem.js?v=3.5';
-import { logisticsLevel } from './facilitySystem.js?v=3.5';
-import { eventChanceMultiplier } from './settingsSystem.js?v=3.5';
+} from './specialAbilitySystem.js?v=3.6';
+import { logisticsLevel } from './facilitySystem.js?v=3.6';
+import { eventChanceMultiplier } from './settingsSystem.js?v=3.6';
 
 function eventId(prefix) {
   return `${prefix}-${Date.now()}-${randomInt(1000, 9999)}`;

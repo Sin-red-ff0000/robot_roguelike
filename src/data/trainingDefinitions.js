@@ -1,4 +1,4 @@
-import { STAT_GROUPS } from './statDefinitions.js?v=3.5';
+import { STAT_GROUPS } from './statDefinitions.js?v=3.6';
 
 const VARIANTS = {
   output: [

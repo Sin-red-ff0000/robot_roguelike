@@ -3,8 +3,8 @@
 // lore, growth identity, customization doctrine, and lineage explanation up to
 // the same standard as the v3.1/v3.2 refits without inflating raw performance.
 
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.5';
-import { MANUFACTURERS } from './manufacturers.js?v=3.5';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.6';
+import { MANUFACTURERS } from './manufacturers.js?v=3.6';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 const GROUP_LABELS = { output:'出力系', mobility:'駆動系', control:'制御系', engine:'機関系', compute:'演算系', sensor:'センサー系', ai:'AI系' };
