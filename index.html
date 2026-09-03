@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1016" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ROBOT LAB" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="./icons/icon-192.png" />
+    <title>AI戦闘ロボット育成ローグライク v2.4</title>
+      <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div id="app"><div class="startup-loading">ゲームを起動しています…</div></div>
+    <script>
+      window.__robotLabPwaPrompt = null;
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        window.__robotLabPwaPrompt = event;
+        window.dispatchEvent(new Event('robotlab-pwa-ready'));
+      });
+      window.addEventListener('appinstalled', () => {
+        window.__robotLabPwaPrompt = null;
+        window.dispatchEvent(new Event('robotlab-pwa-installed'));
+      });
+    </script>
+    <script type="module">
+      const app = document.querySelector('#app');
+      const showStartupError = (error) => {
+        console.error(error);
+        const message = error?.stack || error?.message || String(error);
+        app.innerHTML = `
+          <section style="max-width:900px;margin:24px auto;padding:20px;border:1px solid #ef4444;border-radius:12px;background:#1a1114;color:#fee2e2">
+            <h2 style="margin-top:0">ゲームの起動中にエラーが発生しました</h2>
+            <p>下の内容をそのまま送ってもらえれば原因を追えます。</p>
+            <pre style="white-space:pre-wrap;overflow-wrap:anywhere;background:#090d12;padding:14px;border-radius:8px;color:#fca5a5">${message.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
+          </section>`;
+      };
+      window.addEventListener('error', (event) => showStartupError(event.error || event.message));
+      window.addEventListener('unhandledrejection', (event) => showStartupError(event.reason));
+      import('./src/main.js').catch(showStartupError);
+      if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch((error) => console.warn('Service Worker registration failed:', error));
+        }, { once: true });
+      }
+    </script>
+  </body>
+</html>
