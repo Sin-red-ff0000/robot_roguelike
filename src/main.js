@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { MANUFACTURERS } from './data/manufacturers.js';
 import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js';
 import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js';
 import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js';
@@ -66,6 +67,7 @@ const uiState = {
 };
 
 const PART_RARITY_RANK = Object.fromEntries(Object.keys(PART_RARITIES).map((key, index) => [key, index]));
+const MANUFACTURER_INFO_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
 const APP_VIEWS = [
   { id: 'dashboard', label: 'ホーム', short: 'HOME' },
@@ -996,6 +998,11 @@ function renderUnitOverview(robot) {
             <p>${robot.serial} / ${wins}勝${losses}敗${total ? ` / 勝率 ${(wins / total * 100).toFixed(0)}%` : ''}</p>
           </div>
           <div class="reliability-big compact-reliability">信頼性<strong>${robot.reliability}</strong></div>
+        </div>
+        <div class="unit-design-context">
+          <div><span>メーカー思想</span><strong>${escapeHtml(MANUFACTURER_INFO_MAP.get(robot.manufacturerId)?.philosophy ?? '---')}</strong></div>
+          <div><span>シリーズ傾向</span><strong>${escapeHtml(robot.seriesTrendLabel ?? '標準汎用')}：${escapeHtml(robot.seriesTrendSummary ?? '')}</strong></div>
+          <div><span>製造年度</span><strong>${robot.productionYear ?? '---'}年 / ${escapeHtml(robot.annualTrend?.label ?? '年度補正なし')}</strong></div>
         </div>
         <div class="panel-title compact-panel-title overview-bars-title"><div><p class="eyebrow">ABILITY BARS</p><h2>基礎能力比較</h2></div><small class="panel-note">平均値</small></div>
         <div class="overview-base-bars">${renderBaseAbilityBars(robot)}</div>

@@ -1950,3 +1950,20 @@ body {
   .team-radar-modal-head .compact-button { min-height: 44px; }
   .team-average-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* v2.6 manufacturer / series / yearly design context */
+.unit-design-context {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(80, 125, 160, 0.05);
+}
+.unit-design-context > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; align-items: start; }
+.unit-design-context span { color: var(--muted); font-size: 11px; letter-spacing: .04em; }
+.unit-design-context strong { font-size: 12px; line-height: 1.45; font-weight: 600; overflow-wrap: anywhere; }
+@media (max-width: 820px) {
+  .unit-design-context > div { grid-template-columns: 1fr; gap: 3px; }
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robot-lab-v2.5';
+const CACHE_NAME = 'robot-lab-v2.6';
 const APP_SHELL = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const APP_SHELL = [
   './src/data/facilityDefinitions.js',
   './src/data/managerDefinitions.js',
   './src/data/manufacturers.js',
+  './src/data/seriesDefinitions.js',
   './src/data/partDefinitions.js',
   './src/data/specialAbilities.js',
   './src/data/statDefinitions.js',
@@ -20,6 +21,7 @@ const APP_SHELL = [
   './src/data/weaponDefinitions.js',
   './src/main.js',
   './src/styles.css',
+  './src/systems/annualTrendSystem.js',
   './src/systems/battleSystem.js',
   './src/systems/displaySystem.js',
   './src/systems/eventSystem.js',

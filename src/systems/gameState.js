@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from '../config.js';
 import { MANUFACTURERS } from '../data/manufacturers.js';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js';
 import { randomFloat, randomInt } from '../utils/random.js';
 import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js';
 import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js';
@@ -9,18 +10,27 @@ import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacili
 import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js';
 import { defaultSettings, normalizeSettings } from './settingsSystem.js';
 import { createRobotSnapshot } from './recordSystem.js';
+import { getAnnualTrend } from './annualTrendSystem.js';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
-const THEME_LATIN = { '山': 'MOUNTAIN', '花': 'FLOWER', '鉱石': 'MINERAL', '気象・自然現象': 'WEATHER', '天体': 'CELESTIAL', '色': 'COLOR', '動物': 'ANIMAL', '神話': 'MYTH', '特殊': 'SPECIAL' };
 
 function normalizeRobot(robot) {
   robot.nickname = String(robot.nickname ?? '').trim().slice(0, 24);
   const manufacturer = MANUFACTURER_MAP.get(robot.manufacturerId);
   const fallbackNumber = Number(robot.seriesNumber ?? String(robot.seriesName ?? '').match(/(\d+)/)?.[1] ?? 1);
-  robot.seriesNumber ??= fallbackNumber;
-  robot.seriesNameKana ??= robot.seriesName ?? `${manufacturer?.theme ?? '特殊'}-${String(fallbackNumber).padStart(2, '0')}`;
-  robot.seriesNameLatin ??= `${THEME_LATIN[manufacturer?.theme] ?? 'SERIES'}-${String(fallbackNumber).padStart(2, '0')}`;
+  const formalSeries = getSeriesDefinition(robot.seriesId) ?? seriesByNumber(robot.manufacturerId, fallbackNumber);
+  const formalProfile = resolveSeriesProfile(formalSeries);
+  robot.seriesId = formalSeries?.id ?? robot.seriesId ?? null;
+  robot.seriesNumber = Number(formalSeries?.seriesNumber ?? fallbackNumber);
+  robot.seriesNameKana = formalSeries?.nameKana ?? robot.seriesNameKana ?? robot.seriesName ?? `シリーズ-${String(fallbackNumber).padStart(2, '0')}`;
+  robot.seriesNameLatin = formalSeries?.nameLatin ?? robot.seriesNameLatin ?? `SERIES-${String(fallbackNumber).padStart(2, '0')}`;
   robot.seriesName = robot.seriesNameKana;
+  robot.seriesArchetypeId ??= formalProfile?.archetypeId ?? 'balanced';
+  robot.seriesTrendLabel ??= formalProfile?.label ?? '標準汎用';
+  robot.seriesTrendSummary ??= formalProfile?.summary ?? '';
+  robot.productionYear = Math.max(1, Number(robot.productionYear ?? robot.yearJoined ?? 1));
+  robot.yearJoined = Math.max(1, Number(robot.yearJoined ?? robot.productionYear ?? 1));
+  robot.annualTrend ??= getAnnualTrend(robot.productionYear, robot.manufacturerId, robot.seriesId);
   robot.specialAbilities ??= [];
   robot.customHistory ??= [];
   robot.record ??= { wins: 0, losses: 0 };
@@ -115,7 +125,7 @@ export function createInitialState() {
     facilities: defaultFacilities(),
     tournamentHistory: [],
     retirementHistory: [],
-    log: ['v2.4を開始しました。GitHub Pages公開とホーム画面Webアプリに対応しました。'],
+    log: ['v2.6を開始しました。20社×20シリーズと年度補正を正式実装しました。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),
@@ -144,6 +154,11 @@ export function advanceYear(state) {
       nickname: robot.nickname ?? '',
       manufacturerId: robot.manufacturerId,
       manufacturerName: robot.manufacturerName,
+      seriesId: robot.seriesId ?? null,
+      seriesArchetypeId: robot.seriesArchetypeId ?? null,
+      seriesTrendLabel: robot.seriesTrendLabel ?? '',
+      productionYear: robot.productionYear ?? null,
+      annualTrend: robot.annualTrend ?? null,
       seriesName: robot.seriesName,
       seriesNameKana: robot.seriesNameKana,
       seriesNameLatin: robot.seriesNameLatin,
