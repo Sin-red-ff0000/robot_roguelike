@@ -49,6 +49,18 @@ for (const profile of secondGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`second-generation identity refit missing: ${profile.id}`);
 }
+const thirdGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 41 && series.seriesNumber <= 60).map(resolveSeriesProfile);
+if (thirdGenProfiles.length !== 400) throw new Error(`third-generation refit count ${thirdGenProfiles.length}`);
+for (const profile of thirdGenProfiles) {
+  if (!profile.thirdGenerationRefit || profile.refitGeneration !== 3 || profile.refitVersion !== '3.3') throw new Error(`third-generation refit flag missing: ${profile.id}`);
+  const loreLength = ['concept','namingConcept','developmentBackground','engineeringNotes','trainingNotes'].reduce((sum, key) => sum + String(profile[key] ?? '').length, 0);
+  if (loreLength < 650) throw new Error(`third-generation lore package too short: ${profile.id} ${loreLength}`);
+  if ((profile.summary?.length ?? 0) > 170) throw new Error(`third-generation compact summary too long: ${profile.id}`);
+  for (const field of ['namingConcept','developmentBackground','engineeringNotes','trainingNotes']) {
+    if (!profile[field]) throw new Error(`third-generation lore missing ${field}: ${profile.id}`);
+  }
+  if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`third-generation identity refit missing: ${profile.id}`);
+}
 for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
 
 const kirishimaSeries = getSeriesForManufacturer('kirishima');
@@ -124,7 +136,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '3.2') throw new Error('migration version');
+if (!migrated || migrated.version !== '3.3') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');
@@ -185,6 +197,23 @@ delete secondRefitTarget.seriesRefitVersion;
 const secondRefitMigrated = migrateState(secondRefitInput);
 const secondRefitRobot = secondRefitMigrated.roster.find((robot) => robot.id === secondRefitTarget.id);
 if (secondRefitRobot?.seriesRefitGeneration !== 2 || secondRefitRobot.seriesRefitVersion !== '3.2' || !secondRefitRobot.seriesNamingConcept || secondRefitRobot.seriesTrendSummary === '旧第2世代説明') throw new Error('v3.2 second-generation migration failed');
+const thirdRefitInput = JSON.parse(JSON.stringify(secondRefitMigrated));
+thirdRefitInput.version = '3.2';
+const thirdRefitTarget = thirdRefitInput.roster[2] ?? thirdRefitInput.roster[0];
+thirdRefitTarget.seriesId = 'kirishima-kaimon';
+thirdRefitTarget.manufacturerId = 'kirishima';
+thirdRefitTarget.seriesNumber = 41;
+thirdRefitTarget.seriesNameKana = 'カイモン';
+thirdRefitTarget.seriesTrendSummary = '旧第3世代説明';
+delete thirdRefitTarget.seriesNamingConcept;
+delete thirdRefitTarget.seriesDevelopmentBackground;
+delete thirdRefitTarget.seriesEngineeringNotes;
+delete thirdRefitTarget.seriesTrainingNotes;
+delete thirdRefitTarget.seriesRefitGeneration;
+delete thirdRefitTarget.seriesRefitVersion;
+const thirdRefitMigrated = migrateState(thirdRefitInput);
+const thirdRefitRobot = thirdRefitMigrated.roster.find((robot) => robot.id === thirdRefitTarget.id);
+if (thirdRefitRobot?.seriesRefitGeneration !== 3 || thirdRefitRobot.seriesRefitVersion !== '3.3' || !thirdRefitRobot.seriesNamingConcept || thirdRefitRobot.seriesTrendSummary === '旧第3世代説明') throw new Error('v3.3 third-generation migration failed');
 const retiringRobot = migratedAgain.roster.find((robot) => robot.cohortYear === 3);
 if (retiringRobot) retiringRobot.nickname = '引退テスト';
 const retiringId = retiringRobot?.id;

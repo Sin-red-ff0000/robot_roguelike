@@ -1,27 +1,28 @@
-import { GAME_CONFIG } from './config.js?v=3.2';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.2';
-import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=3.2';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.2';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.2';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.2';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.2';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.2';
-import { simulateBattle } from './systems/battleSystem.js?v=3.2';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.2';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.2';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.2';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.2';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.2';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.2';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.2';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.2';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.2';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.2';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.2';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.2';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.2';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.2';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.2';
+import { GAME_CONFIG } from './config.js?v=3.3';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.3';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.3';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.3';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.3';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.3';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.3';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.3';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.3';
+import { simulateBattle } from './systems/battleSystem.js?v=3.3';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.3';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.3';
+import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.3';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.3';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.3';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.3';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.3';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.3';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.3';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.3';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.3';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.3';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.3';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.3';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.3';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -33,7 +34,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.2';
+} from './systems/teamMatchSystem.js?v=3.3';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -65,6 +66,7 @@ const uiState = {
   unitDetailTab: 'overview',
   teamRadarOpen: false,
   seriesDexManufacturer: 'all',
+  statusGuideOpen: false,
 };
 
 const PART_RARITY_RANK = Object.fromEntries(Object.keys(PART_RARITIES).map((key, index) => [key, index]));
@@ -784,6 +786,23 @@ function renderDetail(robot) {
   `;
 }
 
+
+function equipRobotWeapon(robot, nextKey) {
+  if (!robot || !WEAPON_CATEGORIES[nextKey] || nextKey === robot.weaponKey) return false;
+  robot.weaponCategoryStats ??= {};
+  robot.weaponCategoryGrowthMultipliers ??= {};
+  robot.weaponCategoryStats[robot.weaponKey] = { ...robot.weaponStats };
+  robot.weaponCategoryGrowthMultipliers[robot.weaponKey] = { ...robot.weaponGrowthMultipliers };
+  robot.weaponKey = nextKey;
+  robot.weaponName = WEAPON_CATEGORIES[nextKey].label;
+  robot.weaponStats = { ...(robot.weaponCategoryStats[nextKey] ?? {}) };
+  robot.weaponGrowthMultipliers = { ...(robot.weaponCategoryGrowthMultipliers[nextKey] ?? {}) };
+  if ((robot.individualTrainingTarget ?? '').startsWith('weapon:')) robot.individualTrainingTarget = `weapon:${nextKey}`;
+  state.lastBattle = null;
+  state.log = [`${sName(robot)}の使用兵装を${robot.weaponName}へ変更。`, ...state.log].slice(0, 28);
+  return true;
+}
+
 function weaponCategoryValues(robot, weaponKey) {
   if (weaponKey === robot.weaponKey) return robot.weaponStats ?? {};
   return robot.weaponCategoryStats?.[weaponKey] ?? {};
@@ -1008,7 +1027,10 @@ function renderUnitOverview(robot) {
             ${robot.nickname ? `<p class="formal-unit-name">正式名称：${robotFormalLabel(robot)}</p>` : ''}
             <p>${robot.serial} / ${wins}勝${losses}敗${total ? ` / 勝率 ${(wins / total * 100).toFixed(0)}%` : ''}</p>
           </div>
-          <div class="reliability-big compact-reliability">信頼性<strong>${robot.reliability}</strong></div>
+          <div class="overview-score-stack">
+            <div class="overall-evaluation-card"><span>総合評価</span><strong>${robotSelectionScore(robot).toFixed(0)}</strong><small>基礎能力＋現在兵装＋信頼性</small></div>
+            <div class="reliability-card"><span>信頼性</span><strong>${robot.reliability}</strong><small>試合時の性能ブレ</small></div>
+          </div>
         </div>
         <div class="unit-design-context">
           <div><span>メーカー思想</span><strong>${escapeHtml(MANUFACTURER_INFO_MAP.get(robot.manufacturerId)?.philosophy ?? '---')}</strong></div>
@@ -1023,7 +1045,7 @@ function renderUnitOverview(robot) {
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <details class="series-lore-details">
-          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
           <div class="series-lore-body">
             ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
             ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}
@@ -1050,9 +1072,11 @@ function renderUnitOverview(robot) {
           個別練習
           <select id="individual-training">${options}</select>
         </label>
+        <div class="overall-evaluation-note"><b>総合評価 ${robotSelectionScore(robot).toFixed(0)}</b><span>基礎7グループ平均 68% ＋ 現在兵装平均 24% ＋ 信頼性 8% の比較用指標。戦闘力そのものを1数値で決める値ではありません。</span></div>
         <div class="unit-key-stats compact-key-stats">
+          <div class="overall-key-stat"><span>総合評価</span><strong>${robotSelectionScore(robot).toFixed(0)}</strong></div>
           <div><span>兵装平均</span><strong>${weaponAverage(robot).toFixed(1)}</strong></div>
-          <div><span>総合評価</span><strong>${robotSelectionScore(robot).toFixed(0)}</strong></div>
+          <div><span>信頼性（安定）</span><strong>${robot.reliability}</strong></div>
           <div><span>特殊能力</span><strong>${robot.specialAbilities?.length ?? 0}</strong></div>
         </div>
         <div class="group-grid overview-group-grid">${renderGroupCards(robot)}</div>
@@ -1096,6 +1120,9 @@ function renderWeaponAptitudeCard(robot, weaponKey) {
         <span>対応耐性：${weapon.resistance}</span>
         ${growthVisible ? `<span>成長 ${growthBand(growthAverage, Math.max(1, analysisLevel(state)))}</span>` : ''}
       </div>
+      <div class="weapon-aptitude-actions">
+        ${weaponKey === robot.weaponKey ? '<button class="weapon-equip-from-card equipped" disabled>使用中</button>' : `<button class="weapon-equip-from-card" data-equip-weapon="${weaponKey}">この兵装を使用</button>`}
+      </div>
       <ul class="weapon-aptitude-stats">
         ${WEAPON_AXES.map((axis) => {
           const value = Number(stats?.[axis] ?? 0);
@@ -1114,7 +1141,7 @@ function renderAllWeaponAptitudes(robot) {
         <div class="panel-title"><div><p class="eyebrow">WEAPON APTITUDE</p><h2>全兵装適性グラフ</h2></div><small class="panel-note">12兵装の平均値を装備変更なしで比較</small></div>
         ${renderWeaponAptitudeBars(robot)}
       </section>
-      <div class="weapon-aptitude-guide">装備を変更せず、全兵装カテゴリの現在値と成長傾向を比較できます。現在装備中の兵装だけ青枠で表示されます。</div>
+      <div class="weapon-aptitude-guide">全兵装カテゴリの現在値と成長傾向を比較できます。各カードの「この兵装を使用」から、そのまま現在兵装を変更できます。装備中の兵装は青枠で表示されます。</div>
       ${ranges.map((range) => {
         const keys = Object.keys(WEAPON_CATEGORIES).filter((key) => WEAPON_CATEGORIES[key].range === range);
         return `<section class="weapon-range-section"><div class="weapon-range-title"><h3>${range}</h3><span>${keys.length}カテゴリ</span></div><div class="weapon-aptitude-grid">${keys.map((key) => renderWeaponAptitudeCard(robot, key)).join('')}</div></section>`;
@@ -1166,7 +1193,7 @@ function renderUnitDetailPage(robot) {
         <select id="unit-detail-selector" aria-label="機体詳細で表示する機体">${selectorOptions}</select>
       </div>
       <button class="unit-switch-button" data-unit-nav="${next?.id ?? ''}">次の機体 →</button>
-      <div class="unit-detail-quick-actions"><button class="view-tab mini-button ghost" data-view="training">育成へ</button><button class="view-tab mini-button ghost" data-view="custom">カスタムへ</button></div>
+      <div class="unit-detail-quick-actions"><button class="view-tab mini-button ghost" data-view="training">育成へ</button><button class="view-tab mini-button ghost" data-view="custom">カスタムへ</button><button id="unit-status-guide" class="mini-button ghost">能力解説</button></div>
     </section>
     <nav class="unit-detail-tabs" aria-label="機体詳細カテゴリ">
       ${tabs.map(([id, label]) => `<button class="unit-detail-tab ${uiState.unitDetailTab === id ? 'active' : ''}" data-unit-detail-tab="${id}">${label}</button>`).join('')}
@@ -1627,6 +1654,25 @@ function renderTournamentHistory() {
   }).join('')}</div>`;
 }
 
+
+function renderStatusGuide() {
+  const groupSections = GROUP_KEYS.map((groupKey) => {
+    const group = STAT_GROUPS[groupKey];
+    return `<details class="status-guide-group"><summary><strong>${group.label}</strong><span>${escapeHtml(GROUP_GUIDE[groupKey] ?? '')}</span></summary><div>${group.stats.map((statName) => `<article><b>${statName}</b><p>${escapeHtml(STAT_GUIDE[statName] ?? '')}</p></article>`).join('')}</div></details>`;
+  }).join('');
+  const axisLabels = { power:'出力・威力', accuracy:'精度', control:'兵装制御', response:'応答', stability:'安定性', efficiency:'効率・固有運用' };
+  return `
+    <details class="status-guide" id="status-guide" ${uiState.statusGuideOpen ? 'open' : ''}>
+      <summary><div><p class="eyebrow">STATUS MANUAL</p><strong>ステータス・戦闘指標を詳しく見る</strong><span>総合評価、信頼性、基礎41項目、兵装6軸、耐性、戦闘時の使われ方</span></div><b>開く</b></summary>
+      <div class="status-guide-body">
+        <section class="status-guide-system"><h3>まず知っておきたい指標</h3><div>${SYSTEM_GUIDE.map((item) => `<article><strong>${escapeHtml(item.label)}</strong><p>${escapeHtml(item.text)}</p></article>`).join('')}</div></section>
+        <section><h3>基礎能力 7グループ / 41項目</h3><p class="status-guide-lead">レーダーチャートは各グループ内の個別能力平均です。戦闘では全41項目を毎回使うのではなく、機体・兵装・相性に応じて一部が比較対象になります。</p><div class="status-guide-groups">${groupSections}</div></section>
+        <section><h3>兵装適性の6軸</h3><div class="status-guide-axis-grid">${Object.entries(WEAPON_AXIS_GUIDE).map(([axis, text]) => `<article><strong>${axisLabels[axis] ?? axis}</strong><p>${escapeHtml(text)}</p></article>`).join('')}</div><p class="status-guide-lead">12兵装はすべてこの6軸を持ちますが、表示名は兵装に合わせて変化します。装備していない兵装の値と成長倍率も機体ごとに保持されます。</p></section>
+        <section><h3>耐性</h3><div class="status-guide-resistance-grid">${RESISTANCE_STATS.map((name) => `<article><strong>${name}</strong><p>${escapeHtml(RESISTANCE_GUIDE[name] ?? '')}</p></article>`).join('')}</div></section>
+      </div>
+    </details>`;
+}
+
 function renderSettingsPanel() {
   state.settings = normalizeSettings(state.settings);
   const settings = state.settings;
@@ -1667,6 +1713,7 @@ function renderSettingsPanel() {
         <input id="save-import-file" type="file" accept="application/json,.json" hidden>
       </div>
     </div>
+    ${renderStatusGuide()}
     <p class="settings-note">シリーズは各メーカー80系列・合計1600系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
   `;
 }
@@ -2116,6 +2163,14 @@ function render() {
     uiState.teamRadarOpen = false;
     render();
   });
+  document.querySelector('#unit-status-guide')?.addEventListener('click', () => {
+    uiState.activeView = 'settings';
+    uiState.statusGuideOpen = true;
+    render();
+  });
+  document.querySelector('#status-guide')?.addEventListener('toggle', (event) => {
+    uiState.statusGuideOpen = Boolean(event.currentTarget?.open);
+  });
   document.querySelector('.team-radar-backdrop')?.addEventListener('click', (event) => {
     if (event.target.classList?.contains('team-radar-backdrop')) {
       uiState.teamRadarOpen = false;
@@ -2228,22 +2283,13 @@ function render() {
   });
 
   document.querySelector('#weapon-equip')?.addEventListener('change', (event) => {
-    const nextKey = event.target.value;
-    if (!WEAPON_CATEGORIES[nextKey] || nextKey === robot.weaponKey) return;
-    robot.weaponCategoryStats ??= {};
-    robot.weaponCategoryGrowthMultipliers ??= {};
-    robot.weaponCategoryStats[robot.weaponKey] = { ...robot.weaponStats };
-    robot.weaponCategoryGrowthMultipliers[robot.weaponKey] = { ...robot.weaponGrowthMultipliers };
-    robot.weaponKey = nextKey;
-    robot.weaponName = WEAPON_CATEGORIES[nextKey].label;
-    robot.weaponStats = { ...robot.weaponCategoryStats[nextKey] };
-    robot.weaponGrowthMultipliers = { ...robot.weaponCategoryGrowthMultipliers[nextKey] };
-    if ((robot.individualTrainingTarget ?? '').startsWith('weapon:')) {
-      robot.individualTrainingTarget = `weapon:${nextKey}`;
-    }
-    state.lastBattle = null;
-    state.log = [`${sName(robot)}の使用兵装を${robot.weaponName}へ変更。`, ...state.log].slice(0, 28);
-    commit();
+    if (equipRobotWeapon(selectedRobot(), event.target.value)) commit();
+  });
+
+  document.querySelectorAll('[data-equip-weapon]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (equipRobotWeapon(selectedRobot(), button.dataset.equipWeapon)) commit();
+    });
   });
 
   document.querySelector('#individual-training')?.addEventListener('change', (event) => {
