@@ -1,5 +1,5 @@
-import { GROUP_KEYS } from '../data/statDefinitions.js';
-import { WEAPON_AXES } from '../data/weaponDefinitions.js';
+import { GROUP_KEYS } from '../data/statDefinitions.js?v=2.7';
+import { WEAPON_AXES } from '../data/weaponDefinitions.js?v=2.7';
 
 function appearances(robot) {
   return (robot.record?.wins ?? 0) + (robot.record?.losses ?? 0);

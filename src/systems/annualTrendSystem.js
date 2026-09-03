@@ -1,7 +1,7 @@
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js';
-import { WEAPON_KEYS } from '../data/weaponDefinitions.js';
-import { MANUFACTURER_MAP } from '../data/manufacturers.js';
-import { getSeriesDefinition, resolveSeriesProfile } from '../data/seriesDefinitions.js';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.7';
+import { WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.7';
+import { MANUFACTURER_MAP } from '../data/manufacturers.js?v=2.7';
+import { getSeriesDefinition, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.7';
 
 function hashString(text) {
   let hash = 2166136261;

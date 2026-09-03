@@ -1,4 +1,4 @@
-import { MANUFACTURERS } from '../data/manufacturers.js';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=2.7';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 

@@ -1,4 +1,12 @@
-# AI戦闘ロボット育成ローグライク v2.6
+# AI戦闘ロボット育成ローグライク v2.7
+
+## v2.7 の主な更新：GitHub Pages / PWA更新安定化
+
+- GitHub Pagesではオンライン時にネットワーク上の最新版を優先するService Workerへ変更
+- JS/CSSへバージョン付きURLを付与し、旧PWAキャッシュによる更新停滞を回避
+- Service Worker登録時に `updateViaCache: none` と明示更新を実行
+- GitHub更新用ZIPをリポジトリ直下へそのまま上書きできるフラット構成へ変更
+- `index.html` のタイトルも現在バージョンと同期
 
 ## v2.6 の主な更新：メーカー / シリーズ正式実装
 

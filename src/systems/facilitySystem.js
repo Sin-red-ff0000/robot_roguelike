@@ -1,4 +1,4 @@
-import { FACILITY_DEFINITIONS } from '../data/facilityDefinitions.js';
+import { FACILITY_DEFINITIONS } from '../data/facilityDefinitions.js?v=2.7';
 
 export function defaultFacilities() {
   return Object.fromEntries(Object.keys(FACILITY_DEFINITIONS).map((id) => [id, 0]));

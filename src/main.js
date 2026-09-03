@@ -1,27 +1,27 @@
-import { GAME_CONFIG } from './config.js';
-import { MANUFACTURERS } from './data/manufacturers.js';
-import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js';
-import { simulateBattle } from './systems/battleSystem.js';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js';
-import { PART_RARITIES } from './data/partDefinitions.js';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js';
-import { careerRecordSummary, manufacturerRecords, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js';
+import { GAME_CONFIG } from './config.js?v=2.7';
+import { MANUFACTURERS } from './data/manufacturers.js?v=2.7';
+import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=2.7';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=2.7';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=2.7';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=2.7';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=2.7';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=2.7';
+import { simulateBattle } from './systems/battleSystem.js?v=2.7';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=2.7';
+import { PART_RARITIES } from './data/partDefinitions.js?v=2.7';
+import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=2.7';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=2.7';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=2.7';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=2.7';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=2.7';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=2.7';
+import { careerRecordSummary, manufacturerRecords, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=2.7';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=2.7';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=2.7';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=2.7';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=2.7';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=2.7';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=2.7';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -33,7 +33,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js';
+} from './systems/teamMatchSystem.js?v=2.7';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();

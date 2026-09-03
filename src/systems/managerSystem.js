@@ -1,4 +1,4 @@
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from '../data/managerDefinitions.js';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from '../data/managerDefinitions.js?v=2.7';
 
 export const MANAGER_CUSTOM_MAX_LINES = 12;
 export const MANAGER_CUSTOM_MAX_LENGTH = 160;
