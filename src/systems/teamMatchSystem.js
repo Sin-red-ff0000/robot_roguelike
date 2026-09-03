@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=3.0';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
-import { generateCohort } from './robotGenerator.js?v=3.0';
-import { simulateBattle } from './battleSystem.js?v=3.0';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=3.0';
-import { clamp, randomInt } from '../utils/random.js?v=3.0';
-import { battleWinTable } from './settingsSystem.js?v=3.0';
+import { GAME_CONFIG } from '../config.js?v=3.1';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.1';
+import { generateCohort } from './robotGenerator.js?v=3.1';
+import { simulateBattle } from './battleSystem.js?v=3.1';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=3.1';
+import { clamp, randomInt } from '../utils/random.js?v=3.1';
+import { battleWinTable } from './settingsSystem.js?v=3.1';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);

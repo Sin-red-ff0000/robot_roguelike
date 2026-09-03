@@ -105,6 +105,7 @@ if (!app.html.includes('unit-overview-dashboard')) throw new Error('compact unit
 if (!app.html.includes('生産・系譜')) throw new Error('series production/lineage detail missing');
 if (!app.html.includes('個体差・兵装嗜好')) throw new Error('series individuality/weapon preference detail missing');
 if (!app.html.includes('固有特性') || !app.html.includes('成長曲線') || !app.html.includes('カスタム適性') || !app.html.includes('特殊能力傾向')) throw new Error('v3 series identity detail missing');
+if (!app.html.includes('series-lore-details') || !app.html.includes('シリーズ設計解説')) throw new Error('v3.1 detailed series lore panel missing');
 if (app.html.includes('selected-unit-bar')) throw new Error('duplicate global selected unit bar rendered on unit detail');
 
 weaponTabButton.click();

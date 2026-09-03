@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=3.0';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.0';
-import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=3.0';
-import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.0';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.0';
-import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=3.0';
+import { GAME_CONFIG } from '../config.js?v=3.1';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.1';
+import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=3.1';
+import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.1';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.1';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.1';
+import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=3.1';
 
 function weightedPick(entries) {
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);

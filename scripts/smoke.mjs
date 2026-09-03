@@ -24,6 +24,19 @@ if (seriesRecords(state).length !== 1600) throw new Error('series encyclopedia r
 if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
 if (SERIES_DEFINITIONS.length !== 1600) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
 for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 80) throw new Error(`series count for ${manufacturer.id}`); }
+const legacyProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
+if (legacyProfiles.length !== 400) throw new Error(`legacy refit count ${legacyProfiles.length}`);
+for (const profile of legacyProfiles) {
+  if (!profile.legacyRefit) throw new Error(`legacy refit flag missing: ${profile.id}`);
+  if ((profile.concept?.length ?? 0) < 140) throw new Error(`legacy concept too short: ${profile.id}`);
+  const loreLength = ['concept','namingConcept','developmentBackground','engineeringNotes','trainingNotes'].reduce((sum, key) => sum + String(profile[key] ?? '').length, 0);
+  if (loreLength < 750) throw new Error(`legacy lore package too short: ${profile.id}`);
+  if ((profile.summary?.length ?? 0) > 150) throw new Error(`legacy compact summary too long: ${profile.id}`);
+  for (const field of ['namingConcept','developmentBackground','engineeringNotes','trainingNotes']) {
+    if (!profile[field]) throw new Error(`legacy lore missing ${field}: ${profile.id}`);
+  }
+  if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`legacy identity refit missing: ${profile.id}`);
+}
 for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
 
 const kirishimaSeries = getSeriesForManufacturer('kirishima');
@@ -99,7 +112,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '3.0') throw new Error('migration version');
+if (!migrated || migrated.version !== '3.1') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');
@@ -125,6 +138,24 @@ migrated.roster[0].nickname = 'テストエース';
 const nicknameId = migrated.roster[0].id;
 const migratedAgain = migrateState(JSON.parse(JSON.stringify(migrated)));
 if (migratedAgain.roster.find((robot) => robot.id === nicknameId)?.nickname !== 'テストエース') throw new Error('nickname persistence failed');
+const refitMigrationInput = JSON.parse(JSON.stringify(migratedAgain));
+refitMigrationInput.version = '3.0';
+const refitTarget = refitMigrationInput.roster[0];
+refitTarget.seriesId = 'kirishima-takachiho';
+refitTarget.manufacturerId = 'kirishima';
+refitTarget.seriesNumber = 1;
+refitTarget.seriesNameKana = 'タカチホ';
+refitTarget.seriesTrendSummary = '旧説明';
+refitTarget.seriesGrowthCurveId = 'steady';
+refitTarget.seriesCustomAptitudeId = 'balanced';
+delete refitTarget.seriesConcept;
+delete refitTarget.seriesNamingConcept;
+delete refitTarget.seriesDevelopmentBackground;
+delete refitTarget.seriesEngineeringNotes;
+delete refitTarget.seriesTrainingNotes;
+const refitMigrated = migrateState(refitMigrationInput);
+const refitRobot = refitMigrated.roster.find((robot) => robot.id === refitTarget.id);
+if (!refitRobot?.seriesLegacyRefit || !refitRobot.seriesNamingConcept || refitRobot.seriesTrendSummary === '旧説明') throw new Error('v3.1 legacy-series migration failed');
 const retiringRobot = migratedAgain.roster.find((robot) => robot.cohortYear === 3);
 if (retiringRobot) retiringRobot.nickname = '引退テスト';
 const retiringId = retiringRobot?.id;

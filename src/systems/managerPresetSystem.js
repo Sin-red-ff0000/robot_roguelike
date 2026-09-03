@@ -1,4 +1,4 @@
-import { normalizeManagerProfile } from './managerSystem.js?v=3.0';
+import { normalizeManagerProfile } from './managerSystem.js?v=3.1';
 
 export const MANAGER_PRESET_LIMIT = 12;
 export const MANAGER_EXPORT_TYPE = 'robot-roguelike-manager-profile';

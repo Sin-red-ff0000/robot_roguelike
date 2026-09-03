@@ -1,9 +1,10 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.0';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.0';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.0';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.1';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.1';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.1';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.1';
 
-// Formal series catalog: 20 manufacturers x 20 series = 400 series.
-// Series names are fixed; tendencies resolve from archetype + small series-specific adjustments.
+// Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
+// v3.1 refits these original 400 entries before later expansion waves are appended.
 
 export const SERIES_ARCHETYPES = {
   "balanced": {
@@ -8968,6 +8969,15 @@ export const SERIES_DEFINITIONS = [
   }
 ];
 
+const LEGACY_REFIT_MAP = new Map(LEGACY_SERIES_REFIT_OVERRIDES.map((item) => [item.id, item]));
+for (let index = 0; index < SERIES_DEFINITIONS.length; index += 1) {
+  const base = SERIES_DEFINITIONS[index];
+  if (Number(base.seriesNumber ?? 0) > 20) continue;
+  const refit = LEGACY_REFIT_MAP.get(base.id);
+  if (!refit) continue;
+  SERIES_DEFINITIONS[index] = { ...base, ...refit };
+}
+
 SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS, ...THIRD_WAVE_SERIES_DEFINITIONS, ...FOURTH_WAVE_SERIES_DEFINITIONS);
 
 
@@ -9144,8 +9154,8 @@ export function resolveSeriesProfile(seriesLike) {
     ...series,
     ...lineage,
     label: series.label ?? archetype.label,
-    summary: series.concept ?? archetype.summary,
-    concept: series.concept ?? archetype.summary,
+    summary: series.summary ?? series.concept ?? archetype.summary,
+    concept: series.concept ?? series.summary ?? archetype.summary,
     marketPosition: series.marketPosition ?? productionTier.label,
     productionTierId,
     productionTierLabel: productionTier.label,

@@ -1,27 +1,27 @@
-import { GAME_CONFIG } from './config.js?v=3.0';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.0';
-import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=3.0';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.0';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.0';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.0';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.0';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.0';
-import { simulateBattle } from './systems/battleSystem.js?v=3.0';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.0';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.0';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.0';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.0';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.0';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.0';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.0';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.0';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.0';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.0';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.0';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.0';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.0';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.0';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.0';
+import { GAME_CONFIG } from './config.js?v=3.1';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.1';
+import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=3.1';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.1';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.1';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.1';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.1';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.1';
+import { simulateBattle } from './systems/battleSystem.js?v=3.1';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.1';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.1';
+import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.1';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.1';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.1';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.1';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.1';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.1';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.1';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.1';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.1';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.1';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.1';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.1';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.1';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -33,7 +33,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.0';
+} from './systems/teamMatchSystem.js?v=3.1';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -1022,6 +1022,17 @@ function renderUnitOverview(robot) {
           <div><span>製造年度</span><strong>${robot.productionYear ?? '---'}年 / ${escapeHtml(robot.annualTrend?.label ?? '年度補正なし')}${robot.annualTrend?.seriesYearEvent?.type !== 'normal' ? ` / ${escapeHtml(robot.annualTrend.seriesYearEvent.description ?? '')}` : ''}</strong></div>
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
+        <details class="series-lore-details">
+          <summary><span>シリーズ設計解説</span>${robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <div class="series-lore-body">
+            ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
+            ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}
+            ${robot.seriesDevelopmentBackground ? `<section><span>開発背景</span><p>${escapeHtml(robot.seriesDevelopmentBackground)}</p></section>` : ''}
+            ${robot.seriesEngineeringNotes ? `<section><span>設計上の癖</span><p>${escapeHtml(robot.seriesEngineeringNotes)}</p></section>` : ''}
+            ${robot.seriesTrainingNotes ? `<section><span>育成・改修の見方</span><p>${escapeHtml(robot.seriesTrainingNotes)}</p></section>` : ''}
+            ${robot.seriesWeaponDoctrine ? `<section><span>兵装ドクトリン</span><p>${escapeHtml(robot.seriesWeaponDoctrine)}</p></section>` : ''}
+          </div>
+        </details>
         <div class="panel-title compact-panel-title overview-bars-title"><div><p class="eyebrow">ABILITY BARS</p><h2>基礎能力比較</h2></div><small class="panel-note">平均値</small></div>
         <div class="overview-base-bars">${renderBaseAbilityBars(robot)}</div>
       </section>
@@ -1569,7 +1580,19 @@ function renderSeriesEncyclopedia() {
     const games=row.wins+row.losses; const rate=games?`${(row.wins/games*100).toFixed(1)}%`:'---';
     const visibleDeep = row.joined > 0;
     const seriesName = state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
-    return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>${visibleDeep ? `${escapeHtml(row.profile?.marketPosition ?? '')} / ${escapeHtml(row.profile?.intrinsicTrait?.label ?? '')} / ${escapeHtml(row.profile?.growthCurve?.label ?? '')} / ${escapeHtml(row.profile?.customAptitude?.label ?? '')}` : '詳細は自軍加入で解析'}</small><em>${row.joined ? `加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}` : `遭遇 ${row.encounters}回`}</em></div>`;
+    if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
+    const lore = row.profile ?? {};
+    return `<details class="series-dex-expand ${row.discovery}">
+      <summary class="series-dex-row"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>${escapeHtml(lore.marketPosition ?? '')} / ${escapeHtml(lore.intrinsicTrait?.label ?? '')} / ${escapeHtml(lore.growthCurve?.label ?? '')} / ${escapeHtml(lore.customAptitude?.label ?? '')}</small><em>加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}</em></summary>
+      <div class="series-dex-lore">
+        <p><b>系列要約</b>${escapeHtml(lore.summary ?? '')}</p>
+        ${lore.namingConcept ? `<p><b>名称と設計モチーフ</b>${escapeHtml(lore.namingConcept)}</p>` : ''}
+        ${lore.developmentBackground ? `<p><b>開発背景</b>${escapeHtml(lore.developmentBackground)}</p>` : ''}
+        ${lore.engineeringNotes ? `<p><b>設計上の癖</b>${escapeHtml(lore.engineeringNotes)}</p>` : ''}
+        ${lore.trainingNotes ? `<p><b>育成・改修</b>${escapeHtml(lore.trainingNotes)}</p>` : ''}
+        ${lore.weaponDoctrine ? `<p><b>兵装ドクトリン</b>${escapeHtml(lore.weaponDoctrine)}</p>` : ''}
+      </div>
+    </details>`;
   }).join('');
   const found = makerRows.filter((row) => row.discovery !== 'unseen').length;
   return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(maker.name)}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/80</b></div><div class="series-dex-full-list">${items}</div>`;
