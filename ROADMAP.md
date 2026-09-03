@@ -148,7 +148,7 @@ UI強化後に着手。
 - 次段階：UIの実機フィードバック修正後、シリーズ正式実装
 
 
-## v2.4 完了：GitHub Pages / PWA対応
+## v2.5 完了：GitHub Pages / PWA対応
 
 - GitHub Pagesへ静的ファイルのまま公開可能
 - Web App Manifest追加

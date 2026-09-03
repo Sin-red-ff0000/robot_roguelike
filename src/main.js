@@ -62,6 +62,7 @@ const uiState = {
   managerPresetId: '',
   managerCollapsed: true,
   unitDetailTab: 'overview',
+  teamRadarOpen: false,
 };
 
 const PART_RARITY_RANK = Object.fromEntries(Object.keys(PART_RARITIES).map((key, index) => [key, index]));
@@ -846,6 +847,80 @@ function renderRadarChart(robot) {
     </div>`;
 }
 
+
+function teamGroupAverages() {
+  if (!state.roster.length) return GROUP_KEYS.map((groupKey) => ({ key: groupKey, label: STAT_GROUPS[groupKey].label, value: 0 }));
+  return GROUP_KEYS.map((groupKey) => ({
+    key: groupKey,
+    label: STAT_GROUPS[groupKey].label,
+    value: state.roster.reduce((sum, robot) => sum + groupAverage(robot, groupKey), 0) / state.roster.length,
+  }));
+}
+
+function renderTeamRadarChart() {
+  const values = teamGroupAverages();
+  const maxValue = chartCeiling(values.map((item) => item.value));
+  const cx = 180;
+  const cy = 145;
+  const radius = 96;
+  const labelRadius = 122;
+  const angleFor = (index) => (-Math.PI / 2) + (Math.PI * 2 * index / values.length);
+  const point = (index, ratio, useLabelRadius = false) => {
+    const angle = angleFor(index);
+    const r = useLabelRadius ? labelRadius : radius * ratio;
+    return [cx + Math.cos(angle) * r, cy + Math.sin(angle) * r];
+  };
+  const rings = [0.25, 0.5, 0.75, 1].map((ratio) => {
+    const points = values.map((_, index) => point(index, ratio).map((value) => value.toFixed(1)).join(',')).join(' ');
+    return `<polygon class="radar-grid-ring" points="${points}"></polygon>`;
+  }).join('');
+  const axes = values.map((_, index) => {
+    const [x, y] = point(index, 1);
+    return `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"></line>`;
+  }).join('');
+  const dataPoints = values.map((item, index) => {
+    const ratio = Math.max(0, Math.min(1, item.value / maxValue));
+    return point(index, ratio).map((value) => value.toFixed(1)).join(',');
+  }).join(' ');
+  const dots = values.map((item, index) => {
+    const ratio = Math.max(0, Math.min(1, item.value / maxValue));
+    const [x, y] = point(index, ratio);
+    return `<circle class="radar-data-point" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4"><title>${item.label} ${item.value.toFixed(1)}</title></circle>`;
+  }).join('');
+  const labels = values.map((item, index) => {
+    const [x, y] = point(index, 1, true);
+    const anchor = x < cx - 8 ? 'end' : x > cx + 8 ? 'start' : 'middle';
+    const dy = y < cy - 30 ? -4 : y > cy + 30 ? 12 : 4;
+    return `<text class="radar-label" x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}"><tspan>${item.label}</tspan><tspan class="radar-label-value" x="${x.toFixed(1)}" dy="12">${item.value.toFixed(0)}</tspan></text>`;
+  }).join('');
+  return `<div class="radar-chart-wrap team-radar-chart-wrap"><svg class="radar-chart" viewBox="0 0 360 300" role="img" aria-label="チーム全体の基礎能力平均レーダーチャート">${rings}${axes}<polygon class="radar-data-shape" points="${dataPoints}"></polygon>${dots}${labels}</svg><div class="chart-scale-note">所属 ${state.roster.length}機の平均 / 表示上限 ${maxValue}</div></div>`;
+}
+
+function renderTeamRadarOverlay() {
+  if (!uiState.teamRadarOpen) return '';
+  const values = teamGroupAverages();
+  const sorted = [...values].sort((a, b) => b.value - a.value);
+  const strongest = sorted[0];
+  const weakest = sorted.at(-1);
+  return `
+    <div class="team-radar-backdrop" role="dialog" aria-modal="true" aria-label="チーム能力傾向">
+      <section class="team-radar-modal">
+        <header class="team-radar-modal-head">
+          <div><p class="eyebrow">TEAM ANALYSIS</p><h2>チーム全体の能力傾向</h2><p>所属${state.roster.length}機の基礎7グループ平均。全体練習を選ぶ時の参考にできます。</p></div>
+          <button id="team-radar-close" class="ghost compact-button" aria-label="チームレーダーを閉じる">閉じる</button>
+        </header>
+        <div class="team-radar-modal-body">
+          <div class="team-radar-visual">${renderTeamRadarChart()}</div>
+          <div class="team-radar-summary">
+            <div class="team-radar-highlow"><article><span>最も高い</span><strong>${strongest?.label ?? '---'}</strong><b>${strongest?.value.toFixed(1) ?? '---'}</b></article><article><span>最も低い</span><strong>${weakest?.label ?? '---'}</strong><b>${weakest?.value.toFixed(1) ?? '---'}</b></article></div>
+            <div class="team-average-grid">${values.map((item) => `<div><span>${item.label}</span><strong>${item.value.toFixed(1)}</strong><em>${grade(item.value)}</em></div>`).join('')}</div>
+            <p class="team-radar-hint">弱点補強なら「${weakest?.label ?? '---'}」系、長所を伸ばすなら「${strongest?.label ?? '---'}」系の全体練習が候補です。</p>
+          </div>
+        </div>
+      </section>
+    </div>`;
+}
+
 function renderMetricBars(items, { maxValue = null, weaponKey = null } = {}) {
   const ceiling = maxValue ?? chartCeiling(items.map((item) => item.value));
   return `<div class="metric-bar-chart">${items.map((item) => {
@@ -889,7 +964,7 @@ function renderCompactUnitProfile(robot) {
           ${robot.nickname ? `<p class="formal-unit-name">${robotFormalLabel(robot)}</p>` : ''}
           <p>${robot.serial} / ${robot.weaponName} / ${wins}勝${losses}敗</p>
         </div>
-        <div class="reliability-big">信頼性<strong>${robot.reliability}</strong></div>
+        <div class="reliability-big overall-score-big">総合評価<strong>${robotSelectionScore(robot).toFixed(0)}</strong></div>
       </div>
       <div class="group-grid compact-group-grid">${renderGroupCards(robot)}</div>
       <div class="compact-profile-footer">
@@ -1916,7 +1991,7 @@ function renderActiveView(robot) {
         ${renderPageHeader('育成', 'training')}
         <div class="training-action-grid">
           <section id="training-section" class="panel training-panel">
-            <div class="panel-title"><div><p class="eyebrow">TURN ${state.turn} / ${trainingTurnsForState(state)}</p><h2>全体練習を選択</h2></div><div class="turn-progress"><span style="width:${Math.min(100, (state.turn / trainingTurnsForState(state)) * 100)}%"></span></div></div>
+            <div class="panel-title training-panel-head"><div><p class="eyebrow">TURN ${state.turn} / ${trainingTurnsForState(state)}</p><h2>全体練習を選択</h2></div><div class="training-head-actions"><button id="team-radar-open" class="ghost compact-button">チーム傾向を見る</button><div class="turn-progress"><span style="width:${Math.min(100, (state.turn / trainingTurnsForState(state)) * 100)}%"></span></div></div></div>
             ${renderTrainingLockNotice()}<div class="training-modifier-list">${renderTrainingModifiers()}</div><div class="training-grid training-grid-stacked">${renderTrainingChoices()}</div>
           </section>
           <section class="panel event-panel training-event-top"><div class="panel-title"><div><p class="eyebrow">EVENT</p><h2>イベント</h2></div></div>${renderEventPanel()}</section>
@@ -1947,6 +2022,7 @@ function render() {
       </div>
     </div>
     ${renderTutorialOverlay()}
+    ${renderTeamRadarOverlay()}
   `;
 
   document.querySelectorAll('.view-tab').forEach((button) => {
@@ -1954,6 +2030,21 @@ function render() {
       uiState.activeView = button.dataset.view || 'training';
       render();
     });
+  });
+
+  document.querySelector('#team-radar-open')?.addEventListener('click', () => {
+    uiState.teamRadarOpen = true;
+    render();
+  });
+  document.querySelector('#team-radar-close')?.addEventListener('click', () => {
+    uiState.teamRadarOpen = false;
+    render();
+  });
+  document.querySelector('.team-radar-backdrop')?.addEventListener('click', (event) => {
+    if (event.target.classList?.contains('team-radar-backdrop')) {
+      uiState.teamRadarOpen = false;
+      render();
+    }
   });
 
   document.querySelectorAll('[data-unit-detail-tab]').forEach((button) => {

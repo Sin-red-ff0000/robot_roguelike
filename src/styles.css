@@ -1894,3 +1894,59 @@ body {
   .pwa-install-actions { justify-content: stretch; }
   .pwa-install-actions .primary-compact { width: 100%; min-height: 44px; }
 }
+
+
+/* v2.5 custom score + team radar */
+.overall-score-big { border-color: #415c73; }
+.training-panel-head { align-items: center; gap: 12px; }
+.training-head-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: min(360px, 42%); }
+.training-head-actions .turn-progress { flex: 1 1 180px; min-width: 110px; }
+.team-radar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(3, 7, 12, .82);
+  backdrop-filter: blur(7px);
+}
+.team-radar-modal {
+  width: min(860px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  border: 1px solid #52687f;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #172433, #0f171f 62%);
+  box-shadow: 0 30px 90px rgba(0,0,0,.58);
+  padding: 18px;
+}
+.team-radar-modal-head { display: flex; justify-content: space-between; align-items: start; gap: 16px; margin-bottom: 10px; }
+.team-radar-modal-head h2 { margin: 3px 0 5px; font-size: 22px; }
+.team-radar-modal-head p:last-child { margin: 0; color: #94a6b7; font-size: 11px; line-height: 1.6; }
+.team-radar-modal-body { display: grid; grid-template-columns: minmax(300px, .9fr) minmax(300px, 1.1fr); gap: 14px; align-items: center; }
+.team-radar-visual { min-width: 0; border: 1px solid #2a3b4c; border-radius: 13px; background: rgba(10,17,24,.55); padding: 8px; }
+.team-radar-chart-wrap .radar-chart { width: min(100%, 390px); margin: 0 auto; display: block; }
+.team-radar-summary { display: grid; gap: 11px; min-width: 0; }
+.team-radar-highlow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.team-radar-highlow article { display: grid; gap: 3px; padding: 10px; border: 1px solid #304456; border-radius: 10px; background: #0d1822; }
+.team-radar-highlow span, .team-average-grid span { color: #8396a8; font-size: 9px; }
+.team-radar-highlow strong { font-size: 14px; }
+.team-radar-highlow b { font-size: 22px; color: #dcecff; }
+.team-average-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.team-average-grid > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 5px; align-items: end; padding: 8px; border: 1px solid #27394a; border-radius: 9px; background: #0b141d; }
+.team-average-grid span { grid-column: 1 / -1; }
+.team-average-grid strong { font-size: 15px; }
+.team-average-grid em { color: #9fb6ca; font-style: normal; font-size: 11px; }
+.team-radar-hint { margin: 0; padding: 9px 10px; border-left: 3px solid #6f8fab; background: rgba(28,45,60,.7); color: #aebfce; font-size: 11px; line-height: 1.6; }
+
+@media (max-width: 760px) {
+  .training-panel-head { align-items: stretch; flex-direction: column; }
+  .training-head-actions { width: 100%; min-width: 0; justify-content: stretch; }
+  .training-head-actions .compact-button { min-height: 44px; }
+  .team-radar-modal { max-height: calc(100vh - 18px); padding: 13px; }
+  .team-radar-modal-body { grid-template-columns: 1fr; }
+  .team-radar-modal-head { align-items: stretch; flex-direction: column; }
+  .team-radar-modal-head .compact-button { min-height: 44px; }
+  .team-average-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

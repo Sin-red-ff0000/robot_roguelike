@@ -1,9 +1,9 @@
 export const GAME_CONFIG = {
-  version: '2.4',
-  saveKey: 'robot-roguelike-prototype-v2.4',
+  version: '2.5',
+  saveKey: 'robot-roguelike-prototype-v2.5',
   managerStorageKey: 'robot-roguelike-manager-v1',
   managerPresetStorageKey: 'robot-roguelike-manager-persona-presets-v1',
-  legacySaveKeys: ['robot-roguelike-prototype-v2.3', 'robot-roguelike-prototype-v2.2', 'robot-roguelike-prototype-v2.1', 'robot-roguelike-prototype-v2.0', 'robot-roguelike-prototype-v1.9', 'robot-roguelike-prototype-v1.8', 'robot-roguelike-prototype-v1.7', 'robot-roguelike-prototype-v1.6', 'robot-roguelike-prototype-v1.5', 'robot-roguelike-prototype-v1.4', 'robot-roguelike-prototype-v1.3', 'robot-roguelike-prototype-v1.1', 'robot-roguelike-prototype-v1.0', 'robot-roguelike-prototype-v0.9', 'robot-roguelike-prototype-v0.8', 'robot-roguelike-prototype-v0.7', 'robot-roguelike-prototype-v0.6', 'robot-roguelike-prototype-v0.5', 'robot-roguelike-prototype-v0.4', 'robot-roguelike-prototype-v0.3'],
+  legacySaveKeys: ['robot-roguelike-prototype-v2.4', 'robot-roguelike-prototype-v2.3', 'robot-roguelike-prototype-v2.2', 'robot-roguelike-prototype-v2.1', 'robot-roguelike-prototype-v2.0', 'robot-roguelike-prototype-v1.9', 'robot-roguelike-prototype-v1.8', 'robot-roguelike-prototype-v1.7', 'robot-roguelike-prototype-v1.6', 'robot-roguelike-prototype-v1.5', 'robot-roguelike-prototype-v1.4', 'robot-roguelike-prototype-v1.3', 'robot-roguelike-prototype-v1.1', 'robot-roguelike-prototype-v1.0', 'robot-roguelike-prototype-v0.9', 'robot-roguelike-prototype-v0.8', 'robot-roguelike-prototype-v0.7', 'robot-roguelike-prototype-v0.6', 'robot-roguelike-prototype-v0.5', 'robot-roguelike-prototype-v0.4', 'robot-roguelike-prototype-v0.3'],
   trainingTurnsPerYear: 36,
   rookieMin: 5,
   rookieMax: 8,

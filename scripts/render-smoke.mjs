@@ -19,6 +19,7 @@ const trainingViewButton = fakeButton({ view: 'training' });
 const unitViewButton = fakeButton({ view: 'unit' });
 const customViewButton = fakeButton({ view: 'custom' });
 const weaponTabButton = fakeButton({ unitDetailTab: 'weapons' });
+const teamRadarButton = fakeButton();
 
 globalThis.localStorage = {
   store: new Map(),
@@ -28,7 +29,11 @@ globalThis.localStorage = {
 };
 
 globalThis.document = {
-  querySelector(selector) { return selector === '#app' ? app : null; },
+  querySelector(selector) {
+    if (selector === '#app') return app;
+    if (selector === '#team-radar-open') return teamRadarButton;
+    return null;
+  },
   querySelectorAll(selector) {
     if (selector === '.view-tab') return [trainingViewButton, unitViewButton, customViewButton];
     if (selector === '[data-unit-detail-tab]') return [weaponTabButton];
@@ -74,9 +79,14 @@ if (!app.html.includes('training-action-grid')) throw new Error('training priori
 if (app.html.includes('UNIT DETAIL</p><h2>機体詳細')) throw new Error('heavy unit detail still rendered on training screen');
 if (!app.html.includes('roster-tools')) throw new Error('roster filters missing');
 if (app.html.indexOf('id="training-section"') > app.html.indexOf('id="roster-section"')) throw new Error('training cards should appear before roster');
+if (!app.html.includes('チーム傾向を見る')) throw new Error('team radar trigger missing');
+teamRadarButton.click();
+if (!app.html.includes('team-radar-modal')) throw new Error('team radar modal missing');
+if (!app.html.includes('チーム全体の能力傾向')) throw new Error('team radar title missing');
 
 customViewButton.click();
 if (!app.html.includes('custom-unit-switcher')) throw new Error('custom previous/next switcher missing');
+if (!app.html.includes('overall-score-big')) throw new Error('custom overall score missing');
 
 unitViewButton.click();
 if (!app.html.includes('unit-detail-tabs')) throw new Error('unit detail screen missing');
