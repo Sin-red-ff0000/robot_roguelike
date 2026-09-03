@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robot-lab-v3.7';
+const CACHE_NAME = 'robot-lab-v3.8';
 const APP_SHELL = [
   './',
   './index.html',
