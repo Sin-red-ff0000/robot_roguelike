@@ -1,3 +1,5 @@
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=2.8';
+
 // Formal series catalog: 20 manufacturers x 20 series = 400 series.
 // Series names are fixed; tendencies resolve from archetype + small series-specific adjustments.
 
@@ -740,6 +742,106 @@ export const SERIES_ARCHETYPES = {
     "preferredWeapons": [],
     "statVariance": 0.8,
     "growthVariance": 0.84
+  },
+  "apex": {
+    "label": "頂点追求",
+    "summary": "平均値を落とさず高水準へ寄せる代わりに、成長の伸びしろをやや犠牲にする完成品志向。",
+    "groupBias": {"output": 5, "mobility": 4, "control": 5, "engine": 4, "compute": 3, "sensor": 3, "ai": 3},
+    "growthBias": {"output": -0.01, "mobility": -0.01, "control": -0.01, "engine": -0.01},
+    "reliabilityBias": 7, "resistanceBias": 3, "weaponBias": {}, "weaponGrowthBias": {}, "preferredWeapons": [],
+    "statVariance": 0.72, "growthVariance": 0.78
+  },
+  "glassCannon": {
+    "label": "限界出力",
+    "summary": "出力へ設計資源を集中し、信頼性・耐性・他系統を明確に切り捨てるピーキー設計。",
+    "groupBias": {"output": 16, "engine": 5, "control": -5, "mobility": -3, "sensor": -4, "ai": -3},
+    "growthBias": {"output": 0.13, "engine": 0.04, "control": -0.03},
+    "reliabilityBias": -12, "resistanceBias": -5,
+    "weaponBias": {"hammer": 10, "cannon": 10, "beamCannon": 10},
+    "weaponGrowthBias": {"hammer": 0.11, "cannon": 0.11, "beamCannon": 0.11},
+    "preferredWeapons": ["hammer", "cannon", "beamCannon"], "statVariance": 1.28, "growthVariance": 1.2, "eccentricBonus": 0.08
+  },
+  "ultraMobile": {
+    "label": "超軽量機動",
+    "summary": "耐性と機関余裕を削って駆動・反応へ振り切る高速設計。",
+    "groupBias": {"mobility": 16, "control": 7, "output": -4, "engine": -6, "compute": 1},
+    "growthBias": {"mobility": 0.13, "control": 0.05, "engine": -0.04},
+    "reliabilityBias": -5, "resistanceBias": -7,
+    "weaponBias": {"blade": 8, "lance": 9, "beamBlade": 8, "machineGun": 4},
+    "weaponGrowthBias": {"blade": 0.08, "lance": 0.1, "beamBlade": 0.08},
+    "preferredWeapons": ["blade", "lance", "beamBlade"], "statVariance": 1.12, "growthVariance": 1.12
+  },
+  "fortress": {
+    "label": "要塞設計",
+    "summary": "機動を大胆に捨て、機関・耐性・信頼性で崩れにくさを極端に高める。",
+    "groupBias": {"output": 5, "mobility": -13, "control": 3, "engine": 12, "compute": -2, "sensor": -2, "ai": 1},
+    "growthBias": {"engine": 0.09, "output": 0.04, "mobility": -0.05},
+    "reliabilityBias": 10, "resistanceBias": 14,
+    "weaponBias": {"hammer": 7, "cannon": 10, "beamCannon": 7, "missile": 5},
+    "weaponGrowthBias": {"cannon": 0.09, "beamCannon": 0.07},
+    "preferredWeapons": ["cannon", "hammer", "beamCannon"], "statVariance": 0.8, "growthVariance": 0.86
+  },
+  "burstAssault": {
+    "label": "瞬間決戦",
+    "summary": "短時間だけ最大性能を発揮することを前提に、持続余力と安定性を削った突撃設計。",
+    "groupBias": {"output": 11, "mobility": 9, "control": 4, "engine": -7, "sensor": -2},
+    "growthBias": {"output": 0.09, "mobility": 0.08, "engine": -0.04},
+    "reliabilityBias": -8, "resistanceBias": -3,
+    "weaponBias": {"hammer": 7, "lance": 10, "beamBlade": 9},
+    "weaponGrowthBias": {"lance": 0.11, "beamBlade": 0.09},
+    "preferredWeapons": ["lance", "beamBlade", "hammer"], "statVariance": 1.2, "growthVariance": 1.15
+  },
+  "lateGrowth": {
+    "label": "晩成設計",
+    "summary": "初期完成度を意図的に抑え、3年間の調整で化ける成長余地を残した設計。",
+    "groupBias": {"output": -4, "mobility": -4, "control": -4, "engine": -4, "compute": -4, "sensor": -4, "ai": -4},
+    "growthBias": {"output": 0.08, "mobility": 0.08, "control": 0.08, "engine": 0.08, "compute": 0.08, "sensor": 0.08, "ai": 0.08},
+    "reliabilityBias": 0, "resistanceBias": 0, "weaponBias": {},
+    "weaponGrowthBias": {"blade": 0.04, "hammer": 0.04, "lance": 0.04, "beamBlade": 0.04, "rifle": 0.04, "machineGun": 0.04, "cannon": 0.04, "laser": 0.04, "beamCannon": 0.04, "missile": 0.04, "emp": 0.04, "drone": 0.04},
+    "preferredWeapons": [], "statVariance": 1.04, "growthVariance": 1.2
+  },
+  "dataGlass": {
+    "label": "情報偏重",
+    "summary": "演算・センサー・AIを突出させる代わり、出力と機関を極端に薄くした情報優先設計。",
+    "groupBias": {"output": -10, "mobility": -2, "control": 2, "engine": -8, "compute": 14, "sensor": 14, "ai": 11},
+    "growthBias": {"compute": 0.11, "sensor": 0.11, "ai": 0.09, "output": -0.04},
+    "reliabilityBias": -5, "resistanceBias": -3,
+    "weaponBias": {"rifle": 5, "laser": 6, "missile": 8, "emp": 10, "drone": 10},
+    "weaponGrowthBias": {"missile": 0.07, "emp": 0.1, "drone": 0.1},
+    "preferredWeapons": ["emp", "drone", "missile"], "statVariance": 1.14, "growthVariance": 1.12
+  },
+  "countermeasure": {
+    "label": "対策特化",
+    "summary": "攻めの最高値より耐性・判断・観測を優先し、相手の得意分野を受け止める設計。",
+    "groupBias": {"output": -5, "mobility": 0, "control": 4, "engine": 5, "compute": 3, "sensor": 6, "ai": 6},
+    "growthBias": {"control": 0.03, "sensor": 0.05, "ai": 0.05},
+    "reliabilityBias": 7, "resistanceBias": 12,
+    "weaponBias": {"rifle": 3, "missile": 4, "emp": 5},
+    "weaponGrowthBias": {"emp": 0.06, "missile": 0.04},
+    "preferredWeapons": ["emp", "missile", "rifle"], "statVariance": 0.8, "growthVariance": 0.88
+  },
+  "weaponSavant": {
+    "label": "兵装サヴァン",
+    "summary": "機体本体は平均的だが、特定兵装だけ異常な適性と成長余地を持つ専門系列。",
+    "groupBias": {"control": 2, "compute": 1}, "growthBias": {"control": 0.01},
+    "reliabilityBias": 0, "resistanceBias": 0, "weaponBias": {}, "weaponGrowthBias": {}, "preferredWeapons": [],
+    "statVariance": 0.96, "growthVariance": 1.05, "eccentricBonus": 0.12
+  },
+  "overengineered": {
+    "label": "過剰設計",
+    "summary": "必要性能を大きく上回る余裕と再現性を確保する代わり、機動と成長効率を犠牲にする。",
+    "groupBias": {"output": 6, "mobility": -5, "control": 5, "engine": 8, "compute": 3, "sensor": 2, "ai": 2},
+    "growthBias": {"output": -0.01, "control": -0.01, "engine": -0.01},
+    "reliabilityBias": 13, "resistanceBias": 8, "weaponBias": {"cannon": 5, "beamCannon": 5, "hammer": 4},
+    "weaponGrowthBias": {}, "preferredWeapons": ["cannon", "beamCannon", "hammer"], "statVariance": 0.62, "growthVariance": 0.75
+  },
+  "minimalist": {
+    "label": "最小構成",
+    "summary": "余分な機能を削り、少数の能力だけを高効率に成立させる簡素化設計。",
+    "groupBias": {"output": 1, "mobility": 3, "control": 5, "engine": 1, "compute": -4, "sensor": -3, "ai": -3},
+    "growthBias": {"mobility": 0.03, "control": 0.04},
+    "reliabilityBias": 9, "resistanceBias": 1, "weaponBias": {"blade": 4, "rifle": 4, "machineGun": 3},
+    "weaponGrowthBias": {"blade": 0.04, "rifle": 0.04}, "preferredWeapons": ["blade", "rifle"], "statVariance": 0.7, "growthVariance": 0.82
   }
 };
 
@@ -8746,6 +8848,8 @@ export const SERIES_DEFINITIONS = [
   }
 ];
 
+SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS);
+
 
 export const SERIES_BY_MANUFACTURER = new Map();
 export const SERIES_MAP = new Map(SERIES_DEFINITIONS.map((item) => [item.id, item]));
@@ -8776,18 +8880,19 @@ export function resolveSeriesProfile(seriesLike) {
   const archetype = SERIES_ARCHETYPES[series.archetypeId] ?? SERIES_ARCHETYPES.balanced;
   return {
     ...series,
-    label: archetype.label,
-    summary: archetype.summary,
+    label: series.label ?? archetype.label,
+    summary: series.concept ?? archetype.summary,
+    concept: series.concept ?? archetype.summary,
     groupBias: mergeNumberMaps(archetype.groupBias, series.groupAdjustments),
     growthBias: mergeNumberMaps(archetype.growthBias, series.growthAdjustments),
     weaponBias: mergeNumberMaps(archetype.weaponBias, series.weaponAdjustments),
-    weaponGrowthBias: mergeNumberMaps(archetype.weaponGrowthBias),
+    weaponGrowthBias: mergeNumberMaps(archetype.weaponGrowthBias, series.weaponGrowthAdjustments),
     reliabilityBias: Number(archetype.reliabilityBias ?? 0) + Number(series.reliabilityAdjustment ?? 0),
-    resistanceBias: Number(archetype.resistanceBias ?? 0),
-    preferredWeapons: [...(archetype.preferredWeapons ?? [])],
-    statVariance: Number(archetype.statVariance ?? 1),
-    growthVariance: Number(archetype.growthVariance ?? 1),
-    eccentricBonus: Number(archetype.eccentricBonus ?? 0),
+    resistanceBias: Number(archetype.resistanceBias ?? 0) + Number(series.resistanceAdjustment ?? 0),
+    preferredWeapons: [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])],
+    statVariance: Number(archetype.statVariance ?? 1) * Number(series.statVarianceMultiplier ?? 1),
+    growthVariance: Number(archetype.growthVariance ?? 1) * Number(series.growthVarianceMultiplier ?? 1),
+    eccentricBonus: Number(archetype.eccentricBonus ?? 0) + Number(series.eccentricBonusAdjustment ?? 0),
   };
 }
 

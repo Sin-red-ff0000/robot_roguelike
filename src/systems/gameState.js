@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=2.7';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.7';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=2.7';
-import { randomFloat, randomInt } from '../utils/random.js?v=2.7';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.7';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=2.7';
-import { generateCohort } from './robotGenerator.js?v=2.7';
-import { generateTrainingChoices } from './trainingSystem.js?v=2.7';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=2.7';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=2.7';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=2.7';
-import { createRobotSnapshot } from './recordSystem.js?v=2.7';
-import { getAnnualTrend } from './annualTrendSystem.js?v=2.7';
+import { GAME_CONFIG } from '../config.js?v=2.8';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=2.8';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=2.8';
+import { randomFloat, randomInt } from '../utils/random.js?v=2.8';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.8';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=2.8';
+import { generateCohort } from './robotGenerator.js?v=2.8';
+import { generateTrainingChoices } from './trainingSystem.js?v=2.8';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=2.8';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=2.8';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=2.8';
+import { createRobotSnapshot } from './recordSystem.js?v=2.8';
+import { getAnnualTrend } from './annualTrendSystem.js?v=2.8';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -125,7 +125,7 @@ export function createInitialState() {
     facilities: defaultFacilities(),
     tournamentHistory: [],
     retirementHistory: [],
-    log: ['v2.7を開始しました。GitHub Pages / PWAの更新方式を安定化しました。'],
+    log: ['v2.8を開始しました。各メーカー40シリーズ・合計800シリーズへ拡張しました。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),

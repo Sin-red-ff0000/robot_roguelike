@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=2.7';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.7';
-import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.7';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.7';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.7';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=2.7';
-import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS } from '../data/specialAbilities.js?v=2.7';
-import { getAnnualTrend } from './annualTrendSystem.js?v=2.7';
+import { GAME_CONFIG } from '../config.js?v=2.8';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=2.8';
+import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.8';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.8';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.8';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=2.8';
+import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS } from '../data/specialAbilities.js?v=2.8';
+import { getAnnualTrend } from './annualTrendSystem.js?v=2.8';
 
 const makeRobotId = () => {
   if (globalThis.crypto?.randomUUID) return `robot-${globalThis.crypto.randomUUID()}`;

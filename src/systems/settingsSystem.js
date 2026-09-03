@@ -1,4 +1,4 @@
-import { GAME_CONFIG } from '../config.js?v=2.7';
+import { GAME_CONFIG } from '../config.js?v=2.8';
 
 export const UPSET_PRESETS = {
   ability: { 1: 0.68, 3: 0.82, 5: 0.92, 7: 0.97, 9: 0.995 },
