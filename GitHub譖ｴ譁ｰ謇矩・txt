@@ -1,0 +1,20 @@
+AI戦闘ロボット育成ローグライク v2.6 GitHub更新用
+
+このフォルダは「v2.5のGitHubリポジトリをv2.6へ更新する差分」です。
+完全版ではありません。
+
+【更新方法】
+1. このフォルダの中身を開く
+2. GitHubリポジトリのルートへ、同じ階層を保ったままアップロードする
+3. 同名ファイルは上書きする
+4. 新規ファイルとして以下が追加されます
+   - src/data/seriesDefinitions.js
+   - src/systems/annualTrendSystem.js
+   - SERIES_CATALOG.md
+5. Commit changes で確定する
+6. GitHub Pagesの反映を待つ
+
+Service Workerのキャッシュ名はv2.6へ更新済みです。
+更新直後に旧画面が残る場合は、ブラウザを完全に閉じて開き直すか、ページを再読み込みしてください。
+
+セーブデータはv2.5以前から自動移行します。
