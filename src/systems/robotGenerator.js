@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=2.9';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.9';
-import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.9';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.9';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=2.9';
-import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS } from '../data/specialAbilities.js?v=2.9';
-import { getAnnualTrend } from './annualTrendSystem.js?v=2.9';
+import { GAME_CONFIG } from '../config.js?v=3.0';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.0';
+import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=3.0';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.0';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=3.0';
+import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.0';
+import { getAnnualTrend } from './annualTrendSystem.js?v=3.0';
 
 const makeRobotId = () => {
   if (globalThis.crypto?.randomUUID) return `robot-${globalThis.crypto.randomUUID()}`;
@@ -159,12 +159,22 @@ function applySeriesJackpot(stats, growthMultipliers, weaponCategoryStats, weapo
   return { groupKey, weaponKey, label: `${STAT_GROUPS[groupKey].label}・${WEAPON_CATEGORIES[weaponKey].label}の大当たり個体` };
 }
 
+function weightedAbilityPick(ids, seriesProfile) {
+  const tags = new Set(seriesProfile?.abilityTendencyTags ?? []);
+  const mult = Number(seriesProfile?.abilityTendencyMultiplier ?? 1.18);
+  return weightedPick(ids.map((id) => {
+    const abilityTags = SPECIAL_ABILITIES[id]?.tags ?? [];
+    const overlap = abilityTags.filter((tag) => tags.has(tag)).length;
+    return { value: id, weight: overlap ? Math.pow(mult, overlap) : 1 };
+  }));
+}
+
 function initialAbilities(manufacturer, seriesProfile) {
   const abilities = [];
   const experimental = manufacturer?.region === 'special' || seriesProfile?.archetypeId === 'volatileExperimental';
   const positiveChance = 0.07 + (experimental ? 0.025 : 0);
   const negativeChance = 0.045 + (experimental ? 0.025 : 0);
-  if (Math.random() < positiveChance) abilities.push(pick(NORMAL_POSITIVE_ABILITY_IDS));
+  if (Math.random() < positiveChance) abilities.push(weightedAbilityPick(NORMAL_POSITIVE_ABILITY_IDS, seriesProfile));
   if (Math.random() < negativeChance) {
     const negative = pick(NEGATIVE_ABILITY_IDS);
     if (!abilities.includes(negative)) abilities.push(negative);
@@ -177,7 +187,7 @@ function pickSeries(manufacturer) {
   if (!list.length) return null;
   return weightedPick(list.map((series) => ({
     value: series,
-    weight: Math.max(0.01, Number(resolveSeriesProfile(series)?.effectiveAvailabilityWeight ?? series.availabilityWeight ?? 1)),
+    weight: Math.max(0.01, Number(series.availabilityWeight ?? 1)),
   })));
 }
 
@@ -295,6 +305,14 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
     seriesPreferredWeapons: [...(seriesProfile?.preferredWeapons ?? [])],
     seriesAvoidedWeapons: [...(seriesProfile?.avoidedWeapons ?? [])],
     seriesWeaponDoctrine: seriesProfile?.weaponDoctrine ?? '',
+    seriesIntrinsicTraitId: seriesProfile?.intrinsicTraitId ?? 'maturePlatform',
+    seriesIntrinsicTrait: { ...(seriesProfile?.intrinsicTrait ?? {}) },
+    seriesGrowthCurveId: seriesProfile?.growthCurveId ?? 'steady',
+    seriesGrowthCurve: { ...(seriesProfile?.growthCurve ?? {}) },
+    seriesCustomAptitudeId: seriesProfile?.customAptitudeId ?? 'balanced',
+    seriesCustomAptitude: JSON.parse(JSON.stringify(seriesProfile?.customAptitude ?? {})),
+    seriesAbilityTendencyTags: [...(seriesProfile?.abilityTendencyTags ?? [])],
+    seriesAbilityTendencyMultiplier: Number(seriesProfile?.abilityTendencyMultiplier ?? 1.18),
     seriesJackpot,
     seriesNumber,
     seriesNameKana,

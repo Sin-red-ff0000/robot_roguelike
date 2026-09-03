@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=2.9';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.9';
-import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=2.9';
-import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=2.9';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=2.9';
-import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=2.9';
+import { GAME_CONFIG } from '../config.js?v=3.0';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.0';
+import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=3.0';
+import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.0';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.0';
+import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=3.0';
 
 function weightedPick(entries) {
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
@@ -157,6 +157,20 @@ export function generateCustomPart({ manufacturerId = null, rarityKey = null, ch
   };
 }
 
+function effectivePartAmount(robot, part, effect) {
+  const aptitude = robot.seriesCustomAptitude ?? {};
+  const positive = Number(effect.amount) >= 0;
+  let mult = positive ? Number(aptitude.positive ?? 1) : Number(aptitude.negative ?? 1);
+  if (part?.manufacturerId && part.manufacturerId === robot.manufacturerId) mult *= Number(aptitude.sameMaker ?? 1);
+  if (part?.challenge) mult *= positive ? Number(aptitude.challengePositive ?? 1) : Number(aptitude.challengeNegative ?? 1);
+  mult *= Number(aptitude.kind?.[effect.kind] ?? 1);
+  if (effect.kind === 'base') mult *= Number(aptitude.groups?.[effect.groupKey] ?? 1);
+  mult *= Number(robot.seriesIntrinsicTrait?.custom ?? 1);
+  const scaled = Number(effect.amount) * mult;
+  if (!scaled) return 0;
+  return scaled > 0 ? Math.max(1, Math.round(scaled)) : Math.min(-1, Math.round(scaled));
+}
+
 function applyEffect(robot, effect) {
   if (effect.kind === 'base') {
     robot.stats[effect.groupKey][effect.statName] = clamp(
@@ -187,7 +201,8 @@ function applyEffect(robot, effect) {
 }
 
 export function useCustomPart(robot, part) {
-  for (const effect of [...part.effects, ...part.negatives]) applyEffect(robot, effect);
+  const appliedEffects = [...part.effects, ...part.negatives].map((effect) => ({ ...effect, amount: effectivePartAmount(robot, part, effect) }));
+  for (const effect of appliedEffects) applyEffect(robot, effect);
   robot.specialAbilities ??= [];
   let gainedAbility = null;
   if (part.abilityId && !robot.specialAbilities.includes(part.abilityId)) {
@@ -197,7 +212,7 @@ export function useCustomPart(robot, part) {
   robot.customHistory ??= [];
   robot.customHistory.push({
     partName: part.name,
-    effects: [...part.effects, ...part.negatives].map((effect) => ({ ...effect })),
+    effects: appliedEffects.map((effect) => ({ ...effect })),
     abilityId: gainedAbility,
   });
   return { gainedAbility };

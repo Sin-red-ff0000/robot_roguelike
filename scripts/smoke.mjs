@@ -13,15 +13,17 @@ import { MANAGER_PERSONALITIES } from '../src/data/managerDefinitions.js';
 import { normalizeSettings } from '../src/systems/settingsSystem.js';
 import { applyManagerPreset, createManagerPreset, parseManagerProfileText, serializeManagerProfile, upsertManagerPreset } from '../src/systems/managerPresetSystem.js';
 import { tournamentAvailableTurn } from '../src/systems/tournamentSystem.js';
-import { toggleHallOfFame } from '../src/systems/recordSystem.js';
+import { toggleHallOfFame, seriesRecords, seriesDiscoverySummary } from '../src/systems/recordSystem.js';
 import { SERIES_DEFINITIONS, getSeriesForManufacturer, resolveSeriesProfile } from '../src/data/seriesDefinitions.js';
 import { MANUFACTURERS } from '../src/data/manufacturers.js';
 import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (SERIES_DEFINITIONS.length !== 1200) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 60) throw new Error(`series count for ${manufacturer.id}`); }
+if (seriesRecords(state).length !== 1600) throw new Error('series encyclopedia row count');
+if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
+if (SERIES_DEFINITIONS.length !== 1600) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 80) throw new Error(`series count for ${manufacturer.id}`); }
 for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
 
 const kirishimaSeries = getSeriesForManufacturer('kirishima');
@@ -31,6 +33,10 @@ if (massProfile.productionTierId !== 'mass' || rareProfile.productionTierId !== 
 if (!(massProfile.effectiveAvailabilityWeight > rareProfile.effectiveAvailabilityWeight * 4)) throw new Error('production ratio not differentiated');
 if (massProfile.lineageGeneration !== 3 || massProfile.predecessorNumber !== 21 || massProfile.lineageRootNumber !== 1) throw new Error('series lineage failed');
 if (!massProfile.individualityLabel || !Array.isArray(massProfile.avoidedWeapons)) throw new Error('series individuality/weapon doctrine missing');
+const fourthProfile = resolveSeriesProfile(kirishimaSeries.find((series) => series.seriesNumber === 61));
+if (fourthProfile.lineageGeneration !== 4 || fourthProfile.predecessorNumber !== 41) throw new Error('fourth generation lineage failed');
+if (!fourthProfile.intrinsicTrait?.label || !fourthProfile.growthCurve?.label || !fourthProfile.customAptitude?.label || !fourthProfile.abilityTendencyTags?.length) throw new Error('v3 series identity systems missing');
+
 const qualityKinds = new Set();
 for (let year = 1; year <= 220; year += 1) qualityKinds.add(getAnnualTrend(year, 'kirishima', kirishimaSeries[40].id).seriesYearEvent?.type);
 if (!qualityKinds.has('masterpiece') || !qualityKinds.has('problem')) throw new Error(`series year quality events missing ${[...qualityKinds]}`);
@@ -70,7 +76,10 @@ for (let i = 0; i < 100; i += 1) {
   useCustomPart(state.roster[i % state.roster.length], part);
 }
 
+const encountersBefore = Object.values(state.seriesEncounters ?? {}).reduce((sum, value) => sum + Number(value || 0), 0);
 const match = createOfficialMatch(state, { context: { type: 'scrimmage', name: 'Smoke Match', prestige: 0 } });
+const encountersAfter = Object.values(state.seriesEncounters ?? {}).reduce((sum, value) => sum + Number(value || 0), 0);
+if (encountersAfter <= encountersBefore) throw new Error('enemy series encounters not recorded');
 if (!autoSelectLineup(state, match, 'veteran')) throw new Error('auto lineup selection failed');
 if (!arrangeLineup(state, match, 'random')) throw new Error('lineup arrangement failed');
 if (new Set(match.lineupIds).size !== 15) throw new Error('lineup duplicate');
@@ -90,7 +99,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '2.9') throw new Error('migration version');
+if (!migrated || migrated.version !== '3.0') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');

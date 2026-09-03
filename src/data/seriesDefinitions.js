@@ -1,5 +1,6 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=2.9';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=2.9';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.0';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.0';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.0';
 
 // Formal series catalog: 20 manufacturers x 20 series = 400 series.
 // Series names are fixed; tendencies resolve from archetype + small series-specific adjustments.
@@ -8967,8 +8968,33 @@ export const SERIES_DEFINITIONS = [
   }
 ];
 
-SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS, ...THIRD_WAVE_SERIES_DEFINITIONS);
+SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS, ...THIRD_WAVE_SERIES_DEFINITIONS, ...FOURTH_WAVE_SERIES_DEFINITIONS);
 
+
+export const SERIES_GROWTH_CURVES = {
+  steady:{label:'均等成長',summary:'3年間を通して安定して伸びる。',yearMultipliers:[1,1,1]},
+  early:{label:'早熟型',summary:'初年度の伸びが大きく、後半は落ち着く。',yearMultipliers:[1.16,1.00,0.90]},
+  middle:{label:'中盤型',summary:'2年目に調整が噛み合いやすい。',yearMultipliers:[0.94,1.16,0.98]},
+  late:{label:'晩成型',summary:'3年目ほど学習効率が上がる。',yearMultipliers:[0.86,1.00,1.22]},
+  finalburst:{label:'最終年爆発型',summary:'3年目に設計余力を大きく解放する。',yearMultipliers:[0.82,0.94,1.32]},
+  frontloaded:{label:'完成品型',summary:'初期完成度と1年目効率が高いが、後半の伸びは控えめ。',yearMultipliers:[1.12,0.94,0.86]},
+  catchup:{label:'弱点補正型',summary:'苦手グループの練習効率が高い。',yearMultipliers:[0.98,1.02,1.06],weakGroupMultiplier:1.16},
+};
+export const SERIES_CUSTOM_APTITUDES = {
+  balanced:{label:'標準適合',summary:'パーツ効果は標準的。',positive:1,negative:1},
+  modular:{label:'高モジュール適合',summary:'多くのパーツ効果を少し引き出しやすい。',positive:1.10,negative:1},
+  overresponsive:{label:'過敏応答',summary:'強化も副作用も大きく出る。',positive:1.16,negative:1.16},
+  conservative:{label:'保守的適合',summary:'効果は小さめだが副作用も抑える。',positive:.92,negative:.78},
+  manufacturer:{label:'純正適合',summary:'同メーカー製パーツとの相性が良い。',positive:1,negative:1,sameMaker:1.15},
+  trial:{label:'試供品適合',summary:'挑戦的な試供品へ大きく反応する。',positive:1.02,negative:1,challengePositive:1.18,challengeNegative:1.18},
+  weapon:{label:'兵装改修適合',summary:'兵装系パーツの効果を引き出しやすい。',positive:1,negative:1,kind:{weapon:1.14}},
+  structural:{label:'構造改修適合',summary:'基礎・耐性系パーツとの相性が良い。',positive:1,negative:1,kind:{base:1.10,resistance:1.14,reliability:1.08}},
+  electronic:{label:'電子改修適合',summary:'演算・センサー・AI系の基礎改修に強い。',positive:1.06,negative:1,groups:{compute:1.10,sensor:1.10,ai:1.10}},
+  precision:{label:'精密改修適合',summary:'改修結果の効率が安定して高い。',positive:1.08,negative:.92},
+};
+export const SERIES_INTRINSIC_TRAITS = {
+ maturePlatform:{label:'成熟基盤',summary:'全体練習の吸収がわずかに安定する。',team:1.04}, lateApex:{label:'余力解放',summary:'3年目の練習効率をさらに高める。',year3:1.06}, customMonster:{label:'改修余白',summary:'カスタムを前提に余白を確保。',custom:1.04}, weaponPurist:{label:'兵装純化',summary:'現在兵装の個別練習効率が高い。',weaponTraining:1.10}, weaknessLearner:{label:'弱点学習',summary:'最も低い基礎グループを伸ばしやすい。',weak:1.10}, finishedProduct:{label:'完成品思想',summary:'序盤の練習吸収が良い。',year1:1.05}, finalYearBurst:{label:'終盤解放',summary:'3年目の育成で急伸しやすい。',year3:1.08}, precisionSeed:{label:'再現学習',summary:'練習のブレが小さい。',noise:.92}, volatileCore:{label:'変動学習',summary:'練習成果の振れ幅が大きい。',noise:1.18}, modularFrame:{label:'拡張骨格',summary:'カスタム効果を少し受けやすい。',custom:1.05}, dataDoctrine:{label:'情報連成',summary:'演算・センサー・AI練習に相乗効果。',groups:{compute:1.05,sensor:1.05,ai:1.05}}, survivalDoctrine:{label:'生存優先',summary:'機関系の育成効率が高い。',groups:{engine:1.06}}, overdriveLearning:{label:'高負荷学習',summary:'出力系の育成効率が高い。',groups:{output:1.08}}, slowForge:{label:'長期鍛造',summary:'後半ほど基礎練習効率が上がる。',year3:1.05}, adaptiveWeapons:{label:'兵装適応骨格',summary:'兵装個別練習を吸収しやすい。',weaponTraining:1.08}, autonomousMaturation:{label:'自律成熟',summary:'AI系の育成効率が高い。',groups:{ai:1.08}}, minimalResponse:{label:'最小応答',summary:'1年目の駆動練習が伸びやすい。',year1:1.04,groups:{mobility:1.05}}, trialMagnet:{label:'試供品受容',summary:'挑戦的試供品との相性を優先。',custom:1.04}, balancedCeiling:{label:'総合上限',summary:'全グループを均等に少し伸ばしやすい。',team:1.03}, eccentricLegacy:{label:'異端継承',summary:'練習成果の個体差を許容する。',noise:1.12}
+};
 
 export const SERIES_PRODUCTION_TIERS = {
   mass: { label: '主力量産', description: '市場や現場で頻繁に見かける主力系列。', defaultWeight: 1.55 },
@@ -8992,6 +9018,7 @@ export const SERIES_INDIVIDUALITY_TRAITS = {
 
 export const SERIES_BY_MANUFACTURER = new Map();
 export const SERIES_MAP = new Map(SERIES_DEFINITIONS.map((item) => [item.id, item]));
+const SERIES_NUMBER_MAP = new Map(SERIES_DEFINITIONS.map((item) => [`${item.manufacturerId}:${item.seriesNumber}`, item]));
 for (const series of SERIES_DEFINITIONS) {
   if (!SERIES_BY_MANUFACTURER.has(series.manufacturerId)) SERIES_BY_MANUFACTURER.set(series.manufacturerId, []);
   SERIES_BY_MANUFACTURER.get(series.manufacturerId).push(series);
@@ -9039,11 +9066,9 @@ function lineageMetadata(series) {
   const number = Number(series?.seriesNumber ?? 1);
   const rootNumber = ((Math.max(1, number) - 1) % 20) + 1;
   const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
-  const root = SERIES_DEFINITIONS.find((item) => item.manufacturerId === series?.manufacturerId && Number(item.seriesNumber) === rootNumber) ?? null;
-  const predecessor = predecessorNumber
-    ? SERIES_DEFINITIONS.find((item) => item.manufacturerId === series?.manufacturerId && Number(item.seriesNumber) === predecessorNumber) ?? null
-    : null;
-  const generation = number <= 20 ? 1 : number <= 40 ? 2 : 3;
+  const root = SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${rootNumber}`) ?? null;
+  const predecessor = predecessorNumber ? SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${predecessorNumber}`) ?? null : null;
+  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : 4;
   return {
     lineageRootNumber: rootNumber,
     lineageRootId: root?.id ?? series?.id ?? null,
@@ -9058,6 +9083,49 @@ function lineageMetadata(series) {
   };
 }
 
+function inferredGrowthCurveId(series, archetype) {
+  if (series?.growthCurveId && SERIES_GROWTH_CURVES[series.growthCurveId]) return series.growthCurveId;
+  if (['lateGrowth','growthProject'].includes(archetype)) return 'late';
+  if (['flagship','reliable','precision','massProduction'].includes(archetype)) return 'frontloaded';
+  if (['volatileExperimental','lottery'].includes(archetype)) return 'middle';
+  if (['countermeasure','counterDesign','adaptive'].includes(archetype)) return 'catchup';
+  if (['glassCannon','ultraMobile','burstAssault'].includes(archetype)) return 'early';
+  return 'steady';
+}
+function inferredCustomAptitudeId(series, archetype) {
+  if (series?.customAptitudeId && SERIES_CUSTOM_APTITUDES[series.customAptitudeId]) return series.customAptitudeId;
+  if (['weaponSavant','hybridClose','hybridRanged'].includes(archetype)) return 'weapon';
+  if (['volatileExperimental','lottery'].includes(archetype)) return 'trial';
+  if (['fortress','overengineered','resilient','heavyAssault'].includes(archetype)) return 'structural';
+  if (['compute','sensor','ai','electronicWarfare','dataGlass','aiAnomaly'].includes(archetype)) return 'electronic';
+  if (['precision','reliable'].includes(archetype)) return 'precision';
+  if (['adaptive','growthProject','minimalist'].includes(archetype)) return 'modular';
+  return 'balanced';
+}
+function inferredIntrinsicTraitId(series, archetype) {
+  if (series?.intrinsicTraitId && SERIES_INTRINSIC_TRAITS[series.intrinsicTraitId]) return series.intrinsicTraitId;
+  if (['lateGrowth','growthProject'].includes(archetype)) return 'slowForge';
+  if (['weaponSavant','hybridClose','hybridRanged'].includes(archetype)) return 'adaptiveWeapons';
+  if (['compute','sensor','electronicWarfare','dataGlass'].includes(archetype)) return 'dataDoctrine';
+  if (['ai','aiAnomaly','drone'].includes(archetype)) return 'autonomousMaturation';
+  if (['resilient','fortress'].includes(archetype)) return 'survivalDoctrine';
+  if (['glassCannon','highOutput','burstAssault'].includes(archetype)) return 'overdriveLearning';
+  if (['precision','reliable','massProduction'].includes(archetype)) return 'precisionSeed';
+  if (['volatileExperimental','lottery'].includes(archetype)) return 'eccentricLegacy';
+  if (['adaptive','countermeasure','counterDesign'].includes(archetype)) return 'weaknessLearner';
+  return 'maturePlatform';
+}
+function inferredAbilityTags(series, archetype, preferredWeapons, groupBias) {
+  if (series?.abilityTendencyTags?.length) return series.abilityTendencyTags;
+  const tags=[...preferredWeapons];
+  const strongGroups=Object.entries(groupBias??{}).filter(([,v])=>Number(v)>=4).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>k);
+  tags.push(...strongGroups);
+  if (['resilient','fortress'].includes(archetype)) tags.push('resistance');
+  if (['reliable','precision','massProduction'].includes(archetype)) tags.push('reliability');
+  if (['flagship','apex'].includes(archetype)) tags.push('official');
+  return [...new Set(tags)];
+}
+
 export function resolveSeriesProfile(seriesLike) {
   const series = typeof seriesLike === 'string' ? getSeriesDefinition(seriesLike) : seriesLike;
   if (!series) return null;
@@ -9067,6 +9135,9 @@ export function resolveSeriesProfile(seriesLike) {
   const individualityTraitId = inferredIndividualityTrait(series, series.archetypeId);
   const individuality = SERIES_INDIVIDUALITY_TRAITS[individualityTraitId] ?? SERIES_INDIVIDUALITY_TRAITS.normal;
   const lineage = lineageMetadata(series);
+  const growthCurveId = inferredGrowthCurveId(series, series.archetypeId);
+  const customAptitudeId = inferredCustomAptitudeId(series, series.archetypeId);
+  const intrinsicTraitId = inferredIntrinsicTraitId(series, series.archetypeId);
   const preferredWeapons = [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])];
   const avoidedWeapons = [...new Set(series.avoidedWeapons ?? [])].filter((weaponKey) => !preferredWeapons.includes(weaponKey));
   return {
@@ -9084,6 +9155,14 @@ export function resolveSeriesProfile(seriesLike) {
     individualityLabel: individuality.label,
     individualitySummary: individuality.summary,
     individuality,
+    intrinsicTraitId,
+    intrinsicTrait: SERIES_INTRINSIC_TRAITS[intrinsicTraitId] ?? SERIES_INTRINSIC_TRAITS.maturePlatform,
+    growthCurveId,
+    growthCurve: SERIES_GROWTH_CURVES[growthCurveId] ?? SERIES_GROWTH_CURVES.steady,
+    customAptitudeId,
+    customAptitude: SERIES_CUSTOM_APTITUDES[customAptitudeId] ?? SERIES_CUSTOM_APTITUDES.balanced,
+    abilityTendencyTags: inferredAbilityTags(series, series.archetypeId, preferredWeapons, mergeNumberMaps(archetype.groupBias, series.groupAdjustments)),
+    abilityTendencyMultiplier: Number(series.abilityTendencyMultiplier ?? 1.18),
     annualVolatility: Number(series.annualVolatility ?? (productionTierId === 'experimental' || productionTierId === 'rare' ? 1.2 : productionTierId === 'mass' ? 0.82 : 1)),
     groupBias: mergeNumberMaps(archetype.groupBias, series.groupAdjustments),
     growthBias: mergeNumberMaps(archetype.growthBias, series.growthAdjustments),

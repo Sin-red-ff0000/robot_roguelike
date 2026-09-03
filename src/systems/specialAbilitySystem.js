@@ -1,14 +1,14 @@
-import { GAME_CONFIG } from '../config.js?v=2.9';
+import { GAME_CONFIG } from '../config.js?v=3.0';
 import {
   ABILITY_UPGRADES,
   NEGATIVE_ABILITY_IDS,
   NEGATIVE_TO_POSITIVE,
   NORMAL_POSITIVE_ABILITY_IDS,
   SPECIAL_ABILITIES,
-} from '../data/specialAbilities.js?v=2.9';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=2.9';
-import { pick } from '../utils/random.js?v=2.9';
+} from '../data/specialAbilities.js?v=3.0';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.0';
+import { pick, weightedPick } from '../utils/random.js?v=3.0';
 
 function hasAbility(robot, id) {
   return robot.specialAbilities?.includes(id) ?? false;
@@ -27,6 +27,16 @@ const RESISTANCE_GAIN_ABILITIES = {
 const NEGATIVE_CONDITION_ABILITIES = {
   output: 'outputInstability', control: 'controlLag', sensor: 'sensorNoise', ai: 'aiHesitation',
 };
+
+function seriesAbilityWeight(robot, abilityId) {
+  const tags = new Set(robot.seriesAbilityTendencyTags ?? []);
+  const overlap = (SPECIAL_ABILITIES[abilityId]?.tags ?? []).filter((tag) => tags.has(tag)).length;
+  return overlap ? Math.pow(Number(robot.seriesAbilityTendencyMultiplier ?? 1.18), overlap) : 1;
+}
+
+function seriesAbilityChance(robot, abilityId, chance) {
+  return Math.min(0.95, chance * seriesAbilityWeight(robot, abilityId));
+}
 
 export function addAbility(robot, abilityId) {
   if (!SPECIAL_ABILITIES[abilityId]) return null;
@@ -54,7 +64,7 @@ export function upgradeAbility(robot, baseAbilityId) {
 
 export function randomPositiveAbility(robot) {
   const candidates = NORMAL_POSITIVE_ABILITY_IDS.filter((id) => !hasAbility(robot, id) && !hasAbility(robot, ABILITY_UPGRADES[id]));
-  return candidates.length ? pick(candidates) : null;
+  return candidates.length ? weightedPick(candidates.map((id) => ({ value: id, weight: seriesAbilityWeight(robot, id) }))) : null;
 }
 
 export function randomNegativeAbility(robot) {
@@ -88,10 +98,10 @@ function comparisonHas(result, predicate) {
   return result.comparisons.some((item) => predicate(item.slot));
 }
 
-function candidateRoll(candidates) {
+function candidateRoll(candidates, robot = null) {
   const shuffled = [...candidates].sort(() => Math.random() - 0.5);
   for (const candidate of shuffled) {
-    if (Math.random() < candidate.chance) return candidate.id;
+    if (Math.random() < (robot ? seriesAbilityChance(robot, candidate.id, candidate.chance) : candidate.chance)) return candidate.id;
   }
   return null;
 }
@@ -116,7 +126,7 @@ export function evaluateOfficialBoutAbilityChanges(robot, opponent, result, ally
         overcomeCandidates.push({ id: abilityId, chance: GAME_CONFIG.negativeAbilityOvercomeChance * 0.85 });
       }
     }
-    const overcomeId = candidateRoll(overcomeCandidates);
+    const overcomeId = candidateRoll(overcomeCandidates, robot);
     if (overcomeId) {
       const removed = removeAbility(robot, overcomeId);
       if (removed) changes.push(removed);
@@ -172,7 +182,7 @@ export function evaluateOfficialBoutAbilityChanges(robot, opponent, result, ally
     if (resistanceAbility) gainCandidates.push({ id: resistanceAbility, chance: 0.03 });
     if (robot.reliability >= 88) gainCandidates.push({ id: 'stableOperation', chance: 0.035 });
 
-    const abilityId = candidateRoll(gainCandidates.filter((item) => !hasAbility(robot, item.id) && !hasAbility(robot, ABILITY_UPGRADES[item.id])));
+    const abilityId = candidateRoll(gainCandidates.filter((item) => !hasAbility(robot, item.id) && !hasAbility(robot, ABILITY_UPGRADES[item.id])), robot);
     const gained = abilityId ? addAbility(robot, abilityId) : null;
     if (gained) changes.push(gained);
   } else if (Math.random() < GAME_CONFIG.officialNegativeAbilityChance) {

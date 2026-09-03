@@ -18,6 +18,7 @@ function fakeButton(dataset = {}) {
 const trainingViewButton = fakeButton({ view: 'training' });
 const unitViewButton = fakeButton({ view: 'unit' });
 const customViewButton = fakeButton({ view: 'custom' });
+const historyViewButton = fakeButton({ view: 'history' });
 const weaponTabButton = fakeButton({ unitDetailTab: 'weapons' });
 const teamRadarButton = fakeButton();
 
@@ -35,7 +36,7 @@ globalThis.document = {
     return null;
   },
   querySelectorAll(selector) {
-    if (selector === '.view-tab') return [trainingViewButton, unitViewButton, customViewButton];
+    if (selector === '.view-tab') return [trainingViewButton, unitViewButton, customViewButton, historyViewButton];
     if (selector === '[data-unit-detail-tab]') return [weaponTabButton];
     return [];
   },
@@ -88,6 +89,10 @@ customViewButton.click();
 if (!app.html.includes('custom-unit-switcher')) throw new Error('custom previous/next switcher missing');
 if (!app.html.includes('overall-score-big')) throw new Error('custom overall score missing');
 
+historyViewButton.click();
+if (!app.html.includes('シリーズ図鑑・シリーズ別戦績')) throw new Error('series encyclopedia missing');
+if (!app.html.includes('series-dex-summary')) throw new Error('series encyclopedia summary missing');
+
 unitViewButton.click();
 if (!app.html.includes('unit-detail-tabs')) throw new Error('unit detail screen missing');
 if (!app.html.includes('data-unit-nav=')) throw new Error('unit previous/next navigation missing');
@@ -99,6 +104,7 @@ if (!app.html.includes('unit-detail-selector')) throw new Error('unit detail sel
 if (!app.html.includes('unit-overview-dashboard')) throw new Error('compact unit overview dashboard missing');
 if (!app.html.includes('生産・系譜')) throw new Error('series production/lineage detail missing');
 if (!app.html.includes('個体差・兵装嗜好')) throw new Error('series individuality/weapon preference detail missing');
+if (!app.html.includes('固有特性') || !app.html.includes('成長曲線') || !app.html.includes('カスタム適性') || !app.html.includes('特殊能力傾向')) throw new Error('v3 series identity detail missing');
 if (app.html.includes('selected-unit-bar')) throw new Error('duplicate global selected unit bar rendered on unit detail');
 
 weaponTabButton.click();

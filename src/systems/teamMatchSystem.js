@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=2.9';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
-import { generateCohort } from './robotGenerator.js?v=2.9';
-import { simulateBattle } from './battleSystem.js?v=2.9';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=2.9';
-import { clamp, randomInt } from '../utils/random.js?v=2.9';
-import { battleWinTable } from './settingsSystem.js?v=2.9';
+import { GAME_CONFIG } from '../config.js?v=3.0';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.0';
+import { generateCohort } from './robotGenerator.js?v=3.0';
+import { simulateBattle } from './battleSystem.js?v=3.0';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=3.0';
+import { clamp, randomInt } from '../utils/random.js?v=3.0';
+import { battleWinTable } from './settingsSystem.js?v=3.0';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);
@@ -61,6 +61,10 @@ export function createOfficialMatch(state, { difficulty = 0, context = null } = 
 
   const enemyRoster = createEnemyTeam(state.year, difficulty)
     .sort((a, b) => robotSelectionScore(b) - robotSelectionScore(a));
+  state.seriesEncounters ??= {};
+  for (const enemy of enemyRoster) {
+    if (enemy.seriesId) state.seriesEncounters[enemy.seriesId] = Number(state.seriesEncounters[enemy.seriesId] ?? 0) + 1;
+  }
 
   return {
     id: `official-${state.year}-${Date.now()}`,

@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=2.9';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.9';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=2.9';
-import { randomFloat, randomInt } from '../utils/random.js?v=2.9';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.9';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=2.9';
-import { generateCohort } from './robotGenerator.js?v=2.9';
-import { generateTrainingChoices } from './trainingSystem.js?v=2.9';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=2.9';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=2.9';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=2.9';
-import { createRobotSnapshot } from './recordSystem.js?v=2.9';
-import { getAnnualTrend } from './annualTrendSystem.js?v=2.9';
+import { GAME_CONFIG } from '../config.js?v=3.0';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.0';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=3.0';
+import { randomFloat, randomInt } from '../utils/random.js?v=3.0';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.0';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=3.0';
+import { generateCohort } from './robotGenerator.js?v=3.0';
+import { generateTrainingChoices } from './trainingSystem.js?v=3.0';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=3.0';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=3.0';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=3.0';
+import { createRobotSnapshot } from './recordSystem.js?v=3.0';
+import { getAnnualTrend } from './annualTrendSystem.js?v=3.0';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -42,6 +42,14 @@ function normalizeRobot(robot) {
   robot.seriesPreferredWeapons ??= [...(formalProfile?.preferredWeapons ?? [])];
   robot.seriesAvoidedWeapons ??= [...(formalProfile?.avoidedWeapons ?? [])];
   robot.seriesWeaponDoctrine ??= formalProfile?.weaponDoctrine ?? '';
+  robot.seriesIntrinsicTraitId ??= formalProfile?.intrinsicTraitId ?? 'maturePlatform';
+  robot.seriesIntrinsicTrait ??= { ...(formalProfile?.intrinsicTrait ?? {}) };
+  robot.seriesGrowthCurveId ??= formalProfile?.growthCurveId ?? 'steady';
+  robot.seriesGrowthCurve ??= { ...(formalProfile?.growthCurve ?? {}) };
+  robot.seriesCustomAptitudeId ??= formalProfile?.customAptitudeId ?? 'balanced';
+  robot.seriesCustomAptitude ??= JSON.parse(JSON.stringify(formalProfile?.customAptitude ?? {}));
+  robot.seriesAbilityTendencyTags ??= [...(formalProfile?.abilityTendencyTags ?? [])];
+  robot.seriesAbilityTendencyMultiplier ??= Number(formalProfile?.abilityTendencyMultiplier ?? 1.18);
   robot.seriesJackpot ??= null;
   robot.productionYear = Math.max(1, Number(robot.productionYear ?? robot.yearJoined ?? 1));
   robot.yearJoined = Math.max(1, Number(robot.yearJoined ?? robot.productionYear ?? 1));
@@ -76,6 +84,8 @@ export function migrateState(state) {
   state.teamRecord ??= { wins: 0, losses: 0 };
   state.trainingModifiers ??= [];
   state.eventHistory ??= [];
+  state.seriesEncounters ??= {};
+  for (const robot of [...state.roster, ...state.retired]) if (robot.seriesId) state.seriesEncounters[robot.seriesId] = Math.max(1, Number(state.seriesEncounters[robot.seriesId] ?? 0));
   state.settings = normalizeSettings(state.settings ?? { growthMode: state.growthVisibility === 'visible' ? 'visible' : 'facility' });
   state.hallOfFame ??= [];
   state.hallOfFame = state.hallOfFame.map((entry) => {
@@ -140,7 +150,8 @@ export function createInitialState() {
     facilities: defaultFacilities(),
     tournamentHistory: [],
     retirementHistory: [],
-    log: ['v2.9を開始しました。各メーカー60シリーズ・合計1200シリーズと、系譜・生産比率・個体差・兵装嗜好・年度評価を実装しました。'],
+    seriesEncounters: Object.fromEntries(roster.filter((robot) => robot.seriesId).map((robot) => [robot.seriesId, 1])),
+    log: ['v3.0を開始しました。各メーカー80シリーズ・合計1600シリーズと、固有特性・成長曲線・カスタム適性・能力傾向・シリーズ図鑑を実装しました。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),
@@ -177,6 +188,10 @@ export function advanceYear(state) {
       seriesLineageLabel: robot.seriesLineageLabel ?? '',
       seriesPreferredWeapons: [...(robot.seriesPreferredWeapons ?? [])],
       seriesAvoidedWeapons: [...(robot.seriesAvoidedWeapons ?? [])],
+      seriesIntrinsicTraitId: robot.seriesIntrinsicTraitId ?? null,
+      seriesGrowthCurveId: robot.seriesGrowthCurveId ?? null,
+      seriesCustomAptitudeId: robot.seriesCustomAptitudeId ?? null,
+      seriesAbilityTendencyTags: [...(robot.seriesAbilityTendencyTags ?? [])],
       productionYear: robot.productionYear ?? null,
       annualTrend: robot.annualTrend ?? null,
       seriesName: robot.seriesName,
@@ -199,6 +214,8 @@ export function advanceYear(state) {
     count: randomInt(GAME_CONFIG.rookieMin, GAME_CONFIG.rookieMax),
   });
   const roster = [...survivors, ...rookies];
+  state.seriesEncounters ??= {};
+  for (const robot of rookies) if (robot.seriesId) state.seriesEncounters[robot.seriesId] = Number(state.seriesEncounters[robot.seriesId] ?? 0) + 1;
 
   const nextState = {
     ...state,
