@@ -1,11 +1,13 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.6';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.6';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.6';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.6';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.6';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.6';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.6';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.6';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.7';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.7';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.7';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.7';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=3.7';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=3.7';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.7';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.7';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.7';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.7';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8989,8 +8991,22 @@ const THIRD_GENERATION_SERIES = THIRD_WAVE_SERIES_DEFINITIONS.map((base) => ({ .
 const FOURTH_GENERATION_REFIT_MAP = new Map(FOURTH_GENERATION_REFIT_OVERRIDES.map((item) => [item.id, item]));
 const FOURTH_GENERATION_SERIES = FOURTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(FOURTH_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
 const FIFTH_GENERATION_SERIES = FIFTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const SIXTH_GENERATION_SERIES = SIXTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES);
+
+// v3.7 Japanese-label repair: older generation data sometimes stored the Latin/original
+// name directly in nameKana.  Normalize the whole catalog once so both newly generated
+// robots and migrated saves use a Japanese-readable series label consistently.
+const KNOWN_SERIES_KANA = new Map();
+for (const series of SERIES_DEFINITIONS) {
+  if (series?.nameLatin && seriesJapaneseDisplayIsValid(series.nameKana)) {
+    KNOWN_SERIES_KANA.set(String(series.nameLatin).toUpperCase(), String(series.nameKana));
+  }
+}
+for (const series of SERIES_DEFINITIONS) {
+  series.nameKana = localizeSeriesName(series.nameLatin, series.nameKana, KNOWN_SERIES_KANA);
+}
 
 
 export const SERIES_GROWTH_CURVES = {
@@ -9005,6 +9021,10 @@ export const SERIES_GROWTH_CURVES = {
   plateau:{label:'初期頂点型',summary:'1年目から高効率だが、後半は伸びが落ち着く。',yearMultipliers:[1.20,1.03,0.83]},
   rebound:{label:'再加速型',summary:'2年目に一度停滞し、3年目に再び伸びる。',yearMultipliers:[1.04,0.82,1.24]},
   pulse:{label:'中年次急伸型',summary:'2年目に調整が一気に噛み合うピークを持つ。',yearMultipliers:[0.84,1.30,0.88]},
+  doublepeak:{label:'二段加速型',summary:'1年目と3年目に二度の伸びの山を作る。',yearMultipliers:[1.15,0.86,1.18]},
+  rebuild:{label:'再構築型',summary:'2年目を再構成期間に使い、3年目に大きく伸び直す。',yearMultipliers:[0.98,0.78,1.32]},
+  highplateau:{label:'高原維持型',summary:'3年間を通してやや高い育成効率を安定維持する。',yearMultipliers:[1.05,1.02,1.05]},
+  fielddeepen:{label:'運用深化型',summary:'現場経験が蓄積するほど後半の育成効率が高まる。',yearMultipliers:[0.90,1.04,1.18]},
 };
 export const SERIES_CUSTOM_APTITUDES = {
   balanced:{label:'標準適合',summary:'パーツ効果は標準的。',positive:1,negative:1},
@@ -9098,7 +9118,7 @@ function lineageMetadata(series) {
   const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
   const root = SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${rootNumber}`) ?? null;
   const predecessor = predecessorNumber ? SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${predecessorNumber}`) ?? null : null;
-  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : 5;
+  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : number <= 100 ? 5 : 6;
   return {
     lineageRootNumber: rootNumber,
     lineageRootId: root?.id ?? series?.id ?? null,
@@ -9145,6 +9165,25 @@ function inferredIntrinsicTraitId(series, archetype) {
   if (['adaptive','countermeasure','counterDesign'].includes(archetype)) return 'weaknessLearner';
   return 'maturePlatform';
 }
+function localizeNarrativeText(series, lineage, value) {
+  let text=String(value ?? '');
+  if (!text) return text;
+  const replacements=[];
+  const add=(latin,kana)=>{ if(latin && kana && latin!==kana) replacements.push([String(latin),String(kana)]); };
+  add(series?.nameLatin, series?.nameKana);
+  add(lineage?.predecessorNameLatin, lineage?.predecessorNameKana);
+  add(lineage?.lineageRootNameLatin, lineage?.lineageRootNameKana);
+  const latinParts=String(series?.nameLatin ?? '').split('-').filter(Boolean);
+  const kanaParts=String(series?.nameKana ?? '').split('・').filter(Boolean);
+  if (latinParts.length && kanaParts.length) {
+    add(latinParts[0], kanaParts[0]);
+    if (latinParts.length > 1 && kanaParts.length > 1) add(latinParts.at(-1), kanaParts.at(-1));
+  }
+  replacements.sort((a,b)=>b[0].length-a[0].length);
+  for (const [latin,kana] of replacements) text=text.replaceAll(latin,kana);
+  return text;
+}
+
 function inferredAbilityTags(series, archetype, preferredWeapons, groupBias) {
   if (series?.abilityTendencyTags?.length) return series.abilityTendencyTags;
   const tags=[...preferredWeapons];
@@ -9170,12 +9209,23 @@ export function resolveSeriesProfile(seriesLike) {
   const intrinsicTraitId = inferredIntrinsicTraitId(series, series.archetypeId);
   const preferredWeapons = [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])];
   const avoidedWeapons = [...new Set(series.avoidedWeapons ?? [])].filter((weaponKey) => !preferredWeapons.includes(weaponKey));
+  const localizedSummary = localizeNarrativeText(series, lineage, series.summary ?? series.concept ?? archetype.summary);
+  const localizedConcept = localizeNarrativeText(series, lineage, series.concept ?? series.summary ?? archetype.summary);
+  const localizedNamingConcept = localizeNarrativeText(series, lineage, series.namingConcept ?? '');
+  const localizedDevelopmentBackground = localizeNarrativeText(series, lineage, series.developmentBackground ?? '');
+  const localizedEngineeringNotes = localizeNarrativeText(series, lineage, series.engineeringNotes ?? '');
+  const localizedTrainingNotes = localizeNarrativeText(series, lineage, series.trainingNotes ?? '');
+  const localizedWeaponDoctrine = localizeNarrativeText(series, lineage, series.weaponDoctrine ?? '');
   return {
     ...series,
     ...lineage,
     label: series.label ?? archetype.label,
-    summary: series.summary ?? series.concept ?? archetype.summary,
-    concept: series.concept ?? series.summary ?? archetype.summary,
+    summary: localizedSummary,
+    concept: localizedConcept,
+    namingConcept: localizedNamingConcept,
+    developmentBackground: localizedDevelopmentBackground,
+    engineeringNotes: localizedEngineeringNotes,
+    trainingNotes: localizedTrainingNotes,
     marketPosition: series.marketPosition ?? productionTier.label,
     productionTierId,
     productionTierLabel: productionTier.label,
@@ -9202,7 +9252,7 @@ export function resolveSeriesProfile(seriesLike) {
     resistanceBias: Number(archetype.resistanceBias ?? 0) + Number(series.resistanceAdjustment ?? 0),
     preferredWeapons,
     avoidedWeapons,
-    weaponDoctrine: series.weaponDoctrine ?? '',
+    weaponDoctrine: localizedWeaponDoctrine,
     statVariance: Number(archetype.statVariance ?? 1) * Number(series.statVarianceMultiplier ?? 1) * Number(individuality.statVariance ?? 1),
     growthVariance: Number(archetype.growthVariance ?? 1) * Number(series.growthVarianceMultiplier ?? 1) * Number(individuality.growthVariance ?? 1),
     weaponStatVariance: Number(individuality.weaponStatVariance ?? 1),

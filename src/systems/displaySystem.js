@@ -1,4 +1,5 @@
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.6';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.7';
+import { localizeSeriesName } from '../data/seriesNameLocalization.js?v=3.7';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -13,7 +14,7 @@ export function seriesDisplayName(robot, settings = {}) {
   if (settings.seriesLabelMode === 'latin') {
     return robot.seriesNameLatin ?? robot.seriesName ?? 'SERIES';
   }
-  return robot.seriesNameKana ?? robot.seriesName ?? 'シリーズ';
+  return localizeSeriesName(robot.seriesNameLatin ?? robot.seriesName, robot.seriesNameKana ?? robot.seriesName) ?? 'シリーズ';
 }
 
 export function robotFormalName(robot, settings = {}) {

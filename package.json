@@ -1,6 +1,6 @@
 {
   "name": "robot-roguelike-prototype",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
     "longrun": "node scripts/longrun.mjs",
     "render-smoke": "node scripts/render-smoke.mjs",
     "catalog": "node scripts/generate-series-catalog.mjs",
-    "series-mechanics": "node scripts/series-mechanics.mjs"
+    "series-mechanics": "node scripts/series-mechanics.mjs",
+    "localization-audit": "node scripts/localization-audit.mjs"
   }
 }

@@ -1,28 +1,28 @@
-import { GAME_CONFIG } from './config.js?v=3.6';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.6';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.6';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.6';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.6';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.6';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.6';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.6';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.6';
-import { simulateBattle } from './systems/battleSystem.js?v=3.6';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.6';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.6';
-import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.6';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.6';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.6';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.6';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.6';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.6';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.6';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.6';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.6';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.6';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.6';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.6';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.6';
+import { GAME_CONFIG } from './config.js?v=3.7';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.7';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.7';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.7';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.7';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.7';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.7';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.7';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.7';
+import { simulateBattle } from './systems/battleSystem.js?v=3.7';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.7';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.7';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.7';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.7';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.7';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.7';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.7';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.7';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.7';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.7';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.7';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.7';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.7';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.7';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.7';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -34,7 +34,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.6';
+} from './systems/teamMatchSystem.js?v=3.7';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -81,13 +81,13 @@ const PART_RARITY_RANK = Object.fromEntries(Object.keys(PART_RARITIES).map((key,
 const MANUFACTURER_INFO_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
 const APP_VIEWS = [
-  { id: 'dashboard', label: 'ホーム', short: 'HOME' },
-  { id: 'training', label: '育成', short: 'TRAINING' },
-  { id: 'unit', label: '機体詳細', short: 'UNIT' },
-  { id: 'custom', label: 'カスタム', short: 'CUSTOM' },
-  { id: 'competition', label: '大会', short: 'COMPETITION' },
-  { id: 'history', label: '設備・記録', short: 'HISTORY' },
-  { id: 'settings', label: '設定', short: 'SETTINGS' },
+  { id: 'dashboard', label: 'ホーム', short: 'ダッシュボード' },
+  { id: 'training', label: '育成', short: '育成管理' },
+  { id: 'unit', label: '機体詳細', short: '機体情報' },
+  { id: 'custom', label: 'カスタム', short: '機体改修' },
+  { id: 'competition', label: '大会', short: '大会管理' },
+  { id: 'history', label: '設備・記録', short: '設備・記録' },
+  { id: 'settings', label: '設定', short: 'システム設定' },
 ];
 
 
@@ -958,7 +958,7 @@ function renderTeamRadarOverlay() {
     <div class="team-radar-backdrop" role="dialog" aria-modal="true" aria-label="チーム能力傾向">
       <section class="team-radar-modal">
         <header class="team-radar-modal-head">
-          <div><p class="eyebrow">TEAM ANALYSIS</p><h2>チーム全体の能力傾向</h2><p>所属${state.roster.length}機の基礎7グループ平均。全体練習を選ぶ時の参考にできます。</p></div>
+          <div><p class="eyebrow">チーム分析</p><h2>チーム全体の能力傾向</h2><p>所属${state.roster.length}機の基礎7グループ平均。全体練習を選ぶ時の参考にできます。</p></div>
           <button id="team-radar-close" class="ghost compact-button" aria-label="チームレーダーを閉じる">閉じる</button>
         </header>
         <div class="team-radar-modal-body">
@@ -1036,7 +1036,7 @@ function renderUnitOverview(robot) {
   return `
     <div class="unit-overview-dashboard">
       <section class="panel unit-chart-panel overview-radar-panel">
-        <div class="panel-title compact-panel-title"><div><p class="eyebrow">ABILITY RADAR</p><h2>基礎能力レーダー</h2></div><small class="panel-note">7グループ</small></div>
+        <div class="panel-title compact-panel-title"><div><p class="eyebrow">能力レーダー</p><h2>基礎能力レーダー</h2></div><small class="panel-note">7グループ</small></div>
         ${renderRadarChart(robot)}
       </section>
       <section class="panel unit-summary-panel overview-summary-panel">
@@ -1065,7 +1065,7 @@ function renderUnitOverview(robot) {
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <details class="series-lore-details">
-          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 5 ? '<em>第5世代新設計</em>' : robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 6 ? '<em>第6世代新設計</em>' : robot.seriesRefitGeneration === 5 ? '<em>第5世代新設計</em>' : robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
           <div class="series-lore-body">
             ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
             ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}
@@ -1075,11 +1075,11 @@ function renderUnitOverview(robot) {
             ${robot.seriesWeaponDoctrine ? `<section><span>兵装ドクトリン</span><p>${escapeHtml(robot.seriesWeaponDoctrine)}</p></section>` : ''}
           </div>
         </details>
-        <div class="panel-title compact-panel-title overview-bars-title"><div><p class="eyebrow">ABILITY BARS</p><h2>基礎能力比較</h2></div><small class="panel-note">平均値</small></div>
+        <div class="panel-title compact-panel-title overview-bars-title"><div><p class="eyebrow">基礎能力比較</p><h2>基礎能力比較</h2></div><small class="panel-note">平均値</small></div>
         <div class="overview-base-bars">${renderBaseAbilityBars(robot)}</div>
       </section>
       <section class="panel unit-control-panel overview-control-panel">
-        <div class="panel-title compact-panel-title"><div><p class="eyebrow">CURRENT SETUP</p><h2>現在の育成・兵装</h2></div></div>
+        <div class="panel-title compact-panel-title"><div><p class="eyebrow">現在設定</p><h2>現在の育成・兵装</h2></div></div>
         <div class="nickname-editor unit-control-field">
           <span>ニックネーム</span>
           <div><input id="robot-nickname" maxlength="24" value="${escapeHtml(robot.nickname ?? '')}" placeholder="任意の呼び名"><button id="robot-nickname-save" class="mini-button">保存</button>${robot.nickname ? '<button id="robot-nickname-clear" class="mini-button ghost">解除</button>' : ''}</div>
@@ -1158,7 +1158,7 @@ function renderAllWeaponAptitudes(robot) {
   return `
     <div class="all-weapon-aptitudes">
       <section class="panel weapon-chart-panel">
-        <div class="panel-title"><div><p class="eyebrow">WEAPON APTITUDE</p><h2>全兵装適性グラフ</h2></div><small class="panel-note">12兵装の平均値を装備変更なしで比較</small></div>
+        <div class="panel-title"><div><p class="eyebrow">兵装適性</p><h2>全兵装適性グラフ</h2></div><small class="panel-note">12兵装の平均値を装備変更なしで比較</small></div>
         ${renderWeaponAptitudeBars(robot)}
       </section>
       <div class="weapon-aptitude-guide">全兵装カテゴリの現在値と成長傾向を比較できます。各カードの「この兵装を使用」から、そのまま現在兵装を変更できます。装備中の兵装は青枠で表示されます。</div>
@@ -1175,15 +1175,15 @@ function renderUnitSpecialDetail(robot) {
   return `
     <div class="unit-special-grid">
       <section class="panel">
-        <div class="panel-title"><div><p class="eyebrow">SPECIAL ABILITIES</p><h2>特殊能力</h2></div><span>${robot.specialAbilities?.length ?? 0}個</span></div>
+        <div class="panel-title"><div><p class="eyebrow">特殊能力</p><h2>特殊能力</h2></div><span>${robot.specialAbilities?.length ?? 0}個</span></div>
         ${renderAbilities(robot)}
       </section>
       <section class="panel">
-        <div class="panel-title"><div><p class="eyebrow">RESISTANCE</p><h2>耐性</h2></div></div>
+        <div class="panel-title"><div><p class="eyebrow">耐性</p><h2>耐性</h2></div></div>
         <ul class="resistance-grid">${resistanceRows}</ul>
       </section>
       <section class="panel unit-history-panel">
-        <div class="panel-title"><div><p class="eyebrow">CUSTOM HISTORY</p><h2>カスタム履歴</h2></div><span>${history.length}件</span></div>
+        <div class="panel-title"><div><p class="eyebrow">改修履歴</p><h2>カスタム履歴</h2></div><span>${history.length}件</span></div>
         ${history.length ? `<div class="unit-custom-history">${history.map((entry) => `<article><strong>${escapeHtml(entry.partName)}</strong><div>${(entry.effects ?? []).map((effect) => `<span>${escapeHtml(effect.label ?? effect.statName ?? effect.axis ?? effect.resistance ?? effect.kind)} ${effect.amount >= 0 ? '+' : ''}${effect.amount}</span>`).join('')}</div>${entry.abilityId && SPECIAL_ABILITIES[entry.abilityId] ? `<small>特殊能力：${SPECIAL_ABILITIES[entry.abilityId].name}</small>` : ''}</article>`).join('')}</div>` : '<div class="filtered-empty">まだカスタム履歴はありません。</div>'}
       </section>
     </div>`;
@@ -1430,7 +1430,7 @@ function renderOfficialComplete(match) {
   }).join('');
   return `
     <div class="official-finish ${match.teamWon ? 'win' : 'loss'}">
-      <span>FINAL SCORE</span>
+      <span>最終スコア</span>
       <strong>${match.allyWins} - ${match.enemyWins}</strong>
       <h3>${match.teamWon ? 'チーム勝利！' : 'チーム敗北'}</h3>
       <p>${match.context?.type === 'tournament' ? `${match.context.tournamentName} / ${match.context.roundName}` : `チーム通算 ${state.teamRecord?.wins ?? 0}勝 ${state.teamRecord?.losses ?? 0}敗`}</p>
@@ -1478,7 +1478,7 @@ function renderEventPanel() {
   const target = event.robotId ? state.roster.find((robot) => robot.id === event.robotId) : null;
   return `
     <article class="event-card ${event.awakening ? 'awakening' : ''}">
-      <span class="event-type">${event.awakening ? 'RARE EVENT' : 'LATEST EVENT'}</span>
+      <span class="event-type">${event.awakening ? 'レアイベント' : '直近イベント'}</span>
       <h3>${event.title}</h3>
       ${target ? `<strong>${robotLabel(target)}</strong>` : ''}
       <p>${event.description}</p>
@@ -1504,7 +1504,7 @@ function renderTournamentPanel() {
   ensureTournamentYear(state);
   const required = requiredTournament();
   return `
-    ${required ? `<div class="tournament-required-banner"><div><span>REQUIRED TOURNAMENT</span><strong>${required.def.name}</strong><small>大会期間中のため、決着するまで通常練習は停止しています。</small></div></div>` : ''}
+    ${required ? `<div class="tournament-required-banner"><div><span>参加必須</span><strong>${required.def.name}</strong><small>大会期間中のため、決着するまで通常練習は停止しています。</small></div></div>` : ''}
     <div class="tournament-grid">
       ${TOURNAMENT_IDS.map((id) => {
         const def = TOURNAMENTS[id];
@@ -1611,6 +1611,7 @@ function renderSeriesEncyclopedia() {
   const statusLabel = { seen:'遭遇', joined:'加入', retired:'育成完了', hall:'殿堂', unseen:'未発見' };
   const joinedStatuses = new Set(['joined','retired','hall']);
   const makerMap = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
+  const makerDexName = (maker) => state.settings?.manufacturerLabelMode === 'original' ? (maker?.originalName ?? maker?.name ?? '') : (maker?.name ?? '');
   const generationOf = (row) => Math.max(1, Math.ceil(Number(row.seriesNumber ?? 1) / 20));
   const visibleName = (row) => state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
   const growthOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.growthCurveId, row.profile?.growthCurve?.label]).filter(([id,label]) => id && label)).entries()]
@@ -1619,10 +1620,10 @@ function renderSeriesEncyclopedia() {
     .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
 
   const selector = `<div class="series-dex-toolbar series-dex-toolbar-advanced">
-    <label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label>
+    <label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label>
     <label class="series-dex-search-field">シリーズ検索<div><input id="series-dex-search" type="search" value="${escapeHtml(uiState.seriesDexSearch)}" placeholder="名称・思想・特徴"><button type="button" id="series-dex-search-apply" class="mini-button">検索</button></div></label>
     <label>発見状況<select id="series-dex-discovery"><option value="all" ${uiState.seriesDexDiscovery==='all'?'selected':''}>すべて</option><option value="discovered" ${uiState.seriesDexDiscovery==='discovered'?'selected':''}>発見済み</option><option value="unseen" ${uiState.seriesDexDiscovery==='unseen'?'selected':''}>未発見</option><option value="seen" ${uiState.seriesDexDiscovery==='seen'?'selected':''}>遭遇のみ</option><option value="joined" ${uiState.seriesDexDiscovery==='joined'?'selected':''}>自軍加入済み</option><option value="completed" ${uiState.seriesDexDiscovery==='completed'?'selected':''}>育成完了</option><option value="hall" ${uiState.seriesDexDiscovery==='hall'?'selected':''}>殿堂</option></select></label>
-    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
+    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5,6].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
     <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
@@ -1669,7 +1670,8 @@ function renderSeriesEncyclopedia() {
 
   const renderRow = (row, includeMaker = false) => {
     const maker = makerMap.get(row.manufacturerId);
-    const makerLabel = includeMaker ? `${escapeHtml(maker?.name ?? row.manufacturerId)} / ` : '';
+    const makerDisplay = state.settings?.manufacturerLabelMode === 'original' ? (maker?.originalName ?? maker?.name ?? row.manufacturerId) : (maker?.name ?? row.manufacturerId);
+    const makerLabel = includeMaker ? `${escapeHtml(makerDisplay)} / ` : '';
     if (row.discovery === 'unseen') return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>${makerLabel}#${row.seriesNumber} ???</strong><small>第${generationOf(row)}世代 / 未解析</small><em>大会・新人加入で発見</em></div>`;
     const games=row.wins+row.losses; const rate=games?`${(row.wins/games*100).toFixed(1)}%`:'---';
     const visibleDeep = row.joined > 0;
@@ -1718,17 +1720,17 @@ function renderSeriesEncyclopedia() {
       trait:modeLabel((row)=>row.profile?.intrinsicTrait?.label),
     };
   };
-  const compareCard = (stats, side) => `<article class="series-maker-compare-card ${side}"><span>${escapeHtml(stats.maker.theme)}系メーカー</span><h4>${escapeHtml(stats.maker.name)}</h4><p>${escapeHtml(stats.maker.philosophy)}</p><div class="series-maker-compare-metrics"><div><small>発見</small><strong>${stats.discovered}/100</strong></div><div><small>加入系列</small><strong>${stats.joinedSeries}</strong></div><div><small>育成完了</small><strong>${stats.completed}</strong></div><div><small>殿堂</small><strong>${stats.hall}</strong></div><div><small>自軍機体</small><strong>${stats.units}</strong></div><div><small>通算勝率</small><strong>${stats.winRate===null?'---':`${stats.winRate.toFixed(1)}%`}</strong></div><div><small>平均総合</small><strong>${stats.average===null?'---':stats.average.toFixed(1)}</strong></div><div><small>最高総合</small><strong>${stats.best?stats.best.bestOverall.toFixed(1):'---'}</strong></div></div><dl><div><dt>よく育てた成長曲線</dt><dd>${escapeHtml(stats.growth)}</dd></div><div><dt>よく育てた改修適性</dt><dd>${escapeHtml(stats.custom)}</dd></div><div><dt>よく見た固有特性</dt><dd>${escapeHtml(stats.trait)}</dd></div>${stats.best?`<div><dt>最高系列</dt><dd>${escapeHtml(visibleName(stats.best))} / ${escapeHtml(stats.best.bestRobotName||'---')}</dd></div>`:''}</dl></article>`;
+  const compareCard = (stats, side) => `<article class="series-maker-compare-card ${side}"><span>${escapeHtml(stats.maker.theme)}系メーカー</span><h4>${escapeHtml(makerDexName(stats.maker))}</h4><p>${escapeHtml(stats.maker.philosophy)}</p><div class="series-maker-compare-metrics"><div><small>発見</small><strong>${stats.discovered}/120</strong></div><div><small>加入系列</small><strong>${stats.joinedSeries}</strong></div><div><small>育成完了</small><strong>${stats.completed}</strong></div><div><small>殿堂</small><strong>${stats.hall}</strong></div><div><small>自軍機体</small><strong>${stats.units}</strong></div><div><small>通算勝率</small><strong>${stats.winRate===null?'---':`${stats.winRate.toFixed(1)}%`}</strong></div><div><small>平均総合</small><strong>${stats.average===null?'---':stats.average.toFixed(1)}</strong></div><div><small>最高総合</small><strong>${stats.best?stats.best.bestOverall.toFixed(1):'---'}</strong></div></div><dl><div><dt>よく育てた成長曲線</dt><dd>${escapeHtml(stats.growth)}</dd></div><div><dt>よく育てた改修適性</dt><dd>${escapeHtml(stats.custom)}</dd></div><div><dt>よく見た固有特性</dt><dd>${escapeHtml(stats.trait)}</dd></div>${stats.best?`<div><dt>最高系列</dt><dd>${escapeHtml(visibleName(stats.best))} / ${escapeHtml(stats.best.bestRobotName||'---')}</dd></div>`:''}</dl></article>`;
   const compareA = makerCompareStats(uiState.seriesCompareMakerA || MANUFACTURERS[0]?.id);
   const compareB = makerCompareStats(uiState.seriesCompareMakerB || MANUFACTURERS[1]?.id || MANUFACTURERS[0]?.id);
-  const compareHtml = `<details class="series-maker-compare" open><summary>メーカー比較</summary><div class="series-maker-compare-controls"><label>比較A<select id="series-compare-a">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareA.maker.id===maker.id?'selected':''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label><b>VS</b><label>比較B<select id="series-compare-b">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareB.maker.id===maker.id?'selected':''}>${escapeHtml(maker.name)}</option>`).join('')}</select></label></div><div class="series-maker-compare-grid">${compareCard(compareA,'a')}${compareCard(compareB,'b')}</div><small class="series-maker-compare-note">比較値はあなたのセーブ内で実際に加入・育成した機体の実績。未加入系列の内部性能は比較に使用しません。</small></details>`;
+  const compareHtml = `<details class="series-maker-compare" open><summary>メーカー比較</summary><div class="series-maker-compare-controls"><label>比較A<select id="series-compare-a">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareA.maker.id===maker.id?'selected':''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label><b>比較</b><label>比較B<select id="series-compare-b">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareB.maker.id===maker.id?'selected':''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label></div><div class="series-maker-compare-grid">${compareCard(compareA,'a')}${compareCard(compareB,'b')}</div><small class="series-maker-compare-note">比較値はあなたのセーブ内で実際に加入・育成した機体の実績。未加入系列の内部性能は比較に使用しません。</small></details>`;
 
   if (uiState.seriesDexManufacturer === 'all' && !hasAdvancedFilter) {
     const makerProgress = MANUFACTURERS.map((maker) => {
       const makerRows = rows.filter((row) => row.manufacturerId === maker.id);
       const discovered = makerRows.filter((row) => row.discovery !== 'unseen').length;
       const joined = makerRows.filter((row) => joinedStatuses.has(row.discovery)).length;
-      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(maker.name)}</strong><span>${discovered}/100 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${discovered}%"></b></i></button>`;
+      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(makerDexName(maker))}</strong><span>${discovered}/120 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${Math.min(100, discovered / 120 * 100)}%"></b></i></button>`;
     }).join('');
     return `${selector}${summaryHtml}${compareHtml}<div class="series-dex-progress-grid">${makerProgress}</div>`;
   }
@@ -1744,7 +1746,7 @@ function renderSeriesEncyclopedia() {
   const maker = makerMap.get(uiState.seriesDexManufacturer) ?? MANUFACTURERS[0];
   const makerRows = rows.filter((row)=>row.manufacturerId===maker.id);
   const found = makerRows.filter((row)=>row.discovery!=='unseen').length;
-  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(maker.name)}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/100</b></div>${resultHead}${truncation}<div class="series-dex-full-list">${listHtml}</div>`;
+  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(makerDexName(maker))}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/120</b></div>${resultHead}${truncation}<div class="series-dex-full-list">${listHtml}</div>`;
 }
 function renderHallOfFame() {
   const entries = state.hallOfFame ?? [];
@@ -1784,7 +1786,7 @@ function renderStatusGuide() {
   const axisLabels = { power:'出力・威力', accuracy:'精度', control:'兵装制御', response:'応答', stability:'安定性', efficiency:'効率・固有運用' };
   return `
     <details class="status-guide" id="status-guide" ${uiState.statusGuideOpen ? 'open' : ''}>
-      <summary><div><p class="eyebrow">STATUS MANUAL</p><strong>ステータス・戦闘指標を詳しく見る</strong><span>総合評価、信頼性、基礎41項目、兵装6軸、耐性、戦闘時の使われ方</span></div><b>開く</b></summary>
+      <summary><div><p class="eyebrow">能力解説</p><strong>ステータス・戦闘指標を詳しく見る</strong><span>総合評価、信頼性、基礎41項目、兵装6軸、耐性、戦闘時の使われ方</span></div><b>開く</b></summary>
       <div class="status-guide-body">
         <section class="status-guide-system"><h3>まず知っておきたい指標</h3><div>${SYSTEM_GUIDE.map((item) => `<article><strong>${escapeHtml(item.label)}</strong><p>${escapeHtml(item.text)}</p></article>`).join('')}</div></section>
         <section><h3>基礎能力 7グループ / 41項目</h3><p class="status-guide-lead">レーダーチャートは各グループ内の個別能力平均です。戦闘では全41項目を毎回使うのではなく、機体・兵装・相性に応じて一部が比較対象になります。</p><div class="status-guide-groups">${groupSections}</div></section>
@@ -1804,14 +1806,14 @@ function renderSettingsPanel() {
   return `
     <div class="pwa-install-card">
       <div class="pwa-install-copy">
-        <p class="eyebrow">WEB APP</p>
+        <p class="eyebrow">アプリ版</p>
         <strong>${pwa.standalone ? 'アプリとして起動中' : 'スマホのホーム画面に追加'}</strong>
         <span>${escapeHtml(pwaInstallMessage(pwa))}</span>
       </div>
       <div class="pwa-install-actions">
         ${pwa.promptAvailable && !pwa.standalone ? '<button id="pwa-install-button" class="primary-compact">アプリをインストール</button>' : ''}
         ${pwa.ios && !pwa.standalone ? '<small>iPhone/iPadはSafariの共有メニューを使用します。</small>' : ''}
-        ${pwa.standalone ? '<span class="pwa-installed-badge">INSTALLED</span>' : ''}
+        ${pwa.standalone ? '<span class="pwa-installed-badge">インストール済み</span>' : ''}
       </div>
     </div>
     <div class="settings-grid">
@@ -1835,7 +1837,7 @@ function renderSettingsPanel() {
       </div>
     </div>
     ${renderStatusGuide()}
-    <p class="settings-note">シリーズは各メーカー100系列・合計2000系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
+    <p class="settings-note">シリーズは各メーカー120系列・合計2400系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
   `;
 }
 
@@ -1873,7 +1875,7 @@ function trainingLockInfo() {
 function renderTrainingLockNotice() {
   const lock = trainingLockInfo();
   if (!lock.locked) return '';
-  return `<div class="training-lock-notice"><div><span>TOURNAMENT PERIOD</span><strong>${escapeHtml(lock.title)}</strong><small>${escapeHtml(lock.detail)}</small></div><button class="view-tab mini-button" data-view="competition">大会画面へ</button></div>`;
+  return `<div class="training-lock-notice"><div><span>大会期間</span><strong>${escapeHtml(lock.title)}</strong><small>${escapeHtml(lock.detail)}</small></div><button class="view-tab mini-button" data-view="competition">大会画面へ</button></div>`;
 }
 
 function currentTournamentSummary() {
@@ -1910,13 +1912,13 @@ function renderSidebar() {
     <aside class="app-sidebar">
       <div class="sidebar-brand">
         <span class="brand-mark">AI</span>
-        <div><strong>ROBOT LAB</strong><small>育成ローグライク v${GAME_CONFIG.version}</small></div>
+        <div><strong>ロボット育成ラボ</strong><small>育成ローグライク v${GAME_CONFIG.version}</small></div>
       </div>
       <nav class="sidebar-nav" aria-label="主要画面">
         ${APP_VIEWS.map((view) => `<button class="view-tab sidebar-nav-item ${uiState.activeView === view.id ? 'active' : ''}" data-view="${view.id}"><span>${view.short}</span><strong>${view.label}</strong>${badges[view.id] ? `<em>${badges[view.id]}</em>` : ''}</button>`).join('')}
       </nav>
       <div class="sidebar-season">
-        <span>YEAR</span><strong>${state.year}</strong><small>練習 ${state.turn}/${trainingTurnsForState(state)}</small>
+        <span>年度</span><strong>${state.year}</strong><small>練習 ${state.turn}/${trainingTurnsForState(state)}</small>
         <div><b>${state.teamRecord?.wins ?? 0}</b>勝 <b>${state.teamRecord?.losses ?? 0}</b>敗</div>
       </div>
       <button id="tutorial-open-side" class="sidebar-help">？　遊び方</button>
@@ -1928,7 +1930,7 @@ function renderSelectedUnitBar(robot) {
   if (!robot) return '';
   return `
     <section class="selected-unit-bar">
-      <div class="selected-unit-heading"><span>SELECTED UNIT</span><strong>${robotLabel(robot)}</strong>${robot.nickname ? `<small>${robotFormalLabel(robot)}</small>` : ''}</div>
+      <div class="selected-unit-heading"><span>選択機体</span><strong>${robotLabel(robot)}</strong>${robot.nickname ? `<small>${robotFormalLabel(robot)}</small>` : ''}</div>
       <select id="global-robot-selector" aria-label="操作する機体">${options}</select>
       <div class="selected-unit-meta">
         <span>${robot.cohortYear}年目</span><span>${robot.weaponName}</span><span>総合 ${robotSelectionScore(robot).toFixed(0)}</span><span>信頼 ${robot.reliability}</span>
@@ -1961,7 +1963,7 @@ function renderDashboard(robot) {
   return `
     ${renderPageHeader('ホーム', 'dashboard')}
     <section class="dashboard-hero">
-      <div><span>NEXT ACTION</span><h3>${nextTitle}</h3><p>${state.officialMatch?.status === 'running' ? '現在の試合を完了すると大会進行へ戻れます。' : tournaments.available.length || tournaments.active ? '大会は練習ターンを消費しません。編成を確認して挑戦できます。' : '個別練習は自動で進みます。全体練習だけ選べば次のターンへ進みます。'}</p></div>
+      <div><span>次の行動</span><h3>${nextTitle}</h3><p>${state.officialMatch?.status === 'running' ? '現在の試合を完了すると大会進行へ戻れます。' : tournaments.available.length || tournaments.active ? '大会は練習ターンを消費しません。編成を確認して挑戦できます。' : '個別練習は自動で進みます。全体練習だけ選べば次のターンへ進みます。'}</p></div>
       <button class="view-tab primary-cta" data-view="${nextView}">${nextView === 'competition' ? '大会画面へ' : '育成を進める'} →</button>
     </section>
     <section class="dashboard-stats">
@@ -1972,20 +1974,20 @@ function renderDashboard(robot) {
     </section>
     <div class="dashboard-grid">
       <section class="panel dashboard-panel">
-        <div class="panel-title"><div><p class="eyebrow">QUICK TRAINING</p><h2>今ターンの練習候補</h2></div><button class="view-tab text-action" data-view="training">育成画面を開く</button></div>
+        <div class="panel-title"><div><p class="eyebrow">練習候補</p><h2>今ターンの練習候補</h2></div><button class="view-tab text-action" data-view="training">育成画面を開く</button></div>
         ${renderTrainingLockNotice()}<div class="training-grid dashboard-training-grid">${renderTrainingChoices()}</div>
       </section>
       <section class="panel dashboard-panel">
-        <div class="panel-title"><div><p class="eyebrow">TOP UNITS</p><h2>現在の注目機体</h2></div></div>
+        <div class="panel-title"><div><p class="eyebrow">注目機体</p><h2>現在の注目機体</h2></div></div>
         <div class="dashboard-unit-list">${best.map((item, index) => `<button data-robot-id="${item.id}" class="dashboard-unit"><b>${index + 1}</b><div><strong>${robotLabel(item)}</strong><small>${item.cohortYear}年目 / ${item.weaponName} / ${item.record?.wins ?? 0}勝</small></div><em>${robotSelectionScore(item).toFixed(0)}</em></button>`).join('')}</div>
         ${rookie ? `<div class="rookie-callout"><span>注目新人</span><strong>${robotLabel(rookie)}</strong><small>総合 ${robotSelectionScore(rookie).toFixed(0)} / 信頼 ${rookie.reliability}</small></div>` : ''}
       </section>
       <section class="panel dashboard-panel">
-        <div class="panel-title"><div><p class="eyebrow">TOURNAMENT</p><h2>大会状況</h2></div><button class="view-tab text-action" data-view="competition">大会画面を開く</button></div>
+        <div class="panel-title"><div><p class="eyebrow">大会</p><h2>大会状況</h2></div><button class="view-tab text-action" data-view="competition">大会画面を開く</button></div>
         <div class="dashboard-tournaments">${tournaments.entries.map(({ id, def, entry }) => `<div><span>${def.shortName}</span><strong>${tournamentStatusLabel(entry, def)}</strong></div>`).join('')}</div>
       </section>
       <section class="panel dashboard-panel">
-        <div class="panel-title"><div><p class="eyebrow">RECENT LOG</p><h2>最近の出来事</h2></div></div>
+        <div class="panel-title"><div><p class="eyebrow">最近の記録</p><h2>最近の出来事</h2></div></div>
         <div class="dashboard-log">${(state.log ?? []).slice(0, 8).map((line) => `<p>${escapeHtml(line)}</p>`).join('') || '<p>まだ記録はありません。</p>'}</div>
       </section>
     </div>`;
@@ -2004,7 +2006,7 @@ function renderTutorialOverlay() {
   return `
     <div class="tutorial-backdrop" role="dialog" aria-modal="true" aria-label="チュートリアル">
       <article class="tutorial-card">
-        <div class="tutorial-progress"><span>QUICK START</span><strong>${stepIndex + 1} / ${TUTORIAL_STEPS.length}</strong></div>
+        <div class="tutorial-progress"><span>クイックスタート</span><strong>${stepIndex + 1} / ${TUTORIAL_STEPS.length}</strong></div>
         <h2>${step.title}</h2>
         <p>${step.body}</p>
         <aside>${step.hint}</aside>
@@ -2041,7 +2043,7 @@ function renderManagerPanel() {
   if (!managerProfile.enabled) {
     return `
       <section id="manager-section" class="manager-strip manager-disabled">
-        <div><p class="eyebrow">MANAGER</p><strong>マネージャー機能はOFFです</strong></div>
+        <div><p class="eyebrow">マネージャー</p><strong>マネージャー機能は無効です</strong></div>
         <button id="manager-enable" class="mini-button">ONにする</button>
       </section>`;
   }
@@ -2055,7 +2057,7 @@ function renderManagerPanel() {
     return `
       <section id="manager-section" class="manager-strip manager-collapsed">
         <div class="manager-collapsed-portrait">${portrait}</div>
-        <div class="manager-collapsed-talk"><p class="eyebrow">MANAGER / ${escapeHtml(personality.label)}</p><strong>${escapeHtml(managerProfile.name)}</strong><span>「${activeLine}」</span></div>
+        <div class="manager-collapsed-talk"><p class="eyebrow">マネージャー / ${escapeHtml(personality.label)}</p><strong>${escapeHtml(managerProfile.name)}</strong><span>「${activeLine}」</span></div>
         <div class="manager-collapsed-actions"><button id="manager-reroll-line" class="mini-button ghost">一言</button><button id="manager-expand" class="mini-button">展開</button></div>
       </section>`;
   }
@@ -2076,7 +2078,7 @@ function renderManagerPanel() {
   const editor = uiState.managerCustomOpen ? `
       <div class="manager-custom-editor">
         <div class="manager-custom-heading">
-          <div><p class="eyebrow">MY CUSTOM</p><h3>状況別セリフ編集</h3></div>
+          <div><p class="eyebrow">マイカスタム</p><h3>状況別セリフ編集</h3></div>
           <span>登録 ${customCount}件</span>
         </div>
         <div class="manager-custom-controls">
@@ -2094,7 +2096,7 @@ function renderManagerPanel() {
           <button id="manager-custom-clear-all" class="mini-button danger-ghost" ${customCount ? '' : 'disabled'}>自作セリフを全消去</button>
         </div>
         <div class="manager-profile-tools">
-          <div class="manager-profile-tools-heading"><div><p class="eyebrow">PERSONA / BACKUP</p><h3>人格プリセット・設定ファイル</h3></div><span>${managerPresets.length} / ${MANAGER_PRESET_LIMIT}</span></div>
+          <div class="manager-profile-tools-heading"><div><p class="eyebrow">プリセット / バックアップ</p><h3>人格プリセット・設定ファイル</h3></div><span>${managerPresets.length} / ${MANAGER_PRESET_LIMIT}</span></div>
           <div class="manager-preset-row">
             <select id="manager-preset-select"><option value="">人格プリセットを選択</option>${presetOptions}</select>
             <button id="manager-preset-apply" class="mini-button" ${selectedPreset ? '' : 'disabled'}>適用</button>
@@ -2115,7 +2117,7 @@ function renderManagerPanel() {
     <section id="manager-section" class="manager-panel ${uiState.managerCustomOpen ? 'custom-open' : ''}">
       <div class="manager-portrait">${portrait}</div>
       <div class="manager-talk">
-        <div class="manager-heading"><div><p class="eyebrow">MANAGER / SUPPORT</p><h2>${escapeHtml(managerProfile.name)}</h2></div><span>${personality.label}</span></div>
+        <div class="manager-heading"><div><p class="eyebrow">マネージャー / サポート</p><h2>${escapeHtml(managerProfile.name)}</h2></div><span>${personality.label}</span></div>
         <p class="manager-dialogue">「${activeLine}」</p>
         <div class="manager-talk-actions">
           <button id="manager-reroll-line" class="mini-button ghost">一言</button>
@@ -2131,7 +2133,7 @@ function renderManagerPanel() {
         <label><span>性格</span><select id="manager-personality">${Object.values(MANAGER_PERSONALITIES).map((item) => `<option value="${item.id}" ${item.id === managerProfile.personalityId ? 'selected' : ''}>${item.label}</option>`).join('')}</select></label>
         <label><span>セリフ</span><select id="manager-line-mode-compact">${Object.values(MANAGER_LINE_MODES).map((mode) => `<option value="${mode.id}" ${mode.id === managerProfile.lineMode ? 'selected' : ''}>${mode.label}</option>`).join('')}</select></label>
         <small>${personality.description}</small>
-        <button id="manager-disable" class="mini-button ghost">機能をOFF</button>
+        <button id="manager-disable" class="mini-button ghost">機能を無効化</button>
       </div>
       ${editor}
     </section>`;
@@ -2146,7 +2148,7 @@ function renderYearSummary() {
   }).join('');
   return `
     <section class="year-summary-banner">
-      <div><p class="eyebrow">YEAR ${summary.year} SUMMARY</p><h2>${summary.year}年目が終了しました</h2></div>
+      <div><p class="eyebrow">${summary.year}年目 年度まとめ</p><h2>${summary.year}年目が終了しました</h2></div>
       <div class="year-summary-stats"><span>売却 <b>${summary.retiredCount}</b>機</span><span>新人 <b>${summary.rookieCount}</b>機</span><span>記念パーツ <b>${summary.memorialPartCount}</b>個</span></div>
       <div class="year-summary-results">${results || '<span>大会記録なし</span>'}</div>
       <button id="year-summary-close" class="mini-button">閉じる</button>
@@ -2199,11 +2201,11 @@ function renderActiveView(robot) {
         ${renderCustomUnitSwitcher(robot)}
         <div class="custom-workspace">
           <section class="panel custom-unit-panel">
-            <div class="panel-title"><div><p class="eyebrow">UNIT PROFILE</p><h2>選択機体</h2></div><small class="panel-note">詳しい能力・全兵装適性は機体詳細画面で確認できます。</small></div>
+            <div class="panel-title"><div><p class="eyebrow">機体プロフィール</p><h2>選択機体</h2></div><small class="panel-note">詳しい能力・全兵装適性は機体詳細画面で確認できます。</small></div>
             ${renderCompactUnitProfile(robot)}
           </section>
           <section id="parts-section" class="panel parts-panel">
-            <div class="panel-title"><div><p class="eyebrow">PART INVENTORY</p><h2>カスタムパーツ</h2></div><small class="panel-note">使用した時点で消費され、機体へ永久反映されます。</small></div>
+            <div class="panel-title"><div><p class="eyebrow">パーツ一覧</p><h2>カスタムパーツ</h2></div><small class="panel-note">使用した時点で消費され、機体へ永久反映されます。</small></div>
             ${renderPartInventory(robot)}
           </section>
         </div>`;
@@ -2211,40 +2213,40 @@ function renderActiveView(robot) {
       return `
         ${renderPageHeader('大会・試合', 'competition')}
         <section id="tournament-section" class="panel tournament-panel view-wide">
-          <div class="panel-title"><div><p class="eyebrow">OFFICIAL TOURNAMENT</p><h2>年間大会</h2></div><small class="panel-note">まずここを確認。出場可能なら大会編成へ進めます。</small></div>
+          <div class="panel-title"><div><p class="eyebrow">公式大会</p><h2>年間大会</h2></div><small class="panel-note">まずここを確認。出場可能なら大会編成へ進めます。</small></div>
           ${renderTournamentPanel()}
         </section>
-        <section class="panel official-panel view-wide"><div class="panel-title"><div><p class="eyebrow">15 vs 15</p><h2>団体戦編成・進行</h2></div><small class="panel-note">大会の公式戦と団体模擬戦をここで進めます。</small></div>${renderOfficialMatchPanel()}</section>
+        <section class="panel official-panel view-wide"><div class="panel-title"><div><p class="eyebrow">15機対15機</p><h2>団体戦編成・進行</h2></div><small class="panel-note">大会の公式戦と団体模擬戦をここで進めます。</small></div>${renderOfficialMatchPanel()}</section>
         <details class="panel optional-tool view-wide"><summary>1対1 模擬戦（調整・確認用）</summary>${renderBattlePanel()}</details>`;
     case 'history':
       return `
         ${renderPageHeader('設備・記録', 'history')}
         <section class="panel facility-panel view-wide">
-          <div class="panel-title"><div><p class="eyebrow">FACILITIES</p><h2>設備・長期実績</h2></div><small class="panel-note">能力値ではなく、育成環境と情報量が発展します。</small></div>
+          <div class="panel-title"><div><p class="eyebrow">設備</p><h2>設備・長期実績</h2></div><small class="panel-note">能力値ではなく、育成環境と情報量が発展します。</small></div>
           ${renderFacilities()}<details class="retirement-history"><summary>売却履歴</summary>${renderRetirementHistory()}</details>
         </section>
         <section id="records-section" class="panel records-panel view-wide">
-          <div class="panel-title"><div><p class="eyebrow">HISTORY</p><h2>歴代記録・殿堂</h2></div></div>
+          <div class="panel-title"><div><p class="eyebrow">歴代記録</p><h2>歴代記録・殿堂</h2></div></div>
           ${renderCareerRecords()}<details class="history-details" open><summary>シリーズ図鑑・シリーズ別戦績</summary>${renderSeriesEncyclopedia()}</details><details class="history-details"><summary>殿堂入り機体</summary>${renderHallOfFame()}</details><details class="history-details"><summary>年度別大会履歴</summary>${renderTournamentHistory()}</details>
         </section>`;
     case 'settings':
-      return `${renderPageHeader('設定', 'settings')}<section id="settings-section" class="panel settings-panel view-wide"><div class="panel-title"><div><p class="eyebrow">GAME SETTINGS</p><h2>プレイ設定・セーブ</h2></div></div>${renderSettingsPanel()}<div class="danger-zone"><div><strong>ゲームデータの初期化</strong><small>現在の進行データを削除して最初から開始します。マネージャー設定は別保存です。</small></div><button id="reset-button" class="danger-button">ゲームをリセット</button></div></section>`;
+      return `${renderPageHeader('設定', 'settings')}<section id="settings-section" class="panel settings-panel view-wide"><div class="panel-title"><div><p class="eyebrow">ゲーム設定</p><h2>プレイ設定・セーブ</h2></div></div>${renderSettingsPanel()}<div class="danger-zone"><div><strong>ゲームデータの初期化</strong><small>現在の進行データを削除して最初から開始します。マネージャー設定は別保存です。</small></div><button id="reset-button" class="danger-button">ゲームをリセット</button></div></section>`;
     case 'training':
     default:
       return `
         ${renderPageHeader('育成', 'training')}
         <div class="training-action-grid">
           <section id="training-section" class="panel training-panel">
-            <div class="panel-title training-panel-head"><div><p class="eyebrow">TURN ${state.turn} / ${trainingTurnsForState(state)}</p><h2>全体練習を選択</h2></div><div class="training-head-actions"><button id="team-radar-open" class="ghost compact-button">チーム傾向を見る</button><div class="turn-progress"><span style="width:${Math.min(100, (state.turn / trainingTurnsForState(state)) * 100)}%"></span></div></div></div>
+            <div class="panel-title training-panel-head"><div><p class="eyebrow">第${state.turn}ターン / 全${trainingTurnsForState(state)}ターン</p><h2>全体練習を選択</h2></div><div class="training-head-actions"><button id="team-radar-open" class="ghost compact-button">チーム傾向を見る</button><div class="turn-progress"><span style="width:${Math.min(100, (state.turn / trainingTurnsForState(state)) * 100)}%"></span></div></div></div>
             ${renderTrainingLockNotice()}<div class="training-modifier-list">${renderTrainingModifiers()}</div><div class="training-grid training-grid-stacked">${renderTrainingChoices()}</div>
           </section>
-          <section class="panel event-panel training-event-top"><div class="panel-title"><div><p class="eyebrow">EVENT</p><h2>イベント</h2></div></div>${renderEventPanel()}</section>
+          <section class="panel event-panel training-event-top"><div class="panel-title"><div><p class="eyebrow">イベント</p><h2>イベント</h2></div></div>${renderEventPanel()}</section>
         </div>
         <section id="roster-section" class="panel roster-panel training-roster-wide">
-          <div class="panel-title"><div><p class="eyebrow">ROSTER</p><h2>所属機体 <span>${state.roster.length}</span></h2></div><button class="view-tab text-action" data-view="unit">選択機体の詳細を見る</button></div>
+          <div class="panel-title"><div><p class="eyebrow">所属機体</p><h2>所属機体 <span>${state.roster.length}</span></h2></div><button class="view-tab text-action" data-view="unit">選択機体の詳細を見る</button></div>
           ${renderRosterControls()}<div class="roster-list">${renderRoster()}</div>
         </section>
-        <section class="panel log-panel training-log-wide"><div class="panel-title"><div><p class="eyebrow">ACTIVITY</p><h2>最近のログ</h2></div></div><div class="log standalone-log">${state.log.slice(0, 12).map((line) => `<p>${escapeHtml(line)}</p>`).join('')}</div></section>`;
+        <section class="panel log-panel training-log-wide"><div class="panel-title"><div><p class="eyebrow">活動ログ</p><h2>最近のログ</h2></div></div><div class="log standalone-log">${state.log.slice(0, 12).map((line) => `<p>${escapeHtml(line)}</p>`).join('')}</div></section>`;
   }
 }
 
@@ -2466,7 +2468,7 @@ function render() {
   document.querySelector('#pwa-install-button')?.addEventListener('click', async () => {
     const result = await requestPwaInstall();
     if (result?.outcome === 'accepted') {
-      state.log = ['ROBOT LABをアプリとしてインストールしました。', ...state.log].slice(0, 32);
+      state.log = ['ロボット育成ラボをアプリとしてインストールしました。', ...state.log].slice(0, 32);
     }
     render();
   });

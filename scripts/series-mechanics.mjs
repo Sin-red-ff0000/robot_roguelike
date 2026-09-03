@@ -1,7 +1,7 @@
-import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.6';
-import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.6';
-import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.6';
-import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.6';
+import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.7';
+import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.7';
+import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.7';
+import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.7';
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function almost(actual, expected, tolerance = 0.001) { return Math.abs(actual - expected) <= tolerance; }
@@ -38,6 +38,16 @@ const growth = {
   reboundYear3: seriesGrowthMultiplier(baseRobot({curve:'rebound',cohortYear:3}), 'output'),
   pulseYear2: seriesGrowthMultiplier(baseRobot({curve:'pulse',cohortYear:2}), 'output'),
   pulseYear3: seriesGrowthMultiplier(baseRobot({curve:'pulse',cohortYear:3}), 'output'),
+  doublePeakYear1: seriesGrowthMultiplier(baseRobot({curve:'doublepeak',cohortYear:1}), 'output'),
+  doublePeakYear2: seriesGrowthMultiplier(baseRobot({curve:'doublepeak',cohortYear:2}), 'output'),
+  doublePeakYear3: seriesGrowthMultiplier(baseRobot({curve:'doublepeak',cohortYear:3}), 'output'),
+  rebuildYear2: seriesGrowthMultiplier(baseRobot({curve:'rebuild',cohortYear:2}), 'output'),
+  rebuildYear3: seriesGrowthMultiplier(baseRobot({curve:'rebuild',cohortYear:3}), 'output'),
+  highPlateauYear1: seriesGrowthMultiplier(baseRobot({curve:'highplateau',cohortYear:1}), 'output'),
+  highPlateauYear2: seriesGrowthMultiplier(baseRobot({curve:'highplateau',cohortYear:2}), 'output'),
+  highPlateauYear3: seriesGrowthMultiplier(baseRobot({curve:'highplateau',cohortYear:3}), 'output'),
+  fieldDeepenYear1: seriesGrowthMultiplier(baseRobot({curve:'fielddeepen',cohortYear:1}), 'output'),
+  fieldDeepenYear3: seriesGrowthMultiplier(baseRobot({curve:'fielddeepen',cohortYear:3}), 'output'),
 };
 const catchup = baseRobot({curve:'catchup',cohortYear:2});
 for (const name of Object.keys(catchup.stats.output)) catchup.stats.output[name] = 30;
@@ -53,6 +63,10 @@ assert(growth.ignitionYear3 > growth.ignitionYear1 * 1.8, 'ignition curve not de
 assert(growth.plateauYear1 > growth.plateauYear3 * 1.35, 'plateau curve not front loaded');
 assert(growth.reboundYear3 > growth.reboundYear2 * 1.35, 'rebound curve missing recovery');
 assert(growth.pulseYear2 > growth.pulseYear3 * 1.35, 'pulse curve missing year-two peak');
+assert(growth.doublePeakYear1 > growth.doublePeakYear2 * 1.25 && growth.doublePeakYear3 > growth.doublePeakYear2 * 1.25, 'double-peak curve missing dual peaks');
+assert(growth.rebuildYear3 > growth.rebuildYear2 * 1.6, 'rebuild curve missing third-year reconstruction');
+assert(Math.min(growth.highPlateauYear1, growth.highPlateauYear2, growth.highPlateauYear3) > 1.0, 'high-plateau curve dropped below baseline');
+assert(growth.fieldDeepenYear3 > growth.fieldDeepenYear1 * 1.25, 'field-deepen curve missing progressive growth');
 
 const basePart = { manufacturerId:'other', challenge:false, effects:[{kind:'base',groupKey:'output',statName:'瞬間出力',label:'瞬間出力',amount:4}], negatives:[{kind:'base',groupKey:'output',statName:'持続出力',label:'持続出力',amount:-4}] };
 const sameMakerPart = {...basePart, manufacturerId:'kirishima'};
@@ -107,5 +121,5 @@ console.log(JSON.stringify({
   growth,
   custom,
   appliedDelta,
-  note:'v3.6 keeps the v3.5 growth/custom mechanics unchanged; the v3.4-v3.5 mechanics audit remains green while v3.6 focuses on encyclopedia UI.'
+  note:'v3.7 keeps the audited growth/custom mechanics active and adds sixth-generation growth curves while preserving the same execution path.'
 }, null, 2));
