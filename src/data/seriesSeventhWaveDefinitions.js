@@ -1,10 +1,10 @@
-// v3.7 sixth-generation catalog: series 101-120 for every manufacturer.
-// The sixth generation focuses on "operational doctrine": not simply stronger machines,
-// but series whose three-year growth, customization response and preferred battle plan
-// are deliberately tied together.
+// v3.8 seventh-generation catalog: series 121-140 for every manufacturer.
+// The seventh generation focuses on "adaptive specialization": machines that deliberately
+// trade universal strength for a sharper three-year plan.  They are sidegrades rather than
+// direct upgrades, preserving the value of earlier generations.
 
 import { MANUFACTURERS } from './manufacturers.js?v=3.8';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.8';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=3.8';
 import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=3.8';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
@@ -80,12 +80,12 @@ function growthAdjustments(maker,role) {
   return out;
 }
 
-export const SIXTH_WAVE_SERIES_DEFINITIONS = FIFTH_WAVE_SERIES_DEFINITIONS.map((predecessor, globalIndex) => {
+export const SEVENTH_WAVE_SERIES_DEFINITIONS = SIXTH_WAVE_SERIES_DEFINITIONS.map((predecessor, globalIndex) => {
   const idx=globalIndex%20;
   const role=ROLES[idx];
   const maker=MAKER_MAP.get(predecessor.manufacturerId);
   const root=previousRoot(predecessor.nameLatin,predecessor.manufacturerId);
-  const seriesNumber=101+idx;
+  const seriesNumber=121+idx;
   const suffix=SUFFIXES[idx];
   const nameLatin=predecessor.manufacturerId==='bureau13' ? `CASE-${seriesNumber}` : `${root}-${suffix}`;
   const [primary,secondary,weak]=topGroups(maker);
@@ -97,14 +97,14 @@ export const SIXTH_WAVE_SERIES_DEFINITIONS = FIFTH_WAVE_SERIES_DEFINITIONS.map((
   if(role.avoid){ weaponAdjustments[avoided]=role.avoid; weaponGrowthAdjustments[avoided]=-.05; }
   const primaryLabel=GROUP_LABEL[primary]??primary;
   const secondaryLabel=GROUP_LABEL[secondary]??secondary;
-  const concept=`${nameLatin}は「${role.label}」を主題にした第6世代系列。${role.summary} ${maker?.name ?? predecessor.manufacturerId}の「${maker?.philosophy ?? '設計思想'}」を、初期性能だけでなく三年間の運用手順へ落とし込んでいる。`;
-  const namingConcept=`前身${predecessor.nameLatin}の名称系統を継ぎながら「${suffix}」の副名称を与えた。第6世代では副名称が性能ランクではなく、運用・育成・改修の手順を示す設計記号として使われる。`;
-  const developmentBackground=`第5世代で成長曲線とカスタム適性を製品仕様へ組み込んだ結果を受け、次段階では「いつ、何を伸ばし、どこで構成を変えるか」まで系列側から提案する方針へ進んだ。前身#${predecessor.seriesNumber}の長所を残しつつ、${role.label}という運用思想を追加している。`;
+  const concept=`${nameLatin}は「${role.label}」を再解釈した第7世代系列。${role.summary} ${maker?.name ?? predecessor.manufacturerId}の「${maker?.philosophy ?? '設計思想'}」を基礎に、万能な上位互換ではなく、育成・改修・兵装選択が噛み合った時だけ大きな強みが出る適応特化機として設計されている。`;
+  const namingConcept=`前身${predecessor.nameLatin}の名称系統を継ぎながら「${suffix}」の副名称を与えた。第7世代では同じ設計記号を継承しつつ、前世代で確立した運用手順をさらに尖らせた派生仕様であることを示す。`;
+  const developmentBackground=`第6世代で運用手順まで製品仕様へ組み込んだ結果を受け、第7世代では「何を捨て、どの勝ち筋へ寄せるか」をより明確にした。前身#${predecessor.seriesNumber}の長所を残しつつ、${role.label}という運用思想を追加している。`;
   const engineeringNotes=`${primaryLabel}と${secondaryLabel}を基本軸とするが、${role.id==='turnaround'?'従来の弱点側を意図的に主役へ引き上げる':role.id==='managedVolatility'?'個体差を消さず、外れ方の範囲だけを管理する':role.id==='modularNucleus'?'完成時に空白を残し、改修後の姿を正式仕様とみなす':'得意分野の数値だけでなく、三年間の性能推移そのものを設計対象とする'}。弱点は${GROUP_LABEL[weak]??weak}側に残りやすく、そこを補うか設計意図として受け入れるかで育成方針が分かれる。`;
   const trainingNotes=`成長曲線は「${CURVE_LABEL[role.curve] ?? role.curve}」、カスタム適性は「${CUSTOM_LABEL[role.custom] ?? role.custom}」を採用。${role.id==='dualPeak'||role.id==='rebuildCycle'?'年度ごとの伸び方が大きく変わるため、毎年同じ練習方針を続けるより時期に合わせて重点を変える方が系列思想に合う。':'初期総合評価だけではなく、3年目までの到達像から練習方針を逆算することを想定している。'}`;
   const weaponDoctrine=`推奨兵装は${preferredWeapons.map(k=>WEAPON_LABEL[k]??k).join(' / ')}。${role.id==='weaponSync'?'兵装同調そのものが設計目標で、現在兵装の個別練習と兵装パーツが特に重要になる':role.id==='domainLink'?'二つの兵装系統を使い分け、相手によって比較軸を変える':'兵装は固定職ではなく、この系列が狙う運用手順を完成させるための中心装備として扱う'}。非推奨は${WEAPON_LABEL[avoided]??avoided}。`;
   return {
-    id:`${predecessor.manufacturerId}-${slug(nameLatin)}`,
+    id:`${predecessor.manufacturerId}-g7-${seriesNumber}-${slug(nameLatin)}`,
     manufacturerId:predecessor.manufacturerId,
     seriesNumber,
     nameKana:nameLatin,
@@ -112,21 +112,21 @@ export const SIXTH_WAVE_SERIES_DEFINITIONS = FIFTH_WAVE_SERIES_DEFINITIONS.map((
     archetypeId:role.archetypeId,
     summary:`${role.label}。${role.summary}`,
     concept,namingConcept,developmentBackground,engineeringNotes,trainingNotes,weaponDoctrine,
-    marketPosition:`${role.label} / 第6世代`,
+    marketPosition:`${role.label} / 第7世代`,
     productionTier:role.tier,
     availabilityWeight:TIER_WEIGHT[role.tier],
-    predecessorNumber:81+idx,
+    predecessorNumber:101+idx,
     individualityTrait:role.id==='managedVolatility'?'jackpot':role.id==='weaponSync'?'weaponSwing':role.id==='rebuildCycle'?'growthSwing':role.id==='highPlateau'||role.id==='certainty'?'uniform':'normal',
     growthCurveId:role.curve,
     customAptitudeId:role.custom,
     intrinsicTraitId:role.trait,
-    sixthGeneration:true,
-    refitGeneration:6,
-    refitVersion:'3.7',
+    seventhGeneration:true,
+    refitGeneration:7,
+    refitVersion:'3.8',
     preferredWeapons,
     avoidedWeapons:[avoided],
     abilityTendencyTags:[primary,secondary,preferred,role.id==='foresight'?'ai':role.id==='stableExperiment'?'reliability':role.id==='counterLoop'?'resistance':'official'],
-    abilityTendencyMultiplier:['weaponSync','signature','managedVolatility'].includes(role.id)?1.52:1.40,
+    abilityTendencyMultiplier:['weaponSync','signature','managedVolatility'].includes(role.id)?1.56:1.43,
     annualVolatility:role.tier==='experimental'||role.tier==='rare'?1.28:role.tier==='mass'?.78:1,
     groupAdjustments:groupAdjustments(maker,role),
     growthAdjustments:growthAdjustments(maker,role),
@@ -134,7 +134,7 @@ export const SIXTH_WAVE_SERIES_DEFINITIONS = FIFTH_WAVE_SERIES_DEFINITIONS.map((
     resistanceAdjustment:Number(role.resistance??0),
     weaponAdjustments,
     weaponGrowthAdjustments,
-    statVarianceMultiplier:Number(role.variance ?? ((role.id==='highPlateau'||role.id==='certainty') ? .82 : 1)),
+    statVarianceMultiplier:Number(role.variance ?? ((role.id==='highPlateau'||role.id==='certainty') ? .80 : 1.03)),
     growthVarianceMultiplier:role.id==='rebuildCycle' ? 1.20 : role.id==='highPlateau' ? .86 : 1,
     eccentricBonusAdjustment:role.id==='managedVolatility'?.06:0,
   };

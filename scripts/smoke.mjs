@@ -20,10 +20,10 @@ import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (seriesRecords(state).length !== 2400) throw new Error('series encyclopedia row count');
+if (seriesRecords(state).length !== 2800) throw new Error('series encyclopedia row count');
 if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
-if (SERIES_DEFINITIONS.length !== 2400) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 120) throw new Error(`series count for ${manufacturer.id}`); }
+if (SERIES_DEFINITIONS.length !== 2800) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 140) throw new Error(`series count for ${manufacturer.id}`); }
 const legacyProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
 if (legacyProfiles.length !== 400) throw new Error(`legacy refit count ${legacyProfiles.length}`);
 for (const profile of legacyProfiles) {

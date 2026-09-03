@@ -104,7 +104,7 @@ if (!app.html.includes('シリーズ図鑑・シリーズ別戦績')) throw new 
 if (!app.html.includes('series-dex-summary')) throw new Error('series encyclopedia summary missing');
 if (!app.html.includes('series-dex-search') || !app.html.includes('series-dex-discovery') || !app.html.includes('series-dex-generation')) throw new Error('series encyclopedia search/filter controls missing');
 if (!app.html.includes('メーカー比較') || !app.html.includes('series-compare-a') || !app.html.includes('series-compare-b')) throw new Error('manufacturer comparison missing');
-if (!app.html.includes('/120 発見')) throw new Error('series progress denominator should be 120');
+if (!app.html.includes('第7世代 (#121～140)')) throw new Error('seventh generation filter missing');
 
 settingsViewButton.click();
 if (!app.html.includes('能力解説') || !app.html.includes('ステータス・戦闘指標を詳しく見る')) throw new Error('status guide missing');

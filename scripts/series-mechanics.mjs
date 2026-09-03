@@ -1,7 +1,7 @@
-import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.7';
-import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.7';
-import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.7';
-import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.7';
+import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.8';
+import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.8';
+import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.8';
+import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.8';
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function almost(actual, expected, tolerance = 0.001) { return Math.abs(actual - expected) <= tolerance; }
@@ -121,5 +121,5 @@ console.log(JSON.stringify({
   growth,
   custom,
   appliedDelta,
-  note:'v3.7 keeps the audited growth/custom mechanics active and adds sixth-generation growth curves while preserving the same execution path.'
+  note:'v3.8 re-audits growth/custom mechanics and keeps all seventh-generation series on the same verified execution path.'
 }, null, 2));

@@ -1,13 +1,14 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.7';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.7';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.7';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.7';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=3.7';
-import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=3.7';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.7';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.7';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.7';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.7';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.8';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.8';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.8';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.8';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=3.8';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=3.8';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=3.8';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.8';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.8';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.8';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.8';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8992,8 +8993,9 @@ const FOURTH_GENERATION_REFIT_MAP = new Map(FOURTH_GENERATION_REFIT_OVERRIDES.ma
 const FOURTH_GENERATION_SERIES = FOURTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(FOURTH_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
 const FIFTH_GENERATION_SERIES = FIFTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const SIXTH_GENERATION_SERIES = SIXTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const SEVENTH_GENERATION_SERIES = SEVENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES);
 
 // v3.7 Japanese-label repair: older generation data sometimes stored the Latin/original
 // name directly in nameKana.  Normalize the whole catalog once so both newly generated
@@ -9118,7 +9120,7 @@ function lineageMetadata(series) {
   const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
   const root = SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${rootNumber}`) ?? null;
   const predecessor = predecessorNumber ? SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${predecessorNumber}`) ?? null : null;
-  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : number <= 100 ? 5 : 6;
+  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : number <= 100 ? 5 : number <= 120 ? 6 : 7;
   return {
     lineageRootNumber: rootNumber,
     lineageRootId: root?.id ?? series?.id ?? null,
