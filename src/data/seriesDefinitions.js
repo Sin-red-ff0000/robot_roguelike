@@ -1,15 +1,16 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.9';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.9';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.9';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.9';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=3.9';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=3.9';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=3.9';
-import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=3.9';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.9';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.9';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.9';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.9';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.0';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.0';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.0';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.0';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.0';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.0';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.0';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.0';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.0';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.0';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.0';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.0';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.0';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8996,8 +8997,9 @@ const FIFTH_GENERATION_SERIES = FIFTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ .
 const SIXTH_GENERATION_SERIES = SIXTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const SEVENTH_GENERATION_SERIES = SEVENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const EIGHTH_GENERATION_SERIES = EIGHTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const NINTH_GENERATION_SERIES = NINTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES);
 
 // v3.7 Japanese-label repair: older generation data sometimes stored the Latin/original
 // name directly in nameKana.  Normalize the whole catalog once so both newly generated
@@ -9222,7 +9224,8 @@ export function resolveSeriesProfile(seriesLike) {
   const motifGroups = Object.entries(combinedGroupBias).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,2).map(([key])=>groupLabels[key] ?? key);
   const motifWeapons = [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])].slice(0,2).map((key)=>weaponLabels[key] ?? key);
   const motifExpansion = ` 設計モチーフを能力面から見ると、${motifGroups.length ? motifGroups.join('・') : '全体の均衡'}を主要な骨格とし、${motifWeapons.length ? `${motifWeapons.join('・')}などの兵装運用` : '特定兵装へ固定しない運用'}へつながるよう各系統の配分が組まれている。さらに成長曲線「${(SERIES_GROWTH_CURVES[inferredGrowthCurveId(series, series.archetypeId)] ?? SERIES_GROWTH_CURVES.steady).label}」とカスタム適性「${(SERIES_CUSTOM_APTITUDES[inferredCustomAptitudeId(series, series.archetypeId)] ?? SERIES_CUSTOM_APTITUDES.balanced).label}」まで含めて一つの設計像としており、名称は見た目の印象だけでなく、どの能力を伸ばし、どの改修で完成させる系列なのかを読む手掛かりとして扱う。`;
-  const localizedNamingConcept = `${baseNamingConcept}${motifExpansion}`.trim();
+  const weaponRelationExpansion = ` 兵装との関係では、${motifGroups.length ? motifGroups.join('・') : '基礎能力全般'}を兵装性能へ変換する設計を重視する。41基礎ステータスは兵装側の威力・精度・制御・応答・安定・効率と相乗し、同じ兵装値でも基礎側の組み合わせで実戦性能が変わる。育成では成長倍率・成長曲線・カスタム適性・推奨兵装まで合わせ、名称のモチーフが示す長所をどの兵装で結果へ変えるかを見ると設計意図を掴みやすい。`;
+  const localizedNamingConcept = `${baseNamingConcept}${motifExpansion}${weaponRelationExpansion}`.trim();
   const localizedDevelopmentBackground = localizeNarrativeText(series, lineage, series.developmentBackground ?? '');
   const localizedEngineeringNotes = localizeNarrativeText(series, lineage, series.engineeringNotes ?? '');
   const localizedTrainingNotes = localizeNarrativeText(series, lineage, series.trainingNotes ?? '');

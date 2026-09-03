@@ -1,12 +1,12 @@
-import { SERIES_DEFINITIONS, getSeriesForManufacturer } from '../src/data/seriesDefinitions.js?v=3.9';
-import { seriesJapaneseDisplayIsValid } from '../src/data/seriesNameLocalization.js?v=3.9';
-import { MANUFACTURERS } from '../src/data/manufacturers.js?v=3.9';
-import { seriesDisplayName } from '../src/systems/displaySystem.js?v=3.9';
+import { SERIES_DEFINITIONS, getSeriesForManufacturer } from '../src/data/seriesDefinitions.js?v=4.0';
+import { seriesJapaneseDisplayIsValid } from '../src/data/seriesNameLocalization.js?v=4.0';
+import { MANUFACTURERS } from '../src/data/manufacturers.js?v=4.0';
+import { seriesDisplayName } from '../src/systems/displaySystem.js?v=4.0';
 
-if (SERIES_DEFINITIONS.length !== 3200) throw new Error(`catalog size ${SERIES_DEFINITIONS.length}`);
+if (SERIES_DEFINITIONS.length !== 3600) throw new Error(`catalog size ${SERIES_DEFINITIONS.length}`);
 for (const maker of MANUFACTURERS) {
   const list=getSeriesForManufacturer(maker.id);
-  if (list.length !== 160) throw new Error(`${maker.id}: ${list.length} series`);
+  if (list.length !== 180) throw new Error(`${maker.id}: ${list.length} series`);
 }
 const invalid=SERIES_DEFINITIONS.filter((series)=>!seriesJapaneseDisplayIsValid(series.nameKana));
 if (invalid.length) throw new Error(`unlocalized Japanese labels: ${invalid.slice(0,10).map(s=>`${s.id}:${s.nameKana}`).join(', ')}`);
@@ -24,4 +24,4 @@ for (const series of SERIES_DEFINITIONS.filter((_,index)=>index%79===0)) {
   if (!seriesJapaneseDisplayIsValid(ja)) throw new Error(`display Japanese failed ${series.id}: ${ja}`);
   if (latin!==series.nameLatin) throw new Error(`display Latin failed ${series.id}: ${latin}`);
 }
-console.log(JSON.stringify({ok:true,series:SERIES_DEFINITIONS.length,perManufacturer:160,generations:8,invalidJapaneseLabels:invalid.length},null,2));
+console.log(JSON.stringify({ok:true,series:SERIES_DEFINITIONS.length,perManufacturer:180,generations:9,invalidJapaneseLabels:invalid.length},null,2));

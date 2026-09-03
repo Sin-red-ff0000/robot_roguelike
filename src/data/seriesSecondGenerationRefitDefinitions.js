@@ -3,8 +3,8 @@
 // gives all 400 second-generation series explicit lore, training identity, and
 // customization doctrine at the same descriptive density as the v3.1 legacy refit.
 
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.9';
-import { MANUFACTURERS } from './manufacturers.js?v=3.9';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.0';
+import { MANUFACTURERS } from './manufacturers.js?v=4.0';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 

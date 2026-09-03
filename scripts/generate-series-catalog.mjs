@@ -6,9 +6,9 @@ import { WEAPON_CATEGORIES } from '../src/data/weaponDefinitions.js';
 const weaponNames = (keys = []) => keys.length ? keys.map((key) => WEAPON_CATEGORIES[key]?.label ?? key).join(' / ') : '指定なし';
 const escapeCell = (value) => String(value ?? '').replaceAll('|', '｜').replaceAll('\n', ' ');
 const lines = [
-  '# SERIES CATALOG v3.9',
+  '# SERIES CATALOG v4.0',
   '',
-  `20メーカー × 160シリーズ = 合計${SERIES_DEFINITIONS.length}シリーズ。`,
+  `20メーカー × 180シリーズ = 合計${SERIES_DEFINITIONS.length}シリーズ。`,
   '',
   '- 1～20番：初代系列（v3.1で全面再設計 / 詳細解説・育成個性を追加）',
   '- 21～40番：第2世代系列（v3.2で全面再点検 / 開発背景・名称モチーフ・育成思想を追加）',
@@ -17,7 +17,8 @@ const lines = [
   '- 81～100番：第5世代系列（v3.5新規 / 極端な育成曲線・改造思想・企業思想の逆説解釈を強化）',
   '- 101～120番：第6世代系列（v3.7新規 / 運用手順・年度別育成・改修ドクトリンを統合）',
   '- 121～140番：第7世代系列（v3.8新規 / 適応特化・明確なトレードオフ・育成と兵装の連動を強化）',
-  '- 141～160番：第8世代系列（v3.9新規 / 前身名を継がないクリーンシート命名・設計モチーフから直接命名）',
+  '- 141～160番：第8世代系列（v3.9新規 / クリーンシート命名）',
+  '- 161～180番：第9世代系列（v4.0新規 / 副名称なし・前身語幹なしの独立命名）',
   '- 生産区分は新人加入時の出現しやすさへ反映',
   '- 個体差特性は初期能力・成長率・兵装適性・信頼性のばらつきへ反映',
   '- 各製造年度には通常改訂に加えて、稀に「名機年 / 好評年 / 不作年 / 問題年」が発生',
@@ -201,6 +202,25 @@ for (const maker of MANUFACTURERS) {
   }
 
 
+  lines.push('### 第9世代20系列 詳細解説（v4.0クリーンシート設計 / 副名称なし）');
+  lines.push('');
+  for (const series of seriesList.filter((item) => item.seriesNumber >= 161 && item.seriesNumber <= 180)) {
+    const p = resolveSeriesProfile(series);
+    lines.push(`#### #${series.seriesNumber} ${series.nameKana} / ${series.nameLatin}`);
+    lines.push('');
+    lines.push(`**立ち位置:** ${p.marketPosition} / ${p.label}`);
+    lines.push('');
+    if (p.namingConcept) lines.push(`**名称と設計モチーフ:** ${p.namingConcept}`);
+    lines.push('');
+    if (p.developmentBackground) lines.push(`**開発背景:** ${p.developmentBackground}`);
+    lines.push('');
+    if (p.engineeringNotes) lines.push(`**設計上の癖:** ${p.engineeringNotes}`);
+    lines.push('');
+    if (p.trainingNotes) lines.push(`**育成・改修:** ${p.trainingNotes}`);
+    lines.push('');
+    if (p.weaponDoctrine) lines.push(`**兵装ドクトリン:** ${p.weaponDoctrine}`);
+    lines.push('');
+  }
 }
 
 await writeFile(new URL('../SERIES_CATALOG.md', import.meta.url), `${lines.join('\n')}\n`, 'utf8');

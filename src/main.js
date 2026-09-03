@@ -1,28 +1,28 @@
-import { GAME_CONFIG } from './config.js?v=3.9';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.9';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.9';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.9';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.9';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.9';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.9';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.9';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.9';
-import { simulateBattle } from './systems/battleSystem.js?v=3.9';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.9';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.9';
-import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.9';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.9';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.9';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.9';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.9';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.9';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.9';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.9';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.9';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.9';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.9';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.9';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.9';
+import { GAME_CONFIG } from './config.js?v=4.0';
+import { MANUFACTURERS } from './data/manufacturers.js?v=4.0';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.0';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.0';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.0';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.0';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.0';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.0';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=4.0';
+import { simulateBattle } from './systems/battleSystem.js?v=4.0';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=4.0';
+import { PART_RARITIES } from './data/partDefinitions.js?v=4.0';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=4.0';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=4.0';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=4.0';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=4.0';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=4.0';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=4.0';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=4.0';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=4.0';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=4.0';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=4.0';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=4.0';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=4.0';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=4.0';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -34,7 +34,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.9';
+} from './systems/teamMatchSystem.js?v=4.0';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -1075,7 +1075,7 @@ function renderUnitOverview(robot) {
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <details class="series-lore-details">
-          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 8 ? '<em>第8世代クリーンシート</em>' : robot.seriesRefitGeneration === 7 ? '<em>第7世代新設計</em>' : robot.seriesRefitGeneration === 6 ? '<em>第6世代新設計</em>' : robot.seriesRefitGeneration === 5 ? '<em>第5世代新設計</em>' : robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 9 ? '<em>第9世代クリーンシート</em>' : robot.seriesRefitGeneration === 8 ? '<em>第8世代クリーンシート</em>' : robot.seriesRefitGeneration === 7 ? '<em>第7世代新設計</em>' : robot.seriesRefitGeneration === 6 ? '<em>第6世代新設計</em>' : robot.seriesRefitGeneration === 5 ? '<em>第5世代新設計</em>' : robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
           <div class="series-lore-body">
             ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
             ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}
@@ -1633,7 +1633,7 @@ function renderSeriesEncyclopedia() {
     <label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label>
     <label class="series-dex-search-field">シリーズ検索<div><input id="series-dex-search" type="search" value="${escapeHtml(uiState.seriesDexSearch)}" placeholder="名称・思想・特徴"><button type="button" id="series-dex-search-apply" class="mini-button">検索</button></div></label>
     <label>発見状況<select id="series-dex-discovery"><option value="all" ${uiState.seriesDexDiscovery==='all'?'selected':''}>すべて</option><option value="discovered" ${uiState.seriesDexDiscovery==='discovered'?'selected':''}>発見済み</option><option value="unseen" ${uiState.seriesDexDiscovery==='unseen'?'selected':''}>未発見</option><option value="seen" ${uiState.seriesDexDiscovery==='seen'?'selected':''}>遭遇のみ</option><option value="joined" ${uiState.seriesDexDiscovery==='joined'?'selected':''}>自軍加入済み</option><option value="completed" ${uiState.seriesDexDiscovery==='completed'?'selected':''}>育成完了</option><option value="hall" ${uiState.seriesDexDiscovery==='hall'?'selected':''}>殿堂</option></select></label>
-    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5,6,7,8].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
+    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5,6,7,8,9].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
     <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
@@ -1847,7 +1847,7 @@ function renderSettingsPanel() {
       </div>
     </div>
     ${renderStatusGuide()}
-    <p class="settings-note">シリーズは各メーカー160系列・合計3200系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
+    <p class="settings-note">シリーズは各メーカー180系列・合計3600系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
   `;
 }
 

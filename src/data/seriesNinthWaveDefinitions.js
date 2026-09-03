@@ -1,9 +1,9 @@
-// v3.9 eighth-generation catalog: series 141-160 for every manufacturer.
-// The eighth generation deliberately breaks the inherited-name-plus-suffix convention.
-// Every series receives a clean-sheet coined name that is independent from its predecessor.
+// v4.0 ninth-generation catalog: series 161-180 for every manufacturer.
+// The ninth generation continues clean-sheet naming and explicitly forbids inherited-name subtitles/suffixes.
+// Every series uses a standalone clean-sheet name: no inherited stem and no subtitle/suffix.
 
 import { MANUFACTURERS } from './manufacturers.js?v=4.0';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.0';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.0';
 import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.0';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
@@ -15,16 +15,16 @@ const CURVE_LABEL={steady:'均等成長',early:'早熟型',middle:'中盤型',la
 const CUSTOM_LABEL={balanced:'標準適合',modular:'高モジュール適合',overresponsive:'過敏応答',conservative:'保守的適合',manufacturer:'純正適合',trial:'試供品適合',weapon:'兵装改修適合',structural:'構造改修適合',electronic:'電子改修適合',precision:'精密改修適合',blank:'未完成素体適合',weaponExtreme:'単兵装改修適合',riskLab:'危険試験適合',manufacturerPlus:'純正深化適合'};
 
 const NAME_START = [
-  ['A','ア'],['VE','ヴェ'],['LU','ル'],['CA','カ'],['NO','ノ'],['SER','セル'],['IO','イオ'],['TA','タ'],['EL','エル'],['OR','オル'],
-  ['FI','フィ'],['RA','ラ'],['XE','ゼ'],['MI','ミ'],['VA','ヴァ'],['NE','ネ'],['SO','ソ'],['KY','キ'],['AE','エ'],['DR','ドラ'],
+  ['QUA','クア'],['BRI','ブリ'],['CIR','シル'],['DRE','ドレ'],['EVA','エヴァ'],['FAL','ファル'],['GRA','グラ'],['HYL','ヒル'],['IZA','イザ'],['JUR','ジュル'],
+  ['KRE','クレ'],['LYA','リア'],['MOR','モル'],['NYX','ニクス'],['OVA','オヴァ'],['PRA','プラ'],['RHE','レ'],['SYL','シルヴァ'],['TYR','ティル'],['ZEA','ゼア'],
 ];
 const NAME_CORE = [
-  ['LIS','リス'],['VAN','ヴァン'],['TER','テル'],['MIR','ミル'],['CEN','セン'],['RAX','ラクス'],['NIA','ニア'],['VOR','ヴォル'],['PHA','ファ'],['DEL','デル'],
-  ['MON','モン'],['RIS','リス'],['THE','テ'],['GAL','ガル'],['PRI','プリ'],['SYN','シン'],['COR','コル'],['HEL','ヘル'],['DIA','ディア'],['ZEN','ゼン'],
+  ['NEX','ネクス'],['AUR','アウル'],['VEL','ヴェル'],['ION','イオン'],['RUM','ルム'],['CEL','セル'],['DYN','ディン'],['ORA','オラ'],['KEL','ケル'],['MYR','ミル'],
+  ['SOL','ソル'],['TRI','トリ'],['VEX','ヴェクス'],['LUM','ルム'],['ARC','アルク'],['NEM','ネム'],['PHY','フィ'],['RHO','ロ'],['TAL','タル'],['ZEN','ゼン'],
 ];
 const NAME_END = [
-  ['A','ア'],['ON','オン'],['IS','イス'],['ER','エル'],['IA','イア'],['UM','ウム'],['EN','エン'],['OS','オス'],['AR','アル'],['EL','エル'],
-  ['IX','イクス'],['OR','オル'],['EA','エア'],['US','ウス'],['YN','イン'],['AS','アス'],['IR','イル'],['OM','オム'],['ET','エト'],['AN','アン'],
+  ['OR','オル'],['A','ア'],['EN','エン'],['IS','イス'],['UM','ウム'],['EL','エル'],['ON','オン'],['AR','アル'],['IA','イア'],['OS','オス'],
+  ['IX','イクス'],['ER','エル'],['AN','アン'],['EA','エア'],['US','ウス'],['IR','イル'],['OM','オム'],['ET','エト'],['YN','イン'],['AS','アス'],
 ];
 
 const ROLES = [
@@ -86,11 +86,11 @@ function growthAdjustments(maker,role) {
   return out;
 }
 
-export const EIGHTH_WAVE_SERIES_DEFINITIONS = SEVENTH_WAVE_SERIES_DEFINITIONS.map((predecessor, globalIndex) => {
+export const NINTH_WAVE_SERIES_DEFINITIONS = EIGHTH_WAVE_SERIES_DEFINITIONS.map((predecessor, globalIndex) => {
   const idx=globalIndex%20;
   const role=ROLES[idx];
   const maker=MAKER_MAP.get(predecessor.manufacturerId);
-  const seriesNumber=141+idx;
+  const seriesNumber=161+idx;
   const coined=coinedName(predecessor.manufacturerId,idx);
   const nameLatin=coined.latin;
   const nameKana=coined.kana;
@@ -104,11 +104,11 @@ export const EIGHTH_WAVE_SERIES_DEFINITIONS = SEVENTH_WAVE_SERIES_DEFINITIONS.ma
   const primaryLabel=GROUP_LABEL[primary]??primary;
   const secondaryLabel=GROUP_LABEL[secondary]??secondary;
   const weakLabel=GROUP_LABEL[weak]??weak;
-  const concept=`${nameKana}（${nameLatin}）は「${role.label}」を主題にした第8世代系列。${role.motif}。${maker?.name ?? predecessor.manufacturerId}の設計思想を受け継ぐ一方、第8世代では前身の外形や名称を守ること自体を目的にせず、必要な機能関係から機体を組み直すクリーンシート設計を採用した。`;
-  const namingConcept=`名称「${nameKana} / ${nameLatin}」は前身${predecessor.nameKana ?? predecessor.nameLatin}の語幹・型式名・副名称を一切流用しない第8世代専用の新造語。歴代名に語を足して派生機らしさを示す従来規約をここで終了し、「${role.label}」という設計像から音と綴りを新しく与えている。設計モチーフは「${role.image}」。名称と外観上のイメージを、性能ランクではなく機構の考え方へ直接結び付けることで、名前だけでも従来系列の延長ではないことが伝わるようにしている。`;
-  const developmentBackground=`第7世代までに育成・改修・兵装選択を製品仕様へ深く組み込んだ結果、系列名まで前身へ依存すると「新しい運用思想なのに旧型の派生に見える」という問題が生まれた。そこで第8世代では、系譜上の前身#${predecessor.seriesNumber}はデータとして保持しながら、商品名・設計モチーフ・基本構成を独立させる方針へ転換。${role.label}を最初の設計条件に置き、そこから必要な構造を逆算している。`;
-  const engineeringNotes=`基礎設計は${primaryLabel}と${secondaryLabel}を中心に組むが、単純な二軸強化ではない。${role.motif}という考え方を成立させるため、${weakLabel}側には意図的な不足や調整余地が残りやすい。第8世代では「弱点を消して万能化する」より、どの条件で設計思想が最大効率になるかを明確にする方が完成形に近い。`;
-  const trainingNotes=`成長曲線は「${CURVE_LABEL[role.curve] ?? role.curve}」、カスタム適性は「${CUSTOM_LABEL[role.custom] ?? role.custom}」。初期能力だけで採用を判断せず、3年間の成長曲線と改修適性を合わせて完成時の役割を決める。特に第8世代はクリーンシート設計のため、前身系列と同じ育成メニューを機械的に引き継ぐより、個体の基礎倍率・成長倍率・兵装適性を見て新しい運用を組む方が強みを引き出しやすい。`;
+  const concept=`${nameKana}（${nameLatin}）は「${role.label}」を主題にした第9世代系列。${role.motif}。${maker?.name ?? predecessor.manufacturerId}の設計思想を受け継ぐ一方、第9世代では前身の外形や名称を守ること自体を目的にせず、必要な機能関係から機体を組み直すクリーンシート設計を採用した。`;
+  const namingConcept=`名称「${nameKana} / ${nameLatin}」は前身${predecessor.nameKana ?? predecessor.nameLatin}の語幹・型式名・副名称を一切流用しない第9世代専用の新造語。既存名の後ろへ語を足す副名称方式も使用せず、「${role.label}」という設計像から音と綴りを新しく与えている。設計モチーフは「${role.image}」。名称と外観上のイメージを、性能ランクではなく機構の考え方へ直接結び付けることで、名前だけでも従来系列の延長ではないことが伝わるようにしている。`;
+  const developmentBackground=`第8世代までに育成・改修・兵装選択を製品仕様へ深く組み込んだ結果、系列名まで前身へ依存すると「新しい運用思想なのに旧型の派生に見える」という問題が生まれた。そこで第9世代では、系譜上の系譜上の前身#${predecessor.seriesNumber}はデータとして保持しながら、商品名・設計モチーフ・基本構成を独立させる方針へ転換。${role.label}を最初の設計条件に置き、そこから必要な構造を逆算している。`;
+  const engineeringNotes=`基礎設計は${primaryLabel}と${secondaryLabel}を中心に組むが、単純な二軸強化ではない。${role.motif}という考え方を成立させるため、${weakLabel}側には意図的な不足や調整余地が残りやすい。第9世代では「弱点を消して万能化する」より、どの条件で設計思想が最大効率になるかを明確にする方が完成形に近い。`;
+  const trainingNotes=`成長曲線は「${CURVE_LABEL[role.curve] ?? role.curve}」、カスタム適性は「${CUSTOM_LABEL[role.custom] ?? role.custom}」。初期能力だけで採用を判断せず、3年間の成長曲線と改修適性を合わせて完成時の役割を決める。特に第9世代はクリーンシート設計のため、前身系列と同じ育成メニューを機械的に引き継ぐより、個体の基礎倍率・成長倍率・兵装適性を見て新しい運用を組む方が強みを引き出しやすい。`;
   const weaponDoctrine=`推奨兵装は${preferredWeapons.map(k=>WEAPON_LABEL[k]??k).join(' / ')}。${role.id==='asymmetricTwin'?'二つの兵装を同じ役割へ寄せず、異なる距離・比較軸を担当させる':role.id==='localOptimum'?'一兵装へ集中し、狭い条件で最大効率を取る':'系列の設計モチーフを戦闘中に最も再現しやすい兵装として選定されている'}。非推奨は${WEAPON_LABEL[avoided]??avoided}だが装備禁止ではなく、基礎能力やパーツで不足を補えば別路線も成立する。`;
   return {
     id:`${predecessor.manufacturerId}-${slug(nameLatin)}`,
@@ -119,17 +119,17 @@ export const EIGHTH_WAVE_SERIES_DEFINITIONS = SEVENTH_WAVE_SERIES_DEFINITIONS.ma
     archetypeId:role.archetypeId,
     summary:`${role.label}。${role.motif}。`,
     concept,namingConcept,developmentBackground,engineeringNotes,trainingNotes,weaponDoctrine,
-    marketPosition:`${role.label} / 第8世代クリーンシート`,
+    marketPosition:`${role.label} / 第9世代クリーンシート`,
     productionTier:role.tier,
     availabilityWeight:TIER_WEIGHT[role.tier],
-    predecessorNumber:121+idx,
+    predecessorNumber:141+idx,
     individualityTrait:role.id==='opportunityLoad'?'jackpot':role.id==='localOptimum'?'weaponSwing':role.id==='emergentBehavior'?'growthSwing':role.id==='hardCertainty'||role.id==='faultMesh'?'uniform':'normal',
     growthCurveId:role.curve,
     customAptitudeId:role.custom,
     intrinsicTraitId:role.trait,
-    eighthGeneration:true,
-    refitGeneration:8,
-    refitVersion:'3.9',
+    ninthGeneration:true,
+    refitGeneration:9,
+    refitVersion:'4.0',
     cleanSheetNaming:true,
     preferredWeapons,
     avoidedWeapons:[avoided],
