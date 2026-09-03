@@ -20,10 +20,10 @@ import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (seriesRecords(state).length !== 1600) throw new Error('series encyclopedia row count');
+if (seriesRecords(state).length !== 2000) throw new Error('series encyclopedia row count');
 if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
-if (SERIES_DEFINITIONS.length !== 1600) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 80) throw new Error(`series count for ${manufacturer.id}`); }
+if (SERIES_DEFINITIONS.length !== 2000) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 100) throw new Error(`series count for ${manufacturer.id}`); }
 const legacyProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
 if (legacyProfiles.length !== 400) throw new Error(`legacy refit count ${legacyProfiles.length}`);
 for (const profile of legacyProfiles) {
@@ -73,6 +73,17 @@ for (const profile of fourthGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`fourth-generation identity refit missing: ${profile.id}`);
 }
+const fifthGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 81 && series.seriesNumber <= 100).map(resolveSeriesProfile);
+if (fifthGenProfiles.length !== 400) throw new Error(`fifth-generation count ${fifthGenProfiles.length}`);
+for (const profile of fifthGenProfiles) {
+  if (!profile.fifthGeneration || profile.refitGeneration !== 5 || profile.refitVersion !== '3.5') throw new Error(`fifth-generation flag missing: ${profile.id}`);
+  const loreLength = ['concept','namingConcept','developmentBackground','engineeringNotes','trainingNotes','weaponDoctrine'].reduce((sum, key) => sum + String(profile[key] ?? '').length, 0);
+  if (loreLength < 540) throw new Error(`fifth-generation lore package too short: ${profile.id} ${loreLength}`);
+  for (const field of ['namingConcept','developmentBackground','engineeringNotes','trainingNotes','weaponDoctrine']) {
+    if (!profile[field]) throw new Error(`fifth-generation lore missing ${field}: ${profile.id}`);
+  }
+  if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`fifth-generation identity missing: ${profile.id}`);
+}
 for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
 
 const kirishimaSeries = getSeriesForManufacturer('kirishima');
@@ -85,6 +96,9 @@ if (!massProfile.individualityLabel || !Array.isArray(massProfile.avoidedWeapons
 const fourthProfile = resolveSeriesProfile(kirishimaSeries.find((series) => series.seriesNumber === 61));
 if (fourthProfile.lineageGeneration !== 4 || fourthProfile.predecessorNumber !== 41) throw new Error('fourth generation lineage failed');
 if (!fourthProfile.intrinsicTrait?.label || !fourthProfile.growthCurve?.label || !fourthProfile.customAptitude?.label || !fourthProfile.abilityTendencyTags?.length) throw new Error('v3 series identity systems missing');
+const fifthProfile = resolveSeriesProfile(kirishimaSeries.find((series) => series.seriesNumber === 81));
+if (fifthProfile.lineageGeneration !== 5 || fifthProfile.predecessorNumber !== 61 || fifthProfile.refitVersion !== '3.5') throw new Error('fifth generation lineage failed');
+if (!['plateau','ignition','rebound','pulse'].includes(fifthProfile.growthCurveId)) throw new Error('fifth generation growth curve not resolved');
 
 const qualityKinds = new Set();
 for (let year = 1; year <= 220; year += 1) qualityKinds.add(getAnnualTrend(year, 'kirishima', kirishimaSeries[40].id).seriesYearEvent?.type);
@@ -148,7 +162,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '3.4') throw new Error('migration version');
+if (!migrated || migrated.version !== '3.5') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');

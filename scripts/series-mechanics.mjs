@@ -1,7 +1,7 @@
-import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.4';
-import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.4';
-import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.4';
-import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.4';
+import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=3.5';
+import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=3.5';
+import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=3.5';
+import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=3.5';
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function almost(actual, expected, tolerance = 0.001) { return Math.abs(actual - expected) <= tolerance; }
@@ -30,6 +30,14 @@ const growth = {
   lateYear3: seriesGrowthMultiplier(baseRobot({curve:'late',cohortYear:3}), 'output'),
   finalBurstYear3: seriesGrowthMultiplier(baseRobot({curve:'finalburst',trait:'finalYearBurst',cohortYear:3}), 'output'),
   weaponPurist: seriesGrowthMultiplier(baseRobot({curve:'steady',trait:'weaponPurist',cohortYear:2}), null, {weapon:true}),
+  ignitionYear1: seriesGrowthMultiplier(baseRobot({curve:'ignition',cohortYear:1}), 'output'),
+  ignitionYear3: seriesGrowthMultiplier(baseRobot({curve:'ignition',cohortYear:3}), 'output'),
+  plateauYear1: seriesGrowthMultiplier(baseRobot({curve:'plateau',cohortYear:1}), 'output'),
+  plateauYear3: seriesGrowthMultiplier(baseRobot({curve:'plateau',cohortYear:3}), 'output'),
+  reboundYear2: seriesGrowthMultiplier(baseRobot({curve:'rebound',cohortYear:2}), 'output'),
+  reboundYear3: seriesGrowthMultiplier(baseRobot({curve:'rebound',cohortYear:3}), 'output'),
+  pulseYear2: seriesGrowthMultiplier(baseRobot({curve:'pulse',cohortYear:2}), 'output'),
+  pulseYear3: seriesGrowthMultiplier(baseRobot({curve:'pulse',cohortYear:3}), 'output'),
 };
 const catchup = baseRobot({curve:'catchup',cohortYear:2});
 for (const name of Object.keys(catchup.stats.output)) catchup.stats.output[name] = 30;
@@ -41,6 +49,10 @@ assert(growth.lateYear3 > growth.lateYear1, 'late curve not back-loaded');
 assert(growth.finalBurstYear3 > 1.4, 'final-burst stacking missing');
 assert(growth.catchupWeak > growth.catchupStrong * 1.1, 'catchup weak-group bonus missing');
 assert(almost(growth.weaponPurist, 1.10), 'weapon-purist training bonus missing');
+assert(growth.ignitionYear3 > growth.ignitionYear1 * 1.8, 'ignition curve not delayed enough');
+assert(growth.plateauYear1 > growth.plateauYear3 * 1.35, 'plateau curve not front loaded');
+assert(growth.reboundYear3 > growth.reboundYear2 * 1.35, 'rebound curve missing recovery');
+assert(growth.pulseYear2 > growth.pulseYear3 * 1.35, 'pulse curve missing year-two peak');
 
 const basePart = { manufacturerId:'other', challenge:false, effects:[{kind:'base',groupKey:'output',statName:'瞬間出力',label:'瞬間出力',amount:4}], negatives:[{kind:'base',groupKey:'output',statName:'持続出力',label:'持続出力',amount:-4}] };
 const sameMakerPart = {...basePart, manufacturerId:'kirishima'};
@@ -64,6 +76,11 @@ const custom = {
   electronic: adjusted('electronic', electronicPart),
   precision: adjusted('precision'),
   intrinsicCustom: adjusted('balanced', basePart, 'customMonster'),
+  blank: adjusted('blank'),
+  weaponExtreme: adjusted('weaponExtreme', weaponPart),
+  riskLab: adjusted('riskLab', challengePart),
+  manufacturerPlusSame: adjusted('manufacturerPlus', sameMakerPart),
+  manufacturerPlusOther: adjusted('manufacturerPlus', basePart),
 };
 assert(custom.modular[0] > custom.balanced[0], 'modular aptitude positive bonus missing');
 assert(Math.abs(custom.overresponsive[1]) > Math.abs(custom.balanced[1]), 'overresponsive negative amplification missing');
@@ -74,6 +91,10 @@ assert(custom.weapon[0] > 4, 'weapon aptitude missing');
 assert(custom.electronic[0] > 4.5, 'electronic group aptitude missing');
 assert(custom.precision[0] > 4 && Math.abs(custom.precision[1]) < 4, 'precision aptitude missing');
 assert(custom.intrinsicCustom[0] > 4, 'intrinsic custom trait stacking missing');
+assert(custom.blank[0] >= 4.7, 'fifth-generation blank aptitude missing');
+assert(custom.weaponExtreme[0] > custom.weapon[0], 'fifth-generation weapon extreme aptitude missing');
+assert(custom.riskLab[0] > custom.trialChallenge[0] && Math.abs(custom.riskLab[1]) > Math.abs(custom.trialChallenge[1]), 'fifth-generation risk-lab aptitude missing');
+assert(custom.manufacturerPlusSame[0] > custom.manufacturerPlusOther[0] * 1.2, 'fifth-generation pure-maker aptitude missing');
 
 const applyRobot = baseRobot({aptitude:'modular'});
 const before = applyRobot.stats.output['瞬間出力'];
@@ -86,5 +107,5 @@ console.log(JSON.stringify({
   growth,
   custom,
   appliedDelta,
-  note:'Growth curves affect training multipliers by cohort year; v3.4 also applies the same series growth identity to official-match growth. Custom aptitudes preserve one decimal so small-part bonuses are no longer erased by integer rounding.'
+  note:'v3.5 verifies the fifth-generation ignition/plateau/rebound/pulse curves and blank/weaponExtreme/riskLab/manufacturerPlus custom aptitudes in addition to the v3.4 mechanics audit.'
 }, null, 2));

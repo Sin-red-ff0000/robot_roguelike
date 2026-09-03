@@ -1,10 +1,11 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.4';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.4';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.4';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.4';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.4';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.4';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.4';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.5';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.5';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.5';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=3.5';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.5';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.5';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.5';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.5';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8987,8 +8988,9 @@ const THIRD_GENERATION_REFIT_MAP = new Map(THIRD_GENERATION_REFIT_OVERRIDES.map(
 const THIRD_GENERATION_SERIES = THIRD_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(THIRD_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
 const FOURTH_GENERATION_REFIT_MAP = new Map(FOURTH_GENERATION_REFIT_OVERRIDES.map((item) => [item.id, item]));
 const FOURTH_GENERATION_SERIES = FOURTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(FOURTH_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
+const FIFTH_GENERATION_SERIES = FIFTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES);
 
 
 export const SERIES_GROWTH_CURVES = {
@@ -8999,6 +9001,10 @@ export const SERIES_GROWTH_CURVES = {
   finalburst:{label:'最終年爆発型',summary:'3年目に設計余力を大きく解放する。',yearMultipliers:[0.82,0.94,1.32]},
   frontloaded:{label:'完成品型',summary:'初期完成度と1年目効率が高いが、後半の伸びは控えめ。',yearMultipliers:[1.12,0.94,0.86]},
   catchup:{label:'弱点補正型',summary:'苦手グループの練習効率が高い。',yearMultipliers:[0.98,1.02,1.06],weakGroupMultiplier:1.16},
+  ignition:{label:'遅延点火型',summary:'前半を準備に使い、3年目に大きく伸びる。',yearMultipliers:[0.72,0.94,1.42]},
+  plateau:{label:'初期頂点型',summary:'1年目から高効率だが、後半は伸びが落ち着く。',yearMultipliers:[1.20,1.03,0.83]},
+  rebound:{label:'再加速型',summary:'2年目に一度停滞し、3年目に再び伸びる。',yearMultipliers:[1.04,0.82,1.24]},
+  pulse:{label:'中年次急伸型',summary:'2年目に調整が一気に噛み合うピークを持つ。',yearMultipliers:[0.84,1.30,0.88]},
 };
 export const SERIES_CUSTOM_APTITUDES = {
   balanced:{label:'標準適合',summary:'パーツ効果は標準的。',positive:1,negative:1},
@@ -9011,6 +9017,10 @@ export const SERIES_CUSTOM_APTITUDES = {
   structural:{label:'構造改修適合',summary:'基礎・耐性系パーツとの相性が良い。',positive:1,negative:1,kind:{base:1.10,resistance:1.14,reliability:1.08}},
   electronic:{label:'電子改修適合',summary:'演算・センサー・AI系の基礎改修に強い。',positive:1.06,negative:1,groups:{compute:1.10,sensor:1.10,ai:1.10}},
   precision:{label:'精密改修適合',summary:'改修結果の効率が安定して高い。',positive:1.08,negative:.92},
+  blank:{label:'未完成素体適合',summary:'改修余白が大きく、ほぼすべての正効果を強く受ける。',positive:1.18,negative:1.04},
+  weaponExtreme:{label:'単兵装改修適合',summary:'兵装パーツへの反応が極端に高い。',positive:.98,negative:1,kind:{weapon:1.28}},
+  riskLab:{label:'危険試験適合',summary:'挑戦的な試供品の上振れも副作用も大きくなる。',positive:1.02,negative:1,challengePositive:1.30,challengeNegative:1.28},
+  manufacturerPlus:{label:'純正深化適合',summary:'通常パーツは控えめだが同メーカー製で大きく伸びる。',positive:.98,negative:.95,sameMaker:1.28},
 };
 export const SERIES_INTRINSIC_TRAITS = {
  maturePlatform:{label:'成熟基盤',summary:'全体練習の吸収がわずかに安定する。',team:1.04}, lateApex:{label:'余力解放',summary:'3年目の練習効率をさらに高める。',year3:1.06}, customMonster:{label:'改修余白',summary:'カスタムを前提に余白を確保。',custom:1.04}, weaponPurist:{label:'兵装純化',summary:'現在兵装の個別練習効率が高い。',weaponTraining:1.10}, weaknessLearner:{label:'弱点学習',summary:'最も低い基礎グループを伸ばしやすい。',weak:1.10}, finishedProduct:{label:'完成品思想',summary:'序盤の練習吸収が良い。',year1:1.05}, finalYearBurst:{label:'終盤解放',summary:'3年目の育成で急伸しやすい。',year3:1.08}, precisionSeed:{label:'再現学習',summary:'練習のブレが小さい。',noise:.92}, volatileCore:{label:'変動学習',summary:'練習成果の振れ幅が大きい。',noise:1.18}, modularFrame:{label:'拡張骨格',summary:'カスタム効果を少し受けやすい。',custom:1.05}, dataDoctrine:{label:'情報連成',summary:'演算・センサー・AI練習に相乗効果。',groups:{compute:1.05,sensor:1.05,ai:1.05}}, survivalDoctrine:{label:'生存優先',summary:'機関系の育成効率が高い。',groups:{engine:1.06}}, overdriveLearning:{label:'高負荷学習',summary:'出力系の育成効率が高い。',groups:{output:1.08}}, slowForge:{label:'長期鍛造',summary:'後半ほど基礎練習効率が上がる。',year3:1.05}, adaptiveWeapons:{label:'兵装適応骨格',summary:'兵装個別練習を吸収しやすい。',weaponTraining:1.08}, autonomousMaturation:{label:'自律成熟',summary:'AI系の育成効率が高い。',groups:{ai:1.08}}, minimalResponse:{label:'最小応答',summary:'1年目の駆動練習が伸びやすい。',year1:1.04,groups:{mobility:1.05}}, trialMagnet:{label:'試供品受容',summary:'挑戦的試供品との相性を優先。',custom:1.04}, balancedCeiling:{label:'総合上限',summary:'全グループを均等に少し伸ばしやすい。',team:1.03}, eccentricLegacy:{label:'異端継承',summary:'練習成果の個体差を許容する。',noise:1.12}
@@ -9088,7 +9098,7 @@ function lineageMetadata(series) {
   const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
   const root = SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${rootNumber}`) ?? null;
   const predecessor = predecessorNumber ? SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${predecessorNumber}`) ?? null : null;
-  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : 4;
+  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : 5;
   return {
     lineageRootNumber: rootNumber,
     lineageRootId: root?.id ?? series?.id ?? null,
