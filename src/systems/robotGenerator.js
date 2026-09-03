@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=2.8';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=2.8';
-import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.8';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.8';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.8';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=2.8';
-import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS } from '../data/specialAbilities.js?v=2.8';
-import { getAnnualTrend } from './annualTrendSystem.js?v=2.8';
+import { GAME_CONFIG } from '../config.js?v=2.9';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=2.9';
+import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.9';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.9';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=2.9';
+import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS } from '../data/specialAbilities.js?v=2.9';
+import { getAnnualTrend } from './annualTrendSystem.js?v=2.9';
 
 const makeRobotId = () => {
   if (globalThis.crypto?.randomUUID) return `robot-${globalThis.crypto.randomUUID()}`;
@@ -37,15 +37,17 @@ function growthBias(profile, seriesProfile, annualTrend, groupKey) {
 
 function weaponBias(profile, seriesProfile, annualTrend, weaponKey) {
   const seriesIntensity = Number(profile?.seriesIntensity ?? 1);
+  const avoidedPenalty = seriesProfile?.avoidedWeapons?.includes(weaponKey) ? -6 : 0;
   return Number(profile?.weaponBias?.[weaponKey] ?? 0)
-    + Number(seriesProfile?.weaponBias?.[weaponKey] ?? 0) * seriesIntensity
+    + (Number(seriesProfile?.weaponBias?.[weaponKey] ?? 0) + avoidedPenalty) * seriesIntensity
     + Number(annualTrend?.weaponModifiers?.[weaponKey] ?? 0);
 }
 
 function weaponGrowthBias(profile, seriesProfile, annualTrend, weaponKey) {
   const seriesIntensity = Number(profile?.seriesIntensity ?? 1);
+  const avoidedPenalty = seriesProfile?.avoidedWeapons?.includes(weaponKey) ? -0.05 : 0;
   return Number(profile?.weaponGrowthBias?.[weaponKey] ?? 0)
-    + Number(seriesProfile?.weaponGrowthBias?.[weaponKey] ?? 0) * seriesIntensity
+    + (Number(seriesProfile?.weaponGrowthBias?.[weaponKey] ?? 0) + avoidedPenalty) * seriesIntensity
     + Number(annualTrend?.weaponGrowthModifiers?.[weaponKey] ?? 0);
 }
 
@@ -63,8 +65,8 @@ function generateGroup(profile, seriesProfile, annualTrend, groupKey) {
 
 function generateWeaponData(weaponKey, profile, seriesProfile, annualTrend) {
   const base = randomFloat(42, 77) + weaponBias(profile, seriesProfile, annualTrend, weaponKey);
-  const statVariance = clamp(Number(profile?.statVariance ?? 1) * Number(seriesProfile?.statVariance ?? 1), 0.5, 1.8);
-  const growthVariance = clamp(Number(profile?.growthVariance ?? 1) * Number(seriesProfile?.growthVariance ?? 1), 0.55, 1.8);
+  const statVariance = clamp(Number(profile?.statVariance ?? 1) * Number(seriesProfile?.statVariance ?? 1) * Number(seriesProfile?.weaponStatVariance ?? 1), 0.45, 2.2);
+  const growthVariance = clamp(Number(profile?.growthVariance ?? 1) * Number(seriesProfile?.growthVariance ?? 1) * Number(seriesProfile?.weaponGrowthVariance ?? 1), 0.5, 2.2);
   const weaponStats = {};
   const weaponGrowthMultipliers = {};
   for (const axis of WEAPON_AXES) {
@@ -132,6 +134,31 @@ function applyGenerationTrait(stats, growthMultipliers, weaponCategoryGrowthMult
   return null;
 }
 
+function applySeriesJackpot(stats, growthMultipliers, weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile) {
+  const chance = Number(seriesProfile?.jackpotChance ?? 0);
+  if (chance <= 0 || Math.random() >= chance) return null;
+  const groupKey = pick(GROUP_KEYS);
+  for (const statName of STAT_GROUPS[groupKey].stats) {
+    stats[groupKey][statName] = clamp(stats[groupKey][statName] + randomInt(5, 10), GAME_CONFIG.statMin, GAME_CONFIG.statMax);
+    growthMultipliers[groupKey][statName] = Number(clamp(
+      growthMultipliers[groupKey][statName] + randomFloat(0.08, 0.16),
+      GAME_CONFIG.growthMultiplierMin,
+      1.9,
+    ).toFixed(2));
+  }
+  const preferred = seriesProfile?.preferredWeapons?.length ? seriesProfile.preferredWeapons : WEAPON_KEYS;
+  const weaponKey = pick(preferred);
+  for (const axis of WEAPON_AXES) {
+    weaponCategoryStats[weaponKey][axis] = clamp(weaponCategoryStats[weaponKey][axis] + randomInt(5, 10), GAME_CONFIG.weaponStatMin, GAME_CONFIG.weaponStatMax);
+    weaponCategoryGrowthMultipliers[weaponKey][axis] = Number(clamp(
+      weaponCategoryGrowthMultipliers[weaponKey][axis] + randomFloat(0.08, 0.15),
+      GAME_CONFIG.growthMultiplierMin,
+      1.95,
+    ).toFixed(2));
+  }
+  return { groupKey, weaponKey, label: `${STAT_GROUPS[groupKey].label}・${WEAPON_CATEGORIES[weaponKey].label}の大当たり個体` };
+}
+
 function initialAbilities(manufacturer, seriesProfile) {
   const abilities = [];
   const experimental = manufacturer?.region === 'special' || seriesProfile?.archetypeId === 'volatileExperimental';
@@ -148,16 +175,20 @@ function initialAbilities(manufacturer, seriesProfile) {
 function pickSeries(manufacturer) {
   const list = getSeriesForManufacturer(manufacturer.id);
   if (!list.length) return null;
-  return weightedPick(list.map((series) => ({ value: series, weight: Number(series.availabilityWeight ?? 1) })));
+  return weightedPick(list.map((series) => ({
+    value: series,
+    weight: Math.max(0.01, Number(resolveSeriesProfile(series)?.effectiveAvailabilityWeight ?? series.availabilityWeight ?? 1)),
+  })));
 }
 
 function chooseWeapon(weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile, eccentricWeaponKey) {
   if (eccentricWeaponKey) return eccentricWeaponKey;
   const preferred = new Set(seriesProfile?.preferredWeapons ?? []);
+  const avoided = new Set(seriesProfile?.avoidedWeapons ?? []);
   const entries = WEAPON_KEYS.map((weaponKey) => {
     const statAvg = average(Object.values(weaponCategoryStats[weaponKey] ?? {}));
     const growthAvg = average(Object.values(weaponCategoryGrowthMultipliers[weaponKey] ?? {}));
-    const preferenceBonus = preferred.has(weaponKey) ? 18 : 0;
+    const preferenceBonus = preferred.has(weaponKey) ? 18 : avoided.has(weaponKey) ? -14 : 0;
     return { value: weaponKey, weight: Math.max(1, statAvg - 38 + growthAvg * 9 + preferenceBonus) };
   });
   return weightedPick(entries);
@@ -168,7 +199,7 @@ function generateReliability(manufacturer, seriesProfile, annualTrend, generatio
   const max = GAME_CONFIG.reliabilityMax;
   const midpoint = (min + max) / 2;
   const raw = (randomFloat(min, max) + randomFloat(min, max)) / 2;
-  const variance = clamp(Number(manufacturer?.profile?.reliabilityVariance ?? 1), 0.5, 1.8);
+  const variance = clamp(Number(manufacturer?.profile?.reliabilityVariance ?? 1) * Number(seriesProfile?.reliabilityVariance ?? 1), 0.4, 2.2);
   const seriesIntensity = Number(manufacturer?.profile?.seriesIntensity ?? 1);
   const bias = Number(manufacturer?.profile?.reliabilityBias ?? 0)
     + Number(seriesProfile?.reliabilityBias ?? 0) * seriesIntensity
@@ -227,7 +258,8 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
 
   const generationTrait = rollGenerationTrait(manufacturer, seriesProfile);
   const eccentricWeaponKey = applyGenerationTrait(stats, growthMultipliers, weaponCategoryGrowthMultipliers, generationTrait);
-  const weaponKey = chooseWeapon(weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile, eccentricWeaponKey);
+  const seriesJackpot = applySeriesJackpot(stats, growthMultipliers, weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile);
+  const weaponKey = chooseWeapon(weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile, eccentricWeaponKey ?? seriesJackpot?.weaponKey ?? null);
   const updatedGroupAverages = Object.fromEntries(GROUP_KEYS.map((groupKey) => [groupKey, average(Object.values(stats[groupKey]))]));
   const favoriteGroup = [...GROUP_KEYS].sort((a, b) =>
     (updatedGroupAverages[b] + averageGrowthForGroup(growthMultipliers, b) * 12)
@@ -249,6 +281,21 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
     seriesArchetypeId: seriesProfile?.archetypeId ?? 'balanced',
     seriesTrendLabel: seriesProfile?.label ?? '標準汎用',
     seriesTrendSummary: seriesProfile?.summary ?? '',
+    seriesMarketPosition: seriesProfile?.marketPosition ?? '',
+    seriesProductionTierId: seriesProfile?.productionTierId ?? 'standard',
+    seriesProductionTierLabel: seriesProfile?.productionTierLabel ?? '標準生産',
+    seriesIndividualityTraitId: seriesProfile?.individualityTraitId ?? 'normal',
+    seriesIndividualityLabel: seriesProfile?.individualityLabel ?? '標準個体差',
+    seriesIndividualitySummary: seriesProfile?.individualitySummary ?? '',
+    seriesLineageLabel: seriesProfile?.lineageLabel ?? '',
+    seriesLineageRootId: seriesProfile?.lineageRootId ?? null,
+    seriesPredecessorId: seriesProfile?.predecessorId ?? null,
+    seriesPredecessorNameKana: seriesProfile?.predecessorNameKana ?? '',
+    seriesPredecessorNameLatin: seriesProfile?.predecessorNameLatin ?? '',
+    seriesPreferredWeapons: [...(seriesProfile?.preferredWeapons ?? [])],
+    seriesAvoidedWeapons: [...(seriesProfile?.avoidedWeapons ?? [])],
+    seriesWeaponDoctrine: seriesProfile?.weaponDoctrine ?? '',
+    seriesJackpot,
     seriesNumber,
     seriesNameKana,
     seriesNameLatin,

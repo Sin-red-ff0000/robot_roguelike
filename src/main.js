@@ -1,27 +1,27 @@
-import { GAME_CONFIG } from './config.js?v=2.8';
-import { MANUFACTURERS } from './data/manufacturers.js?v=2.8';
-import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=2.8';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=2.8';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=2.8';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=2.8';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=2.8';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=2.8';
-import { simulateBattle } from './systems/battleSystem.js?v=2.8';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=2.8';
-import { PART_RARITIES } from './data/partDefinitions.js?v=2.8';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=2.8';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=2.8';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=2.8';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=2.8';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=2.8';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=2.8';
-import { careerRecordSummary, manufacturerRecords, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=2.8';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=2.8';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=2.8';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=2.8';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=2.8';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=2.8';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=2.8';
+import { GAME_CONFIG } from './config.js?v=2.9';
+import { MANUFACTURERS } from './data/manufacturers.js?v=2.9';
+import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=2.9';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=2.9';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=2.9';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=2.9';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=2.9';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=2.9';
+import { simulateBattle } from './systems/battleSystem.js?v=2.9';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=2.9';
+import { PART_RARITIES } from './data/partDefinitions.js?v=2.9';
+import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=2.9';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=2.9';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=2.9';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=2.9';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=2.9';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=2.9';
+import { careerRecordSummary, manufacturerRecords, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=2.9';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=2.9';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=2.9';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=2.9';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=2.9';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=2.9';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=2.9';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -33,7 +33,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=2.8';
+} from './systems/teamMatchSystem.js?v=2.9';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -87,6 +87,11 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function weaponListLabel(keys) {
+  const labels = (keys ?? []).map((key) => WEAPON_CATEGORIES[key]?.label ?? key).filter(Boolean);
+  return labels.length ? labels.join(' / ') : '指定なし';
 }
 
 const TUTORIAL_STEPS = [
@@ -1002,7 +1007,10 @@ function renderUnitOverview(robot) {
         <div class="unit-design-context">
           <div><span>メーカー思想</span><strong>${escapeHtml(MANUFACTURER_INFO_MAP.get(robot.manufacturerId)?.philosophy ?? '---')}</strong></div>
           <div><span>シリーズ傾向</span><strong>${escapeHtml(robot.seriesTrendLabel ?? '標準汎用')}：${escapeHtml(robot.seriesTrendSummary ?? '')}</strong></div>
-          <div><span>製造年度</span><strong>${robot.productionYear ?? '---'}年 / ${escapeHtml(robot.annualTrend?.label ?? '年度補正なし')}</strong></div>
+          <div><span>生産・系譜</span><strong>${escapeHtml(robot.seriesProductionTierLabel ?? '標準生産')} / ${escapeHtml(robot.seriesMarketPosition ?? '')}${robot.seriesLineageLabel ? ` / ${escapeHtml(robot.seriesLineageLabel)}` : ''}${robot.seriesPredecessorNameKana ? ` / 前身 ${escapeHtml(robot.seriesPredecessorNameKana)}` : ''}</strong></div>
+          <div><span>個体差・兵装嗜好</span><strong>${escapeHtml(robot.seriesIndividualityLabel ?? '標準個体差')} / 推奨 ${escapeHtml(weaponListLabel(robot.seriesPreferredWeapons))} / 非推奨 ${escapeHtml(weaponListLabel(robot.seriesAvoidedWeapons))}</strong></div>
+          <div><span>製造年度</span><strong>${robot.productionYear ?? '---'}年 / ${escapeHtml(robot.annualTrend?.label ?? '年度補正なし')}${robot.annualTrend?.seriesYearEvent?.type !== 'normal' ? ` / ${escapeHtml(robot.annualTrend.seriesYearEvent.description ?? '')}` : ''}</strong></div>
+          ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <div class="panel-title compact-panel-title overview-bars-title"><div><p class="eyebrow">ABILITY BARS</p><h2>基礎能力比較</h2></div><small class="panel-note">平均値</small></div>
         <div class="overview-base-bars">${renderBaseAbilityBars(robot)}</div>

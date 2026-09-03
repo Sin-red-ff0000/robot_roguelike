@@ -14,15 +14,26 @@ import { normalizeSettings } from '../src/systems/settingsSystem.js';
 import { applyManagerPreset, createManagerPreset, parseManagerProfileText, serializeManagerProfile, upsertManagerPreset } from '../src/systems/managerPresetSystem.js';
 import { tournamentAvailableTurn } from '../src/systems/tournamentSystem.js';
 import { toggleHallOfFame } from '../src/systems/recordSystem.js';
-import { SERIES_DEFINITIONS, getSeriesForManufacturer } from '../src/data/seriesDefinitions.js';
+import { SERIES_DEFINITIONS, getSeriesForManufacturer, resolveSeriesProfile } from '../src/data/seriesDefinitions.js';
 import { MANUFACTURERS } from '../src/data/manufacturers.js';
 import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (SERIES_DEFINITIONS.length !== 400) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 20) throw new Error(`series count for ${manufacturer.id}`); }
-for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 7 || Math.min(...Object.values(trend.groupModifiers)) < -7) throw new Error('annual trend out of bounds'); }
+if (SERIES_DEFINITIONS.length !== 1200) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 60) throw new Error(`series count for ${manufacturer.id}`); }
+for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
+
+const kirishimaSeries = getSeriesForManufacturer('kirishima');
+const massProfile = resolveSeriesProfile(kirishimaSeries.find((series) => series.seriesNumber === 41));
+const rareProfile = resolveSeriesProfile(kirishimaSeries.find((series) => series.seriesNumber === 42));
+if (massProfile.productionTierId !== 'mass' || rareProfile.productionTierId !== 'rare') throw new Error('production tier resolution failed');
+if (!(massProfile.effectiveAvailabilityWeight > rareProfile.effectiveAvailabilityWeight * 4)) throw new Error('production ratio not differentiated');
+if (massProfile.lineageGeneration !== 3 || massProfile.predecessorNumber !== 21 || massProfile.lineageRootNumber !== 1) throw new Error('series lineage failed');
+if (!massProfile.individualityLabel || !Array.isArray(massProfile.avoidedWeapons)) throw new Error('series individuality/weapon doctrine missing');
+const qualityKinds = new Set();
+for (let year = 1; year <= 220; year += 1) qualityKinds.add(getAnnualTrend(year, 'kirishima', kirishimaSeries[40].id).seriesYearEvent?.type);
+if (!qualityKinds.has('masterpiece') || !qualityKinds.has('problem')) throw new Error(`series year quality events missing ${[...qualityKinds]}`);
 
 if (state.onboarding?.completed) throw new Error('new game tutorial should be incomplete');
 const saveRoundTrip = parseSaveText(serializeSave(state));
@@ -79,7 +90,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '2.6') throw new Error('migration version');
+if (!migrated || migrated.version !== '2.9') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');

@@ -1,7 +1,7 @@
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.8';
-import { WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.8';
-import { MANUFACTURER_MAP } from '../data/manufacturers.js?v=2.8';
-import { getSeriesDefinition, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.8';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
+import { WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=2.9';
+import { MANUFACTURER_MAP } from '../data/manufacturers.js?v=2.9';
+import { getSeriesDefinition, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=2.9';
 
 function hashString(text) {
   let hash = 2166136261;
@@ -106,18 +106,59 @@ export function getAnnualTrend(year, manufacturerId, seriesId = null) {
     reliabilityModifier += Math.round((seriesRandom() * 2) - 1);
   }
 
-  const finalGroups = roundMap(groupModifiers, -7, 7, 2);
-  const finalGrowth = roundMap(growthModifiers, -0.07, 0.07, 3);
-  const finalWeapons = roundMap(weaponModifiers, -6, 6, 2);
-  const finalWeaponGrowth = roundMap(weaponGrowthModifiers, -0.06, 0.06, 3);
-  reliabilityModifier = clamp(reliabilityModifier, -5, 5);
-  resistanceModifier = clamp(resistanceModifier, -3, 3);
+  let seriesYearEvent = { type: 'normal', label: '通常改訂', description: '大きな当たり外れのない通常年度。', score: 0 };
+  if (series) {
+    const qualityRandom = mulberry32(hashString(`quality:${series.id}:${normalizedYear}`));
+    const volatility = clamp(Number(seriesProfile?.annualVolatility ?? 1), 0.6, 1.6);
+    const majorChance = 0.025 * volatility;
+    const minorChance = 0.065 * volatility;
+    const roll = qualityRandom();
+    let score = 0;
+    let type = 'normal';
+    if (roll < majorChance) { type = 'masterpiece'; score = 2; }
+    else if (roll < majorChance + minorChance) { type = 'good'; score = 1; }
+    else if (roll > 1 - majorChance) { type = 'problem'; score = -2; }
+    else if (roll > 1 - majorChance - minorChance) { type = 'rough'; score = -1; }
+
+    if (score !== 0) {
+      const rankedSeriesGroups = [...GROUP_KEYS].sort((a, b) => Number(seriesProfile?.groupBias?.[b] ?? 0) - Number(seriesProfile?.groupBias?.[a] ?? 0));
+      const focus = rankedSeriesGroups[0];
+      const secondary = rankedSeriesGroups[1];
+      const preferredWeapon = seriesProfile?.preferredWeapons?.[0] ?? WEAPON_KEYS[Math.floor(qualityRandom() * WEAPON_KEYS.length)];
+      const major = Math.abs(score) === 2;
+      const direction = Math.sign(score);
+      add(groupModifiers, focus, direction * (major ? 4.6 : 2.4));
+      add(groupModifiers, secondary, direction * (major ? 2.5 : 1.2));
+      add(growthModifiers, focus, direction * (major ? 0.032 : 0.016));
+      add(weaponModifiers, preferredWeapon, direction * (major ? 3.5 : 1.8));
+      add(weaponGrowthModifiers, preferredWeapon, direction * (major ? 0.026 : 0.012));
+      reliabilityModifier += direction * (major ? 4 : 2);
+      resistanceModifier += direction * (major ? 2 : 1);
+      const focusLabel = STAT_GROUPS[focus]?.label ?? focus;
+      const weaponLabel = WEAPON_CATEGORIES[preferredWeapon]?.label ?? preferredWeapon;
+      const labels = {
+        masterpiece: ['名機年', `${focusLabel}系改修と${weaponLabel}統合が大成功し、シリーズ史でも評価の高い年度。`],
+        good: ['好評年', `${focusLabel}系の改修が順調で、${weaponLabel}運用も安定した年度。`],
+        rough: ['不作年', `${focusLabel}系の設計変更が噛み合わず、${weaponLabel}適性にも小さな不調を残した年度。`],
+        problem: ['問題年', `${focusLabel}系の大幅改修が裏目に出て、${weaponLabel}統合にも問題を抱えた年度。`],
+      };
+      seriesYearEvent = { type, label: labels[type][0], description: labels[type][1], score };
+    }
+  }
+
+  const finalGroups = roundMap(groupModifiers, -10, 10, 2);
+  const finalGrowth = roundMap(growthModifiers, -0.09, 0.09, 3);
+  const finalWeapons = roundMap(weaponModifiers, -8, 8, 2);
+  const finalWeaponGrowth = roundMap(weaponGrowthModifiers, -0.08, 0.08, 3);
+  reliabilityModifier = clamp(reliabilityModifier, -9, 9);
+  resistanceModifier = clamp(resistanceModifier, -5, 5);
 
   const sortedGroups = [...GROUP_KEYS].sort((a, b) => finalGroups[b] - finalGroups[a]);
   const best = sortedGroups[0];
   const second = sortedGroups[1];
   const worst = sortedGroups.at(-1);
-  const label = `${normalizedYear}年度：${STAT_GROUPS[best].label}・${STAT_GROUPS[second].label}が追い風 / ${STAT_GROUPS[worst].label}は逆風`;
+  const qualitySuffix = seriesYearEvent.type === 'normal' ? '' : ` / ${seriesYearEvent.label}`;
+  const label = `${normalizedYear}年度：${STAT_GROUPS[best].label}・${STAT_GROUPS[second].label}が追い風 / ${STAT_GROUPS[worst].label}は逆風${qualitySuffix}`;
 
   return {
     year: normalizedYear,
@@ -132,5 +173,6 @@ export function getAnnualTrend(year, manufacturerId, seriesId = null) {
     resistanceModifier,
     strongestGroups: [best, second],
     weakestGroup: worst,
+    seriesYearEvent,
   };
 }

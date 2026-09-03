@@ -1,5 +1,5 @@
-import { GROUP_KEYS } from '../data/statDefinitions.js?v=2.8';
-import { WEAPON_AXES } from '../data/weaponDefinitions.js?v=2.8';
+import { GROUP_KEYS } from '../data/statDefinitions.js?v=2.9';
+import { WEAPON_AXES } from '../data/weaponDefinitions.js?v=2.9';
 
 function appearances(robot) {
   return (robot.record?.wins ?? 0) + (robot.record?.losses ?? 0);
@@ -36,6 +36,21 @@ export function createRobotSnapshot(robot) {
     seriesArchetypeId: robot.seriesArchetypeId ?? null,
     seriesTrendLabel: robot.seriesTrendLabel ?? '',
     seriesTrendSummary: robot.seriesTrendSummary ?? '',
+    seriesMarketPosition: robot.seriesMarketPosition ?? '',
+    seriesProductionTierId: robot.seriesProductionTierId ?? 'standard',
+    seriesProductionTierLabel: robot.seriesProductionTierLabel ?? '',
+    seriesIndividualityTraitId: robot.seriesIndividualityTraitId ?? 'normal',
+    seriesIndividualityLabel: robot.seriesIndividualityLabel ?? '',
+    seriesIndividualitySummary: robot.seriesIndividualitySummary ?? '',
+    seriesLineageLabel: robot.seriesLineageLabel ?? '',
+    seriesLineageRootId: robot.seriesLineageRootId ?? null,
+    seriesPredecessorId: robot.seriesPredecessorId ?? null,
+    seriesPredecessorNameKana: robot.seriesPredecessorNameKana ?? '',
+    seriesPredecessorNameLatin: robot.seriesPredecessorNameLatin ?? '',
+    seriesPreferredWeapons: robot.seriesPreferredWeapons ?? [],
+    seriesAvoidedWeapons: robot.seriesAvoidedWeapons ?? [],
+    seriesWeaponDoctrine: robot.seriesWeaponDoctrine ?? '',
+    seriesJackpot: robot.seriesJackpot ?? null,
     productionYear: robot.productionYear ?? null,
     annualTrend: robot.annualTrend ?? null,
     seriesNumber: robot.seriesNumber,

@@ -1,4 +1,5 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=2.8';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=2.9';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=2.9';
 
 // Formal series catalog: 20 manufacturers x 20 series = 400 series.
 // Series names are fixed; tendencies resolve from archetype + small series-specific adjustments.
@@ -842,6 +843,124 @@ export const SERIES_ARCHETYPES = {
     "growthBias": {"mobility": 0.03, "control": 0.04},
     "reliabilityBias": 9, "resistanceBias": 1, "weaponBias": {"blade": 4, "rifle": 4, "machineGun": 3},
     "weaponGrowthBias": {"blade": 0.04, "rifle": 0.04}, "preferredWeapons": ["blade", "rifle"], "statVariance": 0.7, "growthVariance": 0.82
+  },
+  "massProduction": {
+    "label": "量産標準",
+    "summary": "大量生産と運用互換性を優先し、突出より均質さを取る。",
+    "groupBias": { "control": 2, "engine": 2 },
+    "growthBias": {},
+    "reliabilityBias": 6,
+    "resistanceBias": 1,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 0.78,
+    "growthVariance": 0.86
+  },
+  "budget": {
+    "label": "廉価量産",
+    "summary": "必要十分な性能へ絞り、初期性能を少し落として製造性と扱いやすさを優先する。",
+    "groupBias": { "output": -3, "mobility": -2, "control": -1, "engine": -1, "compute": -3, "sensor": -2, "ai": -2 },
+    "growthBias": { "control": 0.02, "engine": 0.02 },
+    "reliabilityBias": 3,
+    "resistanceBias": 0,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 0.82,
+    "growthVariance": 0.9
+  },
+  "flagship": {
+    "label": "フラッグシップ",
+    "summary": "採算よりブランドを優先し、全体水準を高くまとめた看板設計。",
+    "groupBias": { "output": 4, "mobility": 4, "control": 4, "engine": 4, "compute": 4, "sensor": 4, "ai": 4 },
+    "growthBias": { "output": 0.015, "mobility": 0.015, "control": 0.015, "engine": 0.015, "compute": 0.015, "sensor": 0.015, "ai": 0.015 },
+    "reliabilityBias": 4,
+    "resistanceBias": 2,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 0.9,
+    "growthVariance": 0.92
+  },
+  "retro": {
+    "label": "復刻設計",
+    "summary": "旧世代の単純な構造を現代技術で再構成し、物理性能と扱いやすさを取り戻す。",
+    "groupBias": { "output": 5, "mobility": 1, "control": 2, "engine": 4, "compute": -5, "sensor": -3, "ai": -4 },
+    "growthBias": { "output": 0.03, "engine": 0.03, "compute": -0.02, "ai": -0.02 },
+    "reliabilityBias": 5,
+    "resistanceBias": 2,
+    "weaponBias": { "blade": 3, "hammer": 3, "lance": 3, "rifle": 2, "cannon": 2 },
+    "weaponGrowthBias": { "blade": 0.03, "hammer": 0.03, "lance": 0.03 },
+    "preferredWeapons": ["blade", "hammer", "lance"],
+    "statVariance": 0.9,
+    "growthVariance": 0.92
+  },
+  "growthProject": {
+    "label": "育成前提",
+    "summary": "完成状態で納入せず、調整・学習・改修によって三年間で完成する余白を残す。",
+    "groupBias": { "output": -5, "mobility": -5, "control": -5, "engine": -5, "compute": -5, "sensor": -5, "ai": -5 },
+    "growthBias": { "output": 0.075, "mobility": 0.075, "control": 0.075, "engine": 0.075, "compute": 0.075, "sensor": 0.075, "ai": 0.075 },
+    "reliabilityBias": 0,
+    "resistanceBias": 0,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 1.0,
+    "growthVariance": 1.14
+  },
+  "aiAnomaly": {
+    "label": "AI異常特化",
+    "summary": "戦闘AIと情報処理へ極端に資源を寄せ、機械側を判断系へ従属させる。",
+    "groupBias": { "output": -6, "mobility": -4, "control": 1, "engine": -5, "compute": 8, "sensor": 5, "ai": 16 },
+    "growthBias": { "compute": 0.05, "sensor": 0.03, "ai": 0.10, "output": -0.025, "engine": -0.02 },
+    "reliabilityBias": -5,
+    "resistanceBias": -2,
+    "weaponBias": { "drone": 7, "emp": 5, "missile": 3 },
+    "weaponGrowthBias": { "drone": 0.07, "emp": 0.05 },
+    "preferredWeapons": ["drone", "emp"],
+    "statVariance": 1.05,
+    "growthVariance": 1.08
+  },
+  "lottery": {
+    "label": "高個体差高性能",
+    "summary": "平均値より当たり個体の突出を優先し、製造ばらつきを意図的に残す。",
+    "groupBias": { "output": 2, "mobility": 2, "control": 2, "engine": 2, "compute": 2, "sensor": 2, "ai": 2 },
+    "growthBias": { "output": 0.015, "mobility": 0.015, "control": 0.015, "engine": 0.015, "compute": 0.015, "sensor": 0.015, "ai": 0.015 },
+    "reliabilityBias": -5,
+    "resistanceBias": 0,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 1.38,
+    "growthVariance": 1.3,
+    "eccentricBonus": 0.05
+  },
+  "counterDesign": {
+    "label": "対抗設計",
+    "summary": "競合機の典型的な強みを解析し、観測・制御・対応判断から相手の得意形を崩す。",
+    "groupBias": { "control": 5, "compute": 3, "sensor": 7, "ai": 4, "output": -2 },
+    "growthBias": { "control": 0.035, "sensor": 0.05, "ai": 0.03 },
+    "reliabilityBias": 1,
+    "resistanceBias": 1,
+    "weaponBias": { "rifle": 2, "missile": 3, "emp": 4 },
+    "weaponGrowthBias": { "emp": 0.04 },
+    "preferredWeapons": ["emp", "missile"],
+    "statVariance": 0.95,
+    "growthVariance": 1.0
+  },
+  "longSeller": {
+    "label": "ロングセラー",
+    "summary": "長期の運用実績で細かな欠点を潰し、派手さより再現性と整備性を優先する。",
+    "groupBias": { "output": 1, "mobility": 1, "control": 2, "engine": 2, "compute": 1, "sensor": 1, "ai": 1 },
+    "growthBias": {},
+    "reliabilityBias": 8,
+    "resistanceBias": 2,
+    "weaponBias": {},
+    "weaponGrowthBias": {},
+    "preferredWeapons": [],
+    "statVariance": 0.7,
+    "growthVariance": 0.8
   }
 };
 
@@ -8848,7 +8967,27 @@ export const SERIES_DEFINITIONS = [
   }
 ];
 
-SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS);
+SERIES_DEFINITIONS.push(...EXPANDED_SERIES_DEFINITIONS, ...THIRD_WAVE_SERIES_DEFINITIONS);
+
+
+export const SERIES_PRODUCTION_TIERS = {
+  mass: { label: '主力量産', description: '市場や現場で頻繁に見かける主力系列。', defaultWeight: 1.55 },
+  standard: { label: '標準生産', description: '通常の生産規模を持つ一般系列。', defaultWeight: 1.0 },
+  specialized: { label: '少量・特化', description: '用途を絞った少量生産系列。', defaultWeight: 0.62 },
+  experimental: { label: '実験・試験生産', description: '実証や限定用途を主目的とする希少系列。', defaultWeight: 0.34 },
+  rare: { label: '限定・希少', description: '滅多に配備されない限定系列。', defaultWeight: 0.16 },
+};
+
+export const SERIES_INDIVIDUALITY_TRAITS = {
+  normal: { label: '標準個体差', summary: '一般的な範囲で初期性能と成長率がばらつく。', statVariance: 1, growthVariance: 1, weaponStatVariance: 1, weaponGrowthVariance: 1, reliabilityVariance: 1, jackpotChance: 0 },
+  uniform: { label: '均質ロット', summary: '初期性能・成長・信頼性のロット差が小さい。', statVariance: 0.78, growthVariance: 0.82, weaponStatVariance: 0.82, weaponGrowthVariance: 0.84, reliabilityVariance: 0.75, jackpotChance: 0 },
+  stableGrowth: { label: '安定成長', summary: '初期値には差があっても成長率のばらつきが小さい。', statVariance: 1, growthVariance: 0.72, weaponStatVariance: 1, weaponGrowthVariance: 0.76, reliabilityVariance: 0.9, jackpotChance: 0 },
+  statSwing: { label: '初期値大振れ', summary: '同系列でも初期性能が大きく上下する。', statVariance: 1.38, growthVariance: 1, weaponStatVariance: 1.12, weaponGrowthVariance: 1, reliabilityVariance: 1.05, jackpotChance: 0 },
+  growthSwing: { label: '成長率大振れ', summary: '初期値より成長倍率の当たり外れが大きい。', statVariance: 0.98, growthVariance: 1.42, weaponStatVariance: 1, weaponGrowthVariance: 1.3, reliabilityVariance: 1, jackpotChance: 0 },
+  reliabilitySwing: { label: '信頼性大振れ', summary: '同ロットでも安定性の差が大きく、扱いやすさが個体ごとに変わる。', statVariance: 1, growthVariance: 1, weaponStatVariance: 1, weaponGrowthVariance: 1, reliabilityVariance: 1.55, jackpotChance: 0 },
+  weaponSwing: { label: '兵装適性大振れ', summary: '基礎能力より兵装適性・兵装成長率に強い個体差が出る。', statVariance: 0.95, growthVariance: 0.95, weaponStatVariance: 1.5, weaponGrowthVariance: 1.42, reliabilityVariance: 1, jackpotChance: 0 },
+  jackpot: { label: '大当たり個体あり', summary: 'ばらつきが大きく、稀に系列平均から大きく外れた優秀個体が生まれる。', statVariance: 1.18, growthVariance: 1.18, weaponStatVariance: 1.25, weaponGrowthVariance: 1.25, reliabilityVariance: 1.2, jackpotChance: 0.045 },
+};
 
 
 export const SERIES_BY_MANUFACTURER = new Map();
@@ -8874,24 +9013,93 @@ export function getSeriesDefinition(seriesId) {
   return SERIES_MAP.get(seriesId) ?? null;
 }
 
+function inferredProductionTier(series, archetype) {
+  if (series?.productionTier && SERIES_PRODUCTION_TIERS[series.productionTier]) return series.productionTier;
+  const weight = Number(series?.availabilityWeight ?? 1);
+  if (archetype === 'apex') return 'rare';
+  if (archetype === 'volatileExperimental') return 'experimental';
+  if (weight >= 1.12) return 'mass';
+  if (weight <= 0.68) return 'experimental';
+  if (weight <= 0.86) return 'specialized';
+  if (['balanced', 'reliable', 'longSeller', 'massProduction'].includes(archetype) && Number(series?.seriesNumber ?? 0) % 5 === 1) return 'mass';
+  return 'standard';
+}
+
+function inferredIndividualityTrait(series, archetype) {
+  if (series?.individualityTrait && SERIES_INDIVIDUALITY_TRAITS[series.individualityTrait]) return series.individualityTrait;
+  if (['reliable', 'precision', 'longSeller', 'massProduction'].includes(archetype)) return 'uniform';
+  if (['lateGrowth', 'growthProject'].includes(archetype)) return 'growthSwing';
+  if (['weaponSavant'].includes(archetype)) return 'weaponSwing';
+  if (['volatileExperimental', 'lottery'].includes(archetype)) return 'jackpot';
+  if (['glassCannon', 'ultraMobile', 'dataGlass'].includes(archetype)) return 'statSwing';
+  return 'normal';
+}
+
+function lineageMetadata(series) {
+  const number = Number(series?.seriesNumber ?? 1);
+  const rootNumber = ((Math.max(1, number) - 1) % 20) + 1;
+  const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
+  const root = SERIES_DEFINITIONS.find((item) => item.manufacturerId === series?.manufacturerId && Number(item.seriesNumber) === rootNumber) ?? null;
+  const predecessor = predecessorNumber
+    ? SERIES_DEFINITIONS.find((item) => item.manufacturerId === series?.manufacturerId && Number(item.seriesNumber) === predecessorNumber) ?? null
+    : null;
+  const generation = number <= 20 ? 1 : number <= 40 ? 2 : 3;
+  return {
+    lineageRootNumber: rootNumber,
+    lineageRootId: root?.id ?? series?.id ?? null,
+    lineageRootNameKana: root?.nameKana ?? series?.nameKana ?? '',
+    lineageRootNameLatin: root?.nameLatin ?? series?.nameLatin ?? '',
+    predecessorNumber,
+    predecessorId: predecessor?.id ?? null,
+    predecessorNameKana: predecessor?.nameKana ?? '',
+    predecessorNameLatin: predecessor?.nameLatin ?? '',
+    lineageGeneration: generation,
+    lineageLabel: `${root?.nameKana ?? series?.nameKana ?? 'シリーズ'}系 / 第${generation}世代`,
+  };
+}
+
 export function resolveSeriesProfile(seriesLike) {
   const series = typeof seriesLike === 'string' ? getSeriesDefinition(seriesLike) : seriesLike;
   if (!series) return null;
   const archetype = SERIES_ARCHETYPES[series.archetypeId] ?? SERIES_ARCHETYPES.balanced;
+  const productionTierId = inferredProductionTier(series, series.archetypeId);
+  const productionTier = SERIES_PRODUCTION_TIERS[productionTierId] ?? SERIES_PRODUCTION_TIERS.standard;
+  const individualityTraitId = inferredIndividualityTrait(series, series.archetypeId);
+  const individuality = SERIES_INDIVIDUALITY_TRAITS[individualityTraitId] ?? SERIES_INDIVIDUALITY_TRAITS.normal;
+  const lineage = lineageMetadata(series);
+  const preferredWeapons = [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])];
+  const avoidedWeapons = [...new Set(series.avoidedWeapons ?? [])].filter((weaponKey) => !preferredWeapons.includes(weaponKey));
   return {
     ...series,
+    ...lineage,
     label: series.label ?? archetype.label,
     summary: series.concept ?? archetype.summary,
     concept: series.concept ?? archetype.summary,
+    marketPosition: series.marketPosition ?? productionTier.label,
+    productionTierId,
+    productionTierLabel: productionTier.label,
+    productionTierDescription: productionTier.description,
+    effectiveAvailabilityWeight: Number(series.availabilityWeight ?? productionTier.defaultWeight),
+    individualityTraitId,
+    individualityLabel: individuality.label,
+    individualitySummary: individuality.summary,
+    individuality,
+    annualVolatility: Number(series.annualVolatility ?? (productionTierId === 'experimental' || productionTierId === 'rare' ? 1.2 : productionTierId === 'mass' ? 0.82 : 1)),
     groupBias: mergeNumberMaps(archetype.groupBias, series.groupAdjustments),
     growthBias: mergeNumberMaps(archetype.growthBias, series.growthAdjustments),
     weaponBias: mergeNumberMaps(archetype.weaponBias, series.weaponAdjustments),
     weaponGrowthBias: mergeNumberMaps(archetype.weaponGrowthBias, series.weaponGrowthAdjustments),
     reliabilityBias: Number(archetype.reliabilityBias ?? 0) + Number(series.reliabilityAdjustment ?? 0),
     resistanceBias: Number(archetype.resistanceBias ?? 0) + Number(series.resistanceAdjustment ?? 0),
-    preferredWeapons: [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])],
-    statVariance: Number(archetype.statVariance ?? 1) * Number(series.statVarianceMultiplier ?? 1),
-    growthVariance: Number(archetype.growthVariance ?? 1) * Number(series.growthVarianceMultiplier ?? 1),
+    preferredWeapons,
+    avoidedWeapons,
+    weaponDoctrine: series.weaponDoctrine ?? '',
+    statVariance: Number(archetype.statVariance ?? 1) * Number(series.statVarianceMultiplier ?? 1) * Number(individuality.statVariance ?? 1),
+    growthVariance: Number(archetype.growthVariance ?? 1) * Number(series.growthVarianceMultiplier ?? 1) * Number(individuality.growthVariance ?? 1),
+    weaponStatVariance: Number(individuality.weaponStatVariance ?? 1),
+    weaponGrowthVariance: Number(individuality.weaponGrowthVariance ?? 1),
+    reliabilityVariance: Number(individuality.reliabilityVariance ?? 1),
+    jackpotChance: Number(individuality.jackpotChance ?? 0),
     eccentricBonus: Number(archetype.eccentricBonus ?? 0) + Number(series.eccentricBonusAdjustment ?? 0),
   };
 }

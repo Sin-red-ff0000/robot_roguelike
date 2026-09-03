@@ -1,14 +1,14 @@
-import { GAME_CONFIG } from '../config.js?v=2.8';
+import { GAME_CONFIG } from '../config.js?v=2.9';
 import {
   ABILITY_UPGRADES,
   NEGATIVE_ABILITY_IDS,
   NEGATIVE_TO_POSITIVE,
   NORMAL_POSITIVE_ABILITY_IDS,
   SPECIAL_ABILITIES,
-} from '../data/specialAbilities.js?v=2.8';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.8';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=2.8';
-import { pick } from '../utils/random.js?v=2.8';
+} from '../data/specialAbilities.js?v=2.9';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=2.9';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=2.9';
+import { pick } from '../utils/random.js?v=2.9';
 
 function hasAbility(robot, id) {
   return robot.specialAbilities?.includes(id) ?? false;

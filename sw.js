@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robot-lab-v2.8';
+const CACHE_NAME = 'robot-lab-v2.9';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,8 +7,8 @@ const APP_SHELL = [
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
-  './src/styles.css?v=2.8',
-  './src/main.js?v=2.8'
+  './src/styles.css?v=2.9',
+  './src/main.js?v=2.9'
 ];
 
 self.addEventListener('install', (event) => {

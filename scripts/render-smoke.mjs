@@ -97,6 +97,8 @@ if (!app.html.includes('radar-chart')) throw new Error('unit radar chart missing
 if (!app.html.includes('metric-bar-chart')) throw new Error('unit base bar chart missing');
 if (!app.html.includes('unit-detail-selector')) throw new Error('unit detail selector missing');
 if (!app.html.includes('unit-overview-dashboard')) throw new Error('compact unit overview dashboard missing');
+if (!app.html.includes('生産・系譜')) throw new Error('series production/lineage detail missing');
+if (!app.html.includes('個体差・兵装嗜好')) throw new Error('series individuality/weapon preference detail missing');
 if (app.html.includes('selected-unit-bar')) throw new Error('duplicate global selected unit bar rendered on unit detail');
 
 weaponTabButton.click();
