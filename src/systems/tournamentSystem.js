@@ -1,6 +1,6 @@
-import { GAME_CONFIG } from '../config.js?v=3.1';
-import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=3.1';
-import { generateCustomPart } from './partSystem.js?v=3.1';
+import { GAME_CONFIG } from '../config.js?v=3.2';
+import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=3.2';
+import { generateCustomPart } from './partSystem.js?v=3.2';
 
 export function createTournamentYearState() {
   return Object.fromEntries(TOURNAMENT_IDS.map((id) => [id, {

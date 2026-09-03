@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=3.1';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.1';
-import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=3.1';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.1';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.1';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=3.1';
-import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.1';
-import { getAnnualTrend } from './annualTrendSystem.js?v=3.1';
+import { GAME_CONFIG } from '../config.js?v=3.2';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.2';
+import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=3.2';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.2';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.2';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=3.2';
+import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.2';
+import { getAnnualTrend } from './annualTrendSystem.js?v=3.2';
 
 const makeRobotId = () => {
   if (globalThis.crypto?.randomUUID) return `robot-${globalThis.crypto.randomUUID()}`;
@@ -297,6 +297,8 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
     seriesEngineeringNotes: seriesProfile?.engineeringNotes ?? '',
     seriesTrainingNotes: seriesProfile?.trainingNotes ?? '',
     seriesLegacyRefit: Boolean(seriesProfile?.legacyRefit),
+    seriesRefitGeneration: Number(seriesProfile?.refitGeneration ?? (seriesProfile?.legacyRefit ? 1 : 0)),
+    seriesRefitVersion: seriesProfile?.refitVersion ?? (seriesProfile?.legacyRefit ? '3.1' : ''),
     seriesMarketPosition: seriesProfile?.marketPosition ?? '',
     seriesProductionTierId: seriesProfile?.productionTierId ?? 'standard',
     seriesProductionTierLabel: seriesProfile?.productionTierLabel ?? '標準生産',

@@ -6,12 +6,12 @@ import { WEAPON_CATEGORIES } from '../src/data/weaponDefinitions.js';
 const weaponNames = (keys = []) => keys.length ? keys.map((key) => WEAPON_CATEGORIES[key]?.label ?? key).join(' / ') : '指定なし';
 const escapeCell = (value) => String(value ?? '').replaceAll('|', '｜').replaceAll('\n', ' ');
 const lines = [
-  '# SERIES CATALOG v3.1',
+  '# SERIES CATALOG v3.2',
   '',
   `20メーカー × 80シリーズ = 合計${SERIES_DEFINITIONS.length}シリーズ。`,
   '',
   '- 1～20番：初代系列（v3.1で全面再設計 / 詳細解説・育成個性を追加）',
-  '- 21～40番：第2世代系列',
+  '- 21～40番：第2世代系列（v3.2で全面再点検 / 開発背景・名称モチーフ・育成思想を追加）',
   '- 41～60番：第3世代系列（v2.9追加）',
   '- 61～80番：第4世代系列（v3.0追加 / 固有特性・成長曲線・カスタム適性・能力傾向を強化）',
   '- 生産区分は新人加入時の出現しやすさへ反映',
@@ -44,6 +44,25 @@ for (const maker of MANUFACTURERS) {
   lines.push('### 初代20系列 詳細解説（v3.1再設計）');
   lines.push('');
   for (const series of seriesList.filter((item) => item.seriesNumber <= 20)) {
+    const p = resolveSeriesProfile(series);
+    lines.push(`#### #${series.seriesNumber} ${series.nameKana} / ${series.nameLatin}`);
+    lines.push('');
+    lines.push(`**立ち位置:** ${p.marketPosition} / ${p.label}`);
+    lines.push('');
+    if (p.namingConcept) lines.push(`**名称と設計モチーフ:** ${p.namingConcept}`);
+    lines.push('');
+    if (p.developmentBackground) lines.push(`**開発背景:** ${p.developmentBackground}`);
+    lines.push('');
+    if (p.engineeringNotes) lines.push(`**設計上の癖:** ${p.engineeringNotes}`);
+    lines.push('');
+    if (p.trainingNotes) lines.push(`**育成・改修:** ${p.trainingNotes}`);
+    lines.push('');
+    if (p.weaponDoctrine) lines.push(`**兵装ドクトリン:** ${p.weaponDoctrine}`);
+    lines.push('');
+  }
+  lines.push('### 第2世代20系列 詳細解説（v3.2再設計）');
+  lines.push('');
+  for (const series of seriesList.filter((item) => item.seriesNumber >= 21 && item.seriesNumber <= 40)) {
     const p = resolveSeriesProfile(series);
     lines.push(`#### #${series.seriesNumber} ${series.nameKana} / ${series.nameLatin}`);
     lines.push('');

@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=3.1';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.1';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=3.1';
-import { randomFloat, randomInt } from '../utils/random.js?v=3.1';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.1';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=3.1';
-import { generateCohort } from './robotGenerator.js?v=3.1';
-import { generateTrainingChoices } from './trainingSystem.js?v=3.1';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=3.1';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=3.1';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=3.1';
-import { createRobotSnapshot } from './recordSystem.js?v=3.1';
-import { getAnnualTrend } from './annualTrendSystem.js?v=3.1';
+import { GAME_CONFIG } from '../config.js?v=3.2';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.2';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=3.2';
+import { randomFloat, randomInt } from '../utils/random.js?v=3.2';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=3.2';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=3.2';
+import { generateCohort } from './robotGenerator.js?v=3.2';
+import { generateTrainingChoices } from './trainingSystem.js?v=3.2';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=3.2';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=3.2';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=3.2';
+import { createRobotSnapshot } from './recordSystem.js?v=3.2';
+import { getAnnualTrend } from './annualTrendSystem.js?v=3.2';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -34,6 +34,8 @@ function normalizeRobot(robot) {
   robot.seriesEngineeringNotes = formalProfile?.engineeringNotes ?? robot.seriesEngineeringNotes ?? '';
   robot.seriesTrainingNotes = formalProfile?.trainingNotes ?? robot.seriesTrainingNotes ?? '';
   robot.seriesLegacyRefit = Boolean(formalProfile?.legacyRefit ?? robot.seriesLegacyRefit);
+  robot.seriesRefitGeneration = Number(formalProfile?.refitGeneration ?? (formalProfile?.legacyRefit ? 1 : robot.seriesRefitGeneration ?? 0));
+  robot.seriesRefitVersion = formalProfile?.refitVersion ?? (formalProfile?.legacyRefit ? '3.1' : robot.seriesRefitVersion ?? '');
   robot.seriesMarketPosition ??= formalProfile?.marketPosition ?? '';
   robot.seriesProductionTierId ??= formalProfile?.productionTierId ?? 'standard';
   robot.seriesProductionTierLabel ??= formalProfile?.productionTierLabel ?? '標準生産';
@@ -56,7 +58,7 @@ function normalizeRobot(robot) {
   robot.seriesCustomAptitude ??= JSON.parse(JSON.stringify(formalProfile?.customAptitude ?? {}));
   robot.seriesAbilityTendencyTags ??= [...(formalProfile?.abilityTendencyTags ?? [])];
   robot.seriesAbilityTendencyMultiplier ??= Number(formalProfile?.abilityTendencyMultiplier ?? 1.18);
-  if (Number(formalSeries?.seriesNumber ?? 0) <= 20 && formalProfile?.legacyRefit) {
+  if (formalProfile?.refitVersion || formalProfile?.legacyRefit) {
     robot.seriesArchetypeId = formalProfile.archetypeId ?? robot.seriesArchetypeId;
     robot.seriesTrendLabel = formalProfile.label ?? robot.seriesTrendLabel;
     robot.seriesTrendSummary = formalProfile.summary ?? robot.seriesTrendSummary;
@@ -177,7 +179,7 @@ export function createInitialState() {
     tournamentHistory: [],
     retirementHistory: [],
     seriesEncounters: Object.fromEntries(roster.filter((robot) => robot.seriesId).map((robot) => [robot.seriesId, 1])),
-    log: ['v3.1を開始しました。初代400シリーズを全面再設計し、設計解説・育成個性・改修思想を後期系列と同じ粒度へ引き上げました。'],
+    log: ['v3.2を開始しました。第2世代400シリーズを全面再点検し、初代系列と同じ密度の設計解説・育成個性・改修思想へ更新しました。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),

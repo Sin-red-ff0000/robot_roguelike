@@ -1,27 +1,27 @@
-import { GAME_CONFIG } from './config.js?v=3.1';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.1';
-import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=3.1';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.1';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.1';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.1';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.1';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.1';
-import { simulateBattle } from './systems/battleSystem.js?v=3.1';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.1';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.1';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.1';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.1';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.1';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.1';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.1';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.1';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.1';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.1';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.1';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.1';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.1';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.1';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.1';
+import { GAME_CONFIG } from './config.js?v=3.2';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.2';
+import { GROUP_KEYS, STAT_GROUPS } from './data/statDefinitions.js?v=3.2';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.2';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.2';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.2';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.2';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.2';
+import { simulateBattle } from './systems/battleSystem.js?v=3.2';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.2';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.2';
+import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.2';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.2';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.2';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.2';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.2';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.2';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.2';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.2';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.2';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.2';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.2';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.2';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.2';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -33,7 +33,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.1';
+} from './systems/teamMatchSystem.js?v=3.2';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -1023,7 +1023,7 @@ function renderUnitOverview(robot) {
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <details class="series-lore-details">
-          <summary><span>シリーズ設計解説</span>${robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
           <div class="series-lore-body">
             ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
             ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}

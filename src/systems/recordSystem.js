@@ -1,7 +1,7 @@
-import { GROUP_KEYS } from '../data/statDefinitions.js?v=3.1';
-import { WEAPON_AXES } from '../data/weaponDefinitions.js?v=3.1';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.1';
-import { SERIES_DEFINITIONS, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=3.1';
+import { GROUP_KEYS } from '../data/statDefinitions.js?v=3.2';
+import { WEAPON_AXES } from '../data/weaponDefinitions.js?v=3.2';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.2';
+import { SERIES_DEFINITIONS, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=3.2';
 
 function appearances(robot) {
   return (robot.record?.wins ?? 0) + (robot.record?.losses ?? 0);
@@ -44,6 +44,8 @@ export function createRobotSnapshot(robot) {
     seriesEngineeringNotes: robot.seriesEngineeringNotes ?? '',
     seriesTrainingNotes: robot.seriesTrainingNotes ?? '',
     seriesLegacyRefit: Boolean(robot.seriesLegacyRefit),
+    seriesRefitGeneration: Number(robot.seriesRefitGeneration ?? (robot.seriesLegacyRefit ? 1 : 0)),
+    seriesRefitVersion: robot.seriesRefitVersion ?? (robot.seriesLegacyRefit ? '3.1' : ''),
     seriesMarketPosition: robot.seriesMarketPosition ?? '',
     seriesProductionTierId: robot.seriesProductionTierId ?? 'standard',
     seriesProductionTierLabel: robot.seriesProductionTierLabel ?? '',
