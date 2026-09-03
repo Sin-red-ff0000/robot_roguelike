@@ -1,9 +1,10 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.3';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.3';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.3';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.3';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.3';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.3';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=3.4';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=3.4';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=3.4';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=3.4';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=3.4';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=3.4';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=3.4';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8984,8 +8985,10 @@ const SECOND_GENERATION_REFIT_MAP = new Map(SECOND_GENERATION_REFIT_OVERRIDES.ma
 const SECOND_GENERATION_SERIES = EXPANDED_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(SECOND_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
 const THIRD_GENERATION_REFIT_MAP = new Map(THIRD_GENERATION_REFIT_OVERRIDES.map((item) => [item.id, item]));
 const THIRD_GENERATION_SERIES = THIRD_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(THIRD_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
+const FOURTH_GENERATION_REFIT_MAP = new Map(FOURTH_GENERATION_REFIT_OVERRIDES.map((item) => [item.id, item]));
+const FOURTH_GENERATION_SERIES = FOURTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base, ...(FOURTH_GENERATION_REFIT_MAP.get(base.id) ?? {}) }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_WAVE_SERIES_DEFINITIONS);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES);
 
 
 export const SERIES_GROWTH_CURVES = {

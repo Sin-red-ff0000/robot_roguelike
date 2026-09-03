@@ -1,10 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=3.3';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.3';
-import { generateCohort } from './robotGenerator.js?v=3.3';
-import { simulateBattle } from './battleSystem.js?v=3.3';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=3.3';
-import { clamp, randomInt } from '../utils/random.js?v=3.3';
-import { battleWinTable } from './settingsSystem.js?v=3.3';
+import { GAME_CONFIG } from '../config.js?v=3.4';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.4';
+import { generateCohort } from './robotGenerator.js?v=3.4';
+import { simulateBattle } from './battleSystem.js?v=3.4';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=3.4';
+import { clamp, randomInt } from '../utils/random.js?v=3.4';
+import { battleWinTable } from './settingsSystem.js?v=3.4';
+import { seriesGrowthMultiplier } from './trainingSystem.js?v=3.4';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);
@@ -172,14 +173,14 @@ function applyBattleGrowth(robot, result, won) {
       const mult = robot.growthMultipliers[slot.groupKey][slot.statName];
       robot.stats[slot.groupKey][slot.statName] = addGrowth(
         robot.stats[slot.groupKey][slot.statName],
-        baseGrowth * mult,
+        baseGrowth * mult * seriesGrowthMultiplier(robot, slot.groupKey),
       );
     } else {
       const key = `weapon:${slot.axis}`;
       if (touched.has(key)) continue;
       touched.add(key);
       const mult = robot.weaponGrowthMultipliers[slot.axis];
-      robot.weaponStats[slot.axis] = addGrowth(robot.weaponStats[slot.axis], baseGrowth * mult);
+      robot.weaponStats[slot.axis] = addGrowth(robot.weaponStats[slot.axis], baseGrowth * mult * seriesGrowthMultiplier(robot, null, { weapon: true }));
     }
   }
 }

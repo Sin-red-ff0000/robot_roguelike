@@ -1,28 +1,28 @@
-import { GAME_CONFIG } from './config.js?v=3.3';
-import { MANUFACTURERS } from './data/manufacturers.js?v=3.3';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.3';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.3';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.3';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.3';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.3';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.3';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.3';
-import { simulateBattle } from './systems/battleSystem.js?v=3.3';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.3';
-import { PART_RARITIES } from './data/partDefinitions.js?v=3.3';
-import { generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.3';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.3';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.3';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.3';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.3';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.3';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.3';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.3';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.3';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.3';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.3';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.3';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.3';
+import { GAME_CONFIG } from './config.js?v=3.4';
+import { MANUFACTURERS } from './data/manufacturers.js?v=3.4';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=3.4';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=3.4';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=3.4';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=3.4';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=3.4';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=3.4';
+import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=3.4';
+import { simulateBattle } from './systems/battleSystem.js?v=3.4';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=3.4';
+import { PART_RARITIES } from './data/partDefinitions.js?v=3.4';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=3.4';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=3.4';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=3.4';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=3.4';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=3.4';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=3.4';
+import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=3.4';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=3.4';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=3.4';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=3.4';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=3.4';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=3.4';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=3.4';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -34,7 +34,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=3.3';
+} from './systems/teamMatchSystem.js?v=3.4';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -652,6 +652,12 @@ function effectText(effect) {
   return `${effect.label} ${sign}${effect.amount}`;
 }
 
+function adjustedEffectText(effect, adjusted) {
+  if (!adjusted || Number(adjusted.amount) === Number(effect.amount)) return effectText(effect);
+  const sign = adjusted.amount >= 0 ? '+' : '';
+  return `${effectText(effect)} → 適性補正後 ${sign}${adjusted.amount}`;
+}
+
 function renderPartInventory(robot) {
   const allParts = state.partInventory ?? [];
   const parts = filteredParts();
@@ -700,7 +706,7 @@ function renderPartInventory(robot) {
   }
   return `
     <div class="parts-toolbar">
-      <div><strong>所持 ${allParts.length}個 / 表示 ${parts.length}個</strong><span>選択中：${robot ? sName(robot) : '---'}</span></div>
+      <div><strong>所持 ${allParts.length}個 / 表示 ${parts.length}個</strong><span>選択中：${robot ? sName(robot) : '---'}</span>${robot ? `<small>カスタム適性：${escapeHtml(robot.seriesCustomAptitude?.label ?? '標準適合')} — 同じパーツでも適性補正後の実効値が変わります。</small>` : ''}</div>
     </div>
     ${filters}
     ${parts.length ? `<div class="parts-list">
@@ -708,20 +714,26 @@ function renderPartInventory(robot) {
         const ability = part.abilityId ? SPECIAL_ABILITIES[part.abilityId] : null;
         const positiveTotal = (part.effects ?? []).reduce((sum, effect) => sum + Math.max(0, effect.amount), 0);
         const negativeTotal = Math.abs((part.negatives ?? []).reduce((sum, effect) => sum + Math.min(0, effect.amount), 0));
+        const adjusted = robot ? adjustedCustomPartEffects(robot, part) : [];
+        const adjustedPositive = adjusted.slice(0, part.effects?.length ?? 0);
+        const adjustedNegative = adjusted.slice(part.effects?.length ?? 0);
+        const adjustedPositiveTotal = adjustedPositive.reduce((sum, effect) => sum + Math.max(0, Number(effect.amount) || 0), 0);
+        const adjustedNegativeTotal = Math.abs(adjustedNegative.reduce((sum, effect) => sum + Math.min(0, Number(effect.amount) || 0), 0));
+        const aptitudeChanges = robot && (Math.abs(adjustedPositiveTotal - positiveTotal) > 0.01 || Math.abs(adjustedNegativeTotal - negativeTotal) > 0.01);
         return `
           <article class="part-card ${part.challenge ? 'challenge' : ''}">
             <div class="part-card-head">
               <div>
                 <span class="part-rarity">${part.rarityLabel}${part.challenge ? ' / 挑戦的' : ''}${part.memorial ? ' / 記念' : ''}${part.tournamentSpecial ? ' / 大会特別' : ''}</span>
                 <strong>${part.name}</strong>
-                <small>総強化 +${positiveTotal}${negativeTotal ? ` / 代償 -${negativeTotal}` : ''}</small>
+                <small>総強化 +${positiveTotal}${negativeTotal ? ` / 代償 -${negativeTotal}` : ''}${aptitudeChanges ? ` → この機体では +${adjustedPositiveTotal.toFixed(1)}${adjustedNegativeTotal ? ` / 代償 -${adjustedNegativeTotal.toFixed(1)}` : ''}` : ''}</small>
               </div>
               <button class="part-use-button" data-part-id="${part.id}" ${robot ? '' : 'disabled'}>使用</button>
             </div>
             <div class="part-effects positive">
-              ${part.effects.map((effect) => `<span>${effectText(effect)}</span>`).join('')}
+              ${part.effects.map((effect, index) => `<span>${adjustedEffectText(effect, adjustedPositive[index])}</span>`).join('')}
             </div>
-            ${part.negatives.length ? `<div class="part-effects negative">${part.negatives.map((effect) => `<span>${effectText(effect)}</span>`).join('')}</div>` : ''}
+            ${part.negatives.length ? `<div class="part-effects negative">${part.negatives.map((effect, index) => `<span>${adjustedEffectText(effect, adjustedNegative[index])}</span>`).join('')}</div>` : ''}
             ${ability ? `<div class="part-ability"><b>${ability.name}</b><span>${ability.description}</span></div>` : ''}
             ${part.source ? `<div class="part-source">入手：${part.source}</div>` : ''}
             ${part.sourceRobot ? `<div class="part-source">由来：${part.sourceRobot.seriesName} ${part.sourceRobot.serial} / ${part.sourceRobot.wins}勝${part.sourceRobot.losses}敗</div>` : ''}
@@ -1045,7 +1057,7 @@ function renderUnitOverview(robot) {
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
         </div>
         <details class="series-lore-details">
-          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
+          <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
           <div class="series-lore-body">
             ${robot.seriesConcept ? `<section><span>総合コンセプト</span><p>${escapeHtml(robot.seriesConcept)}</p></section>` : ''}
             ${robot.seriesNamingConcept ? `<section><span>名称と設計モチーフ</span><p>${escapeHtml(robot.seriesNamingConcept)}</p></section>` : ''}

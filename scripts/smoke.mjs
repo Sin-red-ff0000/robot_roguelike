@@ -61,6 +61,18 @@ for (const profile of thirdGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`third-generation identity refit missing: ${profile.id}`);
 }
+const fourthGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 61 && series.seriesNumber <= 80).map(resolveSeriesProfile);
+if (fourthGenProfiles.length !== 400) throw new Error(`fourth-generation refit count ${fourthGenProfiles.length}`);
+for (const profile of fourthGenProfiles) {
+  if (!profile.fourthGenerationRefit || profile.refitGeneration !== 4 || profile.refitVersion !== '3.4') throw new Error(`fourth-generation refit flag missing: ${profile.id}`);
+  const loreLength = ['concept','namingConcept','developmentBackground','engineeringNotes','trainingNotes'].reduce((sum, key) => sum + String(profile[key] ?? '').length, 0);
+  if (loreLength < 620) throw new Error(`fourth-generation lore package too short: ${profile.id} ${loreLength}`);
+  if ((profile.summary?.length ?? 0) > 190) throw new Error(`fourth-generation compact summary too long: ${profile.id}`);
+  for (const field of ['namingConcept','developmentBackground','engineeringNotes','trainingNotes']) {
+    if (!profile[field]) throw new Error(`fourth-generation lore missing ${field}: ${profile.id}`);
+  }
+  if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`fourth-generation identity refit missing: ${profile.id}`);
+}
 for (const year of [1, 10, 50, 100]) { const trend = getAnnualTrend(year, MANUFACTURERS[0].id, getSeriesForManufacturer(MANUFACTURERS[0].id)[0].id); if (Math.max(...Object.values(trend.groupModifiers)) > 10 || Math.min(...Object.values(trend.groupModifiers)) < -10) throw new Error('annual trend out of bounds'); }
 
 const kirishimaSeries = getSeriesForManufacturer('kirishima');
@@ -136,7 +148,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '3.3') throw new Error('migration version');
+if (!migrated || migrated.version !== '3.4') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');
@@ -214,6 +226,23 @@ delete thirdRefitTarget.seriesRefitVersion;
 const thirdRefitMigrated = migrateState(thirdRefitInput);
 const thirdRefitRobot = thirdRefitMigrated.roster.find((robot) => robot.id === thirdRefitTarget.id);
 if (thirdRefitRobot?.seriesRefitGeneration !== 3 || thirdRefitRobot.seriesRefitVersion !== '3.3' || !thirdRefitRobot.seriesNamingConcept || thirdRefitRobot.seriesTrendSummary === '旧第3世代説明') throw new Error('v3.3 third-generation migration failed');
+const fourthRefitInput = JSON.parse(JSON.stringify(thirdRefitMigrated));
+fourthRefitInput.version = '3.3';
+const fourthRefitTarget = fourthRefitInput.roster[3] ?? fourthRefitInput.roster[0];
+fourthRefitTarget.seriesId = 'kirishima-daisen-foundation';
+fourthRefitTarget.manufacturerId = 'kirishima';
+fourthRefitTarget.seriesNumber = 61;
+fourthRefitTarget.seriesNameKana = 'DAISEN・FOUNDATION';
+fourthRefitTarget.seriesTrendSummary = '旧第4世代説明';
+delete fourthRefitTarget.seriesNamingConcept;
+delete fourthRefitTarget.seriesDevelopmentBackground;
+delete fourthRefitTarget.seriesEngineeringNotes;
+delete fourthRefitTarget.seriesTrainingNotes;
+delete fourthRefitTarget.seriesRefitGeneration;
+delete fourthRefitTarget.seriesRefitVersion;
+const fourthRefitMigrated = migrateState(fourthRefitInput);
+const fourthRefitRobot = fourthRefitMigrated.roster.find((robot) => robot.id === fourthRefitTarget.id);
+if (fourthRefitRobot?.seriesRefitGeneration !== 4 || fourthRefitRobot.seriesRefitVersion !== '3.4' || !fourthRefitRobot.seriesNamingConcept || fourthRefitRobot.seriesTrendSummary === '旧第4世代説明') throw new Error('v3.4 fourth-generation migration failed');
 const retiringRobot = migratedAgain.roster.find((robot) => robot.cohortYear === 3);
 if (retiringRobot) retiringRobot.nickname = '引退テスト';
 const retiringId = retiringRobot?.id;

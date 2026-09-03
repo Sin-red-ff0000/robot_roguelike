@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=3.3';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=3.3';
-import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=3.3';
-import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.3';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.3';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.3';
-import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=3.3';
+import { GAME_CONFIG } from '../config.js?v=3.4';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=3.4';
+import { MANUFACTURER_PART_PROFILES, PART_RARITIES, PART_RARITY_KEYS } from '../data/partDefinitions.js?v=3.4';
+import { PART_GRANTABLE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=3.4';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=3.4';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.4';
+import { clamp, pick, randomFloat, randomInt } from '../utils/random.js?v=3.4';
 
 function weightedPick(entries) {
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
@@ -168,7 +168,16 @@ function effectivePartAmount(robot, part, effect) {
   mult *= Number(robot.seriesIntrinsicTrait?.custom ?? 1);
   const scaled = Number(effect.amount) * mult;
   if (!scaled) return 0;
-  return scaled > 0 ? Math.max(1, Math.round(scaled)) : Math.min(-1, Math.round(scaled));
+  // v3.4: keep one decimal place so a 8-15% series aptitude is not erased by integer rounding
+  // on common +2/+3/+4 parts. This makes every aptitude meaningfully observable.
+  const rounded = Math.round(scaled * 10) / 10;
+  if (rounded !== 0) return rounded;
+  return scaled > 0 ? 0.1 : -0.1;
+}
+
+export function adjustedCustomPartEffects(robot, part) {
+  return [...(part?.effects ?? []), ...(part?.negatives ?? [])]
+    .map((effect) => ({ ...effect, amount: effectivePartAmount(robot, part, effect) }));
 }
 
 function applyEffect(robot, effect) {
@@ -201,7 +210,7 @@ function applyEffect(robot, effect) {
 }
 
 export function useCustomPart(robot, part) {
-  const appliedEffects = [...part.effects, ...part.negatives].map((effect) => ({ ...effect, amount: effectivePartAmount(robot, part, effect) }));
+  const appliedEffects = adjustedCustomPartEffects(robot, part);
   for (const effect of appliedEffects) applyEffect(robot, effect);
   robot.specialAbilities ??= [];
   let gainedAbility = null;

@@ -1,8 +1,8 @@
-import { GAME_CONFIG } from '../config.js?v=3.3';
-import { STAT_GROUPS } from '../data/statDefinitions.js?v=3.3';
-import { TRAINING_TYPES } from '../data/trainingDefinitions.js?v=3.3';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.3';
-import { clamp, randomFloat, weightedPick } from '../utils/random.js?v=3.3';
+import { GAME_CONFIG } from '../config.js?v=3.4';
+import { STAT_GROUPS } from '../data/statDefinitions.js?v=3.4';
+import { TRAINING_TYPES } from '../data/trainingDefinitions.js?v=3.4';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=3.4';
+import { clamp, randomFloat, weightedPick } from '../utils/random.js?v=3.4';
 
 export function rollTrainingLevel(highLevelBias = 0) {
   return weightedPick([
@@ -41,7 +41,7 @@ function groupAverage(robot, groupKey) {
   return values.reduce((sum, value) => sum + Number(value || 0), 0) / Math.max(1, values.length);
 }
 
-function seriesTrainingMultiplier(robot, groupKey = null, { weapon = false, team = false } = {}) {
+export function seriesGrowthMultiplier(robot, groupKey = null, { weapon = false, team = false } = {}) {
   const curve = robot.seriesGrowthCurve ?? {};
   const trait = robot.seriesIntrinsicTrait ?? {};
   const yearIndex = Math.max(0, Math.min(2, Number(robot.cohortYear ?? 1) - 1));
@@ -78,7 +78,7 @@ function growGroup(robot, groupKey, baseGrowth, focusStats = [], focusBonus = 0,
   for (const statName of group.stats) {
     const multiplier = robot.growthMultipliers[groupKey][statName];
     const noise = seriesNoise(robot);
-    const seriesMultiplier = seriesTrainingMultiplier(robot, groupKey, options);
+    const seriesMultiplier = seriesGrowthMultiplier(robot, groupKey, options);
     const focusMultiplier = focusStats.includes(statName) ? (1 + focusBonus) : 1;
     const delta = baseGrowth * multiplier * noise * focusMultiplier * seriesMultiplier;
     robot.stats[groupKey][statName] = clamp(robot.stats[groupKey][statName] + delta, 0, 999);
@@ -92,7 +92,7 @@ function growWeapon(robot, baseGrowth, options = {}) {
   for (const [axis, value] of Object.entries(robot.weaponStats)) {
     const multiplier = robot.weaponGrowthMultipliers[axis];
     const noise = seriesNoise(robot);
-    const delta = baseGrowth * multiplier * noise * seriesTrainingMultiplier(robot, null, { ...options, weapon: true });
+    const delta = baseGrowth * multiplier * noise * seriesGrowthMultiplier(robot, null, { ...options, weapon: true });
     robot.weaponStats[axis] = clamp(value + delta, 0, 999);
     deltas.push({ axis, delta });
   }
