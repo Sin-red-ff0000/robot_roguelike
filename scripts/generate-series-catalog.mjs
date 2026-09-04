@@ -4,20 +4,22 @@ import { SERIES_DEFINITIONS, getSeriesForManufacturer, resolveSeriesProfile } fr
 import { WEAPON_CATEGORIES } from '../src/data/weaponDefinitions.js';
 
 const SERIES_PER_GENERATION = 20;
-const generationCount = Math.max(...SERIES_DEFINITIONS.map((s) => Math.ceil(Number(s.seriesNumber ?? 0) / SERIES_PER_GENERATION)));
+const generationCount = 11;
+const generationOf = (series) => Number(series.seriesNumber ?? 1) >= 201 ? 11 : Math.ceil(Number(series.seriesNumber ?? 1) / SERIES_PER_GENERATION);
+const maxSeriesNumber = Math.max(...SERIES_DEFINITIONS.map((s)=>Number(s.seriesNumber??0)));
 const weaponNames = (keys = []) => keys.length ? keys.map((key) => WEAPON_CATEGORIES[key]?.label ?? key).join(' / ') : '指定なし';
 const escapeCell = (value) => String(value ?? '').replaceAll('|', '｜').replaceAll('\n', ' ');
-const generationVersion = { 1:'v3.1再設計', 2:'v3.2再設計', 3:'v3.3再設計', 4:'v3.4再設計', 5:'v3.5新設計', 6:'v3.7新設計', 7:'v3.8新設計', 8:'v3.9クリーンシート設計', 9:'v4.0クリーンシート設計', 10:'v4.7品質改修版' };
+const generationVersion = { 1:'v3.1再設計', 2:'v3.2再設計', 3:'v3.3再設計', 4:'v3.4再設計', 5:'v3.5新設計', 6:'v3.7新設計', 7:'v3.8新設計', 8:'v3.9クリーンシート設計', 9:'v4.0クリーンシート設計', 10:'v4.7品質改修版', 11:'v4.8企業間共同開発' };
 
 const lines = [
-  '# SERIES CATALOG v4.7',
+  '# SERIES CATALOG v4.8',
   '',
   `${MANUFACTURERS.length}メーカー × ${SERIES_DEFINITIONS.length / MANUFACTURERS.length}シリーズ = 合計${SERIES_DEFINITIONS.length}シリーズ。`,
   '',
   ...Array.from({ length: generationCount }, (_, i) => {
     const gen = i + 1;
     const start = i * SERIES_PER_GENERATION + 1;
-    const end = start + SERIES_PER_GENERATION - 1;
+    const end = gen === 11 ? maxSeriesNumber : start + SERIES_PER_GENERATION - 1;
     return `- ${start}～${end}番：第${gen}世代系列（${generationVersion[gen] ?? '現行設計'}）`;
   }),
   '- 生産区分は新人加入時の出現しやすさへ反映',
@@ -45,9 +47,10 @@ for (const maker of MANUFACTURERS) {
 
   for (let gen = 1; gen <= generationCount; gen += 1) {
     const min = (gen - 1) * SERIES_PER_GENERATION + 1;
-    const max = min + SERIES_PER_GENERATION - 1;
-    lines.push(`### 第${gen}世代20系列 詳細解説（${generationVersion[gen] ?? '現行設計'}）`, '');
-    for (const series of seriesList.filter((item) => item.seriesNumber >= min && item.seriesNumber <= max)) {
+    const max = gen === 11 ? maxSeriesNumber : min + SERIES_PER_GENERATION - 1;
+    const genItems = seriesList.filter((item) => generationOf(item) === gen);
+    lines.push(`### 第${gen}世代${genItems.length}系列 詳細解説（${generationVersion[gen] ?? '現行設計'}）`, '');
+    for (const series of genItems) {
       const p = resolveSeriesProfile(series);
       lines.push(`#### #${series.seriesNumber} ${series.nameKana} / ${series.nameLatin}`, '');
       lines.push(`**立ち位置:** ${p.marketPosition} / ${p.label}`, '');

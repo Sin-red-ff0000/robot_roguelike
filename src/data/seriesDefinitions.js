@@ -1,23 +1,25 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.7';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.7';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.7';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.7';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.7';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.7';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.7';
-import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.7';
-import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.7';
-import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.7';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.7';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.7';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.7';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.7';
-import { BASE_SYNERGY_RULES } from './battleRules.js?v=4.7';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.7';
-import { MANUFACTURERS } from './manufacturers.js?v=4.7';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.8';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.8';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.8';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.8';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.8';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.8';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.8';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.8';
+import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.8';
+import { ELEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesEleventhWaveDefinitions.js?v=4.8';
+import { NEW_MANUFACTURER_PRE_G11_SERIES } from './seriesNewManufacturerDefinitions.js?v=4.8';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.8';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.8';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.8';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.8';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.8';
+import { BASE_SYNERGY_RULES } from './battleRules.js?v=4.8';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.8';
+import { MANUFACTURERS } from './manufacturers.js?v=4.8';
 
-// Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
-// v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
+// Original catalog: 20 legacy manufacturers x 20 series per generation. Additional manufacturers are merged through seriesNewManufacturerDefinitions; generation 11 is generated from the complete current roster.
+// v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation legacy entries.
 
 export const SERIES_ARCHETYPES = {
   "balanced": {
@@ -9003,8 +9005,10 @@ const SEVENTH_GENERATION_SERIES = SEVENTH_WAVE_SERIES_DEFINITIONS.map((base) => 
 const EIGHTH_GENERATION_SERIES = EIGHTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const NINTH_GENERATION_SERIES = NINTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const TENTH_GENERATION_SERIES = TENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const ELEVENTH_GENERATION_SERIES = ELEVENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const NEW_MANUFACTURER_SERIES = NEW_MANUFACTURER_PRE_G11_SERIES.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES, ...TENTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...NEW_MANUFACTURER_SERIES, ...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES, ...TENTH_GENERATION_SERIES, ...ELEVENTH_GENERATION_SERIES);
 
 
 const DOCTRINE_GROUP_LABEL = { output:'出力', mobility:'駆動', control:'制御', engine:'機関', compute:'演算', sensor:'センサー', ai:'AI' };
@@ -9164,7 +9168,7 @@ function lineageMetadata(series) {
   const predecessorNumber = Number(series?.predecessorNumber ?? (number > 20 ? number - 20 : 0)) || null;
   const root = SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${rootNumber}`) ?? null;
   const predecessor = predecessorNumber ? SERIES_NUMBER_MAP.get(`${series?.manufacturerId}:${predecessorNumber}`) ?? null : null;
-  const generation = number <= 20 ? 1 : number <= 40 ? 2 : number <= 60 ? 3 : number <= 80 ? 4 : number <= 100 ? 5 : number <= 120 ? 6 : 7;
+  const generation = series?.eleventhGeneration || number >= 201 ? 11 : Math.max(1, Math.ceil(number / 20));
   return {
     lineageRootNumber: rootNumber,
     lineageRootId: root?.id ?? series?.id ?? null,

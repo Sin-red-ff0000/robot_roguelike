@@ -1,6 +1,6 @@
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { generateCustomPart } from './partSystem.js?v=4.7';
-import { logisticsLevel } from './facilitySystem.js?v=4.7';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { generateCustomPart } from './partSystem.js?v=4.8';
+import { logisticsLevel } from './facilitySystem.js?v=4.8';
 
 export const PROCUREMENT_ROUTES = {
   standard: { id:'standard', label:'標準調達', minLevel:1, description:'通常品を3候補比較する。' },

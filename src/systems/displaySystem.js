@@ -1,5 +1,5 @@
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { localizeSeriesName } from '../data/seriesNameLocalization.js?v=4.7';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { localizeSeriesName } from '../data/seriesNameLocalization.js?v=4.8';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 

@@ -1,6 +1,6 @@
 {
   "name": "robot-roguelike-prototype",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -29,6 +29,8 @@
     "reachability-audit": "node scripts/source-reachability-audit.mjs",
     "release-readiness": "node scripts/v47-release-readiness-audit.mjs",
     "ui-longplay-audit": "node scripts/ui-longplay-audit.mjs",
-    "journey-audit": "node scripts/gameplay-journey-audit.mjs"
+    "journey-audit": "node scripts/gameplay-journey-audit.mjs",
+    "g11-audit": "node scripts/g11-collaboration-audit.mjs",
+    "quirky-maker-audit": "node scripts/quirky-manufacturer-audit.mjs"
   }
 }

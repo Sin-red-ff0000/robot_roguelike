@@ -2,6 +2,8 @@ import { spawnSync } from 'node:child_process';
 
 const checks = [
   'smoke',
+  'g11-audit',
+  'quirky-maker-audit',
   'render-smoke',
   'localization-audit',
   'series-mechanics',
@@ -36,4 +38,4 @@ for (const name of checks) {
   const output = String(result.stdout ?? '').trim().split('\n').slice(-12).join('\n');
   results.push({ name, ok: true, output });
 }
-console.log(JSON.stringify({ ok: true, version: '4.7', checks: results.map((r) => r.name), passed: results.length }, null, 2));
+console.log(JSON.stringify({ ok: true, version: '4.8', checks: results.map((r) => r.name), passed: results.length }, null, 2));

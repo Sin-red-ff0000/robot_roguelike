@@ -1,32 +1,32 @@
-import { GAME_CONFIG } from './config.js?v=4.7';
-import { MANUFACTURERS } from './data/manufacturers.js?v=4.7';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.7';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.7';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.7';
-import { WEAPON_DOCTRINE_RULES } from './data/battleRules.js?v=4.7';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.7';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.7';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.7';
-import { applyTrainingTurn, generateTrainingChoices, generateTrainingChoicesWithCarryover, individualTrainingOptions, seriesGrowthMultiplier } from './systems/trainingSystem.js?v=4.7';
-import { simulateBattle } from './systems/battleSystem.js?v=4.7';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=4.7';
-import { PART_RARITIES } from './data/partDefinitions.js?v=4.7';
-import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=4.7';
-import { PROCUREMENT_ROUTES, chooseProcurement, procurementStatus, requestProcurement } from './systems/logisticsSystem.js?v=4.7';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=4.7';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=4.7';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities, weaponsLabLevel } from './systems/facilitySystem.js?v=4.7';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=4.7';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=4.7';
-import { careerRecordSummary, extendedCareerRecordSummary, robotCareerHighlights, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo, BEST15_MODES, historicalBest15, isManualBest15, toggleManualBest15 } from './systems/recordSystem.js?v=4.7';
-import { rivalArchiveRows } from './systems/rivalTeamSystem.js?v=4.7';
-import { exhibitionTeamOptions, exhibitionHistoryRows, simulateExhibitionMatch } from './systems/exhibitionSystem.js?v=4.7';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=4.7';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=4.7';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=4.7';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, managerRobotInsightContext, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=4.7';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=4.7';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=4.7';
+import { GAME_CONFIG } from './config.js?v=4.8';
+import { MANUFACTURERS } from './data/manufacturers.js?v=4.8';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.8';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.8';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.8';
+import { WEAPON_DOCTRINE_RULES } from './data/battleRules.js?v=4.8';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.8';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.8';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.8';
+import { applyTrainingTurn, generateTrainingChoices, generateTrainingChoicesWithCarryover, individualTrainingOptions, seriesGrowthMultiplier } from './systems/trainingSystem.js?v=4.8';
+import { simulateBattle } from './systems/battleSystem.js?v=4.8';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=4.8';
+import { PART_RARITIES } from './data/partDefinitions.js?v=4.8';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=4.8';
+import { PROCUREMENT_ROUTES, chooseProcurement, procurementStatus, requestProcurement } from './systems/logisticsSystem.js?v=4.8';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=4.8';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=4.8';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities, weaponsLabLevel } from './systems/facilitySystem.js?v=4.8';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=4.8';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=4.8';
+import { careerRecordSummary, extendedCareerRecordSummary, robotCareerHighlights, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo, BEST15_MODES, historicalBest15, isManualBest15, toggleManualBest15 } from './systems/recordSystem.js?v=4.8';
+import { rivalArchiveRows } from './systems/rivalTeamSystem.js?v=4.8';
+import { exhibitionTeamOptions, exhibitionHistoryRows, simulateExhibitionMatch } from './systems/exhibitionSystem.js?v=4.8';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=4.8';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=4.8';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=4.8';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, managerRobotInsightContext, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=4.8';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=4.8';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=4.8';
 import {
   arrangeLineup,
   autoSelectLineup,
@@ -39,7 +39,7 @@ import {
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=4.7';
+} from './systems/teamMatchSystem.js?v=4.8';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -413,8 +413,25 @@ function chooseTraining(training) {
   const trainingVars = { training: training.label ?? training.name ?? '全体練習', level: training.level ?? 1, part: eventPart?.name ?? '---' };
   if (event?.type === 'awakening') setManagerMessage('awakening', { ...trainingVars, robotId: event.robotId, event: event.title });
   else if (event?.type === 'aggressive-tuning') setManagerMessage('eventBad', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoAfterHours') setManagerMessage('libidoAfterHours', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoFitting') setManagerMessage('libidoFitting', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoRedacted') setManagerMessage('libidoRedacted', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoIntimateCalibration') setManagerMessage('libidoIntimateCalibration', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoAdultInterface') setManagerMessage('libidoAdultInterface', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoBodyOption') setManagerMessage('libidoBodyOption', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoPrivacyMode') setManagerMessage('libidoPrivacyMode', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'tokiwaLivingRoom') setManagerMessage('tokiwaLivingRoom', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'tokiwaApplianceDuty') setManagerMessage('tokiwaApplianceDuty', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'tokiwaHomeSupport') setManagerMessage('tokiwaHomeSupport', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoCompanionService') setManagerMessage('libidoCompanionService', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoPrivateSuite') setManagerMessage('libidoPrivateSuite', { ...trainingVars, robotId: event.robotId, event: event.title });
+  else if (event?.type === 'operational-study' && event?.expansionFamily === 'libidoAftercareUse') setManagerMessage('libidoAftercareUse', { ...trainingVars, robotId: event.robotId, event: event.title });
   else if (event) setManagerMessage(['challenge-part', 'part-supply', 'manufacturer-support', 'rare-prototype'].includes(event.type) ? 'part' : 'eventGood', { ...trainingVars, robotId: event.robotId, event: event.title });
-  else setManagerMessage((training.level ?? 1) >= 4 ? 'trainingHigh' : 'training', trainingVars);
+  else {
+    const hasLibido = state.roster.some((robot) => robot.manufacturerId === 'libido');
+    if (hasLibido && Math.random() < 0.30) setManagerMessage((training.level ?? 1) >= 4 ? 'libidoTrainingHigh' : 'libidoTraining', trainingVars);
+    else setManagerMessage((training.level ?? 1) >= 4 ? 'trainingHigh' : 'training', trainingVars);
+  }
 
   if (state.turn >= trainingTurnsForState(state)) {
     state = advanceYear(state);
@@ -491,7 +508,9 @@ function prepareTournamentRound(tournamentId) {
   state.log = [`${options.context.tournamentName} ${options.context.roundName}の対戦相手が決まりました。`, ...state.log].slice(0, 28);
   const tournamentDef = TOURNAMENTS[tournamentId];
   const isFinal = options.context.roundIndex >= tournamentDef.rounds.length - 1;
-  setManagerMessage(isFinal ? 'tournamentFinal' : 'tournamentPrepare', {
+  const hasLibido = state.roster.some((robot) => robot.manufacturerId === 'libido');
+  const hasTokiwa = state.roster.some((robot) => robot.manufacturerId === 'tokiwa');
+  setManagerMessage(hasLibido ? (isFinal ? 'libidoFinal' : 'libidoTournament') : (hasTokiwa ? 'tokiwaMatch' : (isFinal ? 'tournamentFinal' : 'tournamentPrepare')), {
     tournament: options.context.tournamentName,
     round: options.context.roundName,
   });
@@ -545,9 +564,14 @@ function finalizeOfficialMatch(logs = []) {
     wins: match.allyWins,
     losses: match.enemyWins,
   };
-  if (match.context?.type === 'tournament' && match.teamWon) {
-    const entry = tournamentEntry(state, match.context.tournamentId);
-    if (entry?.champion) setManagerMessage('tournamentChampion', matchVars);
+  const libidoParticipated = (match.bouts ?? []).some((bout) => state.roster.find((robot) => robot.id === bout.allyId)?.manufacturerId === 'libido');
+  const tokiwaParticipated = (match.bouts ?? []).some((bout) => state.roster.find((robot) => robot.id === bout.allyId)?.manufacturerId === 'tokiwa');
+  const tournamentChampion = match.context?.type === 'tournament' && match.teamWon && tournamentEntry(state, match.context.tournamentId)?.champion;
+  if (libidoParticipated && tournamentChampion) setManagerMessage('libidoChampion', matchVars);
+  else if (libidoParticipated) setManagerMessage(match.teamWon ? 'libidoVictory' : 'libidoLoss', matchVars);
+  else if (tokiwaParticipated) setManagerMessage(match.teamWon ? 'tokiwaVictory' : 'tokiwaMatch', matchVars);
+  else if (match.context?.type === 'tournament' && match.teamWon) {
+    if (tournamentChampion) setManagerMessage('tournamentChampion', matchVars);
     else setManagerMessage('matchWin', matchVars);
   } else {
     setManagerMessage(match.teamWon ? 'matchWin' : 'matchLoss', matchVars);
@@ -1953,7 +1977,7 @@ function renderSeriesEncyclopedia() {
   const joinedStatuses = new Set(['joined','retired','hall']);
   const makerMap = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
   const makerDexName = (maker) => state.settings?.manufacturerLabelMode === 'original' ? (maker?.originalName ?? maker?.name ?? '') : (maker?.name ?? '');
-  const generationOf = (row) => Math.max(1, Math.ceil(Number(row.seriesNumber ?? 1) / 20));
+  const generationOf = (row) => Number(row.seriesNumber ?? 1) >= 201 ? 11 : Math.max(1, Math.ceil(Number(row.seriesNumber ?? 1) / 20));
   const visibleName = (row) => state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
   const growthOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.growthCurveId, row.profile?.growthCurve?.label]).filter(([id,label]) => id && label)).entries()]
     .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
@@ -1964,7 +1988,7 @@ function renderSeriesEncyclopedia() {
     <label>メーカー<select id="series-dex-maker"><option value="all" ${uiState.seriesDexManufacturer === 'all' ? 'selected' : ''}>全メーカー</option>${MANUFACTURERS.map((maker) => `<option value="${maker.id}" ${uiState.seriesDexManufacturer === maker.id ? 'selected' : ''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label>
     <label class="series-dex-search-field">シリーズ検索<div><input id="series-dex-search" type="search" value="${escapeHtml(uiState.seriesDexSearch)}" placeholder="名称・思想・特徴"><button type="button" id="series-dex-search-apply" class="mini-button">検索</button></div></label>
     <label>発見状況<select id="series-dex-discovery"><option value="all" ${uiState.seriesDexDiscovery==='all'?'selected':''}>すべて</option><option value="discovered" ${uiState.seriesDexDiscovery==='discovered'?'selected':''}>発見済み</option><option value="unseen" ${uiState.seriesDexDiscovery==='unseen'?'selected':''}>未発見</option><option value="seen" ${uiState.seriesDexDiscovery==='seen'?'selected':''}>遭遇のみ</option><option value="joined" ${uiState.seriesDexDiscovery==='joined'?'selected':''}>自軍加入済み</option><option value="completed" ${uiState.seriesDexDiscovery==='completed'?'selected':''}>育成完了</option><option value="hall" ${uiState.seriesDexDiscovery==='hall'?'selected':''}>殿堂</option></select></label>
-    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5,6,7,8,9,10].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g*20})</option>`).join('')}</select></label>
+    <label>世代<select id="series-dex-generation"><option value="all" ${uiState.seriesDexGeneration==='all'?'selected':''}>全世代</option>${[1,2,3,4,5,6,7,8,9,10,11].map((g)=>`<option value="${g}" ${String(uiState.seriesDexGeneration)===String(g)?'selected':''}>第${g}世代 (#${(g-1)*20+1}～${g===11?223:g*20})</option>`).join('')}</select></label>
     <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
@@ -2048,6 +2072,7 @@ function renderSeriesEncyclopedia() {
     };
     return {
       maker,
+      total:makerRows.length,
       discovered:makerRows.filter((row)=>row.discovery!=='unseen').length,
       joinedSeries:joinedRows.length,
       completed:makerRows.filter((row)=>['retired','hall'].includes(row.discovery)).length,
@@ -2061,7 +2086,7 @@ function renderSeriesEncyclopedia() {
       trait:modeLabel((row)=>row.profile?.intrinsicTrait?.label),
     };
   };
-  const compareCard = (stats, side) => `<article class="series-maker-compare-card ${side}"><span>${escapeHtml(stats.maker.theme)}系メーカー</span><h4>${escapeHtml(makerDexName(stats.maker))}</h4><p>${escapeHtml(stats.maker.philosophy)}</p><div class="series-maker-compare-metrics"><div><small>発見</small><strong>${stats.discovered}/120</strong></div><div><small>加入系列</small><strong>${stats.joinedSeries}</strong></div><div><small>育成完了</small><strong>${stats.completed}</strong></div><div><small>殿堂</small><strong>${stats.hall}</strong></div><div><small>自軍機体</small><strong>${stats.units}</strong></div><div><small>通算勝率</small><strong>${stats.winRate===null?'---':`${stats.winRate.toFixed(1)}%`}</strong></div><div><small>平均総合</small><strong>${stats.average===null?'---':stats.average.toFixed(1)}</strong></div><div><small>最高総合</small><strong>${stats.best?stats.best.bestOverall.toFixed(1):'---'}</strong></div></div><dl><div><dt>よく育てた成長曲線</dt><dd>${escapeHtml(stats.growth)}</dd></div><div><dt>よく育てた改修適性</dt><dd>${escapeHtml(stats.custom)}</dd></div><div><dt>よく見た固有特性</dt><dd>${escapeHtml(stats.trait)}</dd></div>${stats.best?`<div><dt>最高系列</dt><dd>${escapeHtml(visibleName(stats.best))} / ${escapeHtml(stats.best.bestRobotName||'---')}</dd></div>`:''}</dl></article>`;
+  const compareCard = (stats, side) => `<article class="series-maker-compare-card ${side}"><span>${escapeHtml(stats.maker.theme)}系メーカー</span><h4>${escapeHtml(makerDexName(stats.maker))}</h4><p>${escapeHtml(stats.maker.philosophy)}</p><div class="series-maker-compare-metrics"><div><small>発見</small><strong>${stats.discovered}/${stats.total}</strong></div><div><small>加入系列</small><strong>${stats.joinedSeries}</strong></div><div><small>育成完了</small><strong>${stats.completed}</strong></div><div><small>殿堂</small><strong>${stats.hall}</strong></div><div><small>自軍機体</small><strong>${stats.units}</strong></div><div><small>通算勝率</small><strong>${stats.winRate===null?'---':`${stats.winRate.toFixed(1)}%`}</strong></div><div><small>平均総合</small><strong>${stats.average===null?'---':stats.average.toFixed(1)}</strong></div><div><small>最高総合</small><strong>${stats.best?stats.best.bestOverall.toFixed(1):'---'}</strong></div></div><dl><div><dt>よく育てた成長曲線</dt><dd>${escapeHtml(stats.growth)}</dd></div><div><dt>よく育てた改修適性</dt><dd>${escapeHtml(stats.custom)}</dd></div><div><dt>よく見た固有特性</dt><dd>${escapeHtml(stats.trait)}</dd></div>${stats.best?`<div><dt>最高系列</dt><dd>${escapeHtml(visibleName(stats.best))} / ${escapeHtml(stats.best.bestRobotName||'---')}</dd></div>`:''}</dl></article>`;
   const compareA = makerCompareStats(uiState.seriesCompareMakerA || MANUFACTURERS[0]?.id);
   const compareB = makerCompareStats(uiState.seriesCompareMakerB || MANUFACTURERS[1]?.id || MANUFACTURERS[0]?.id);
   const compareHtml = `<details class="series-maker-compare" open><summary>メーカー比較</summary><div class="series-maker-compare-controls"><label>比較A<select id="series-compare-a">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareA.maker.id===maker.id?'selected':''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label><b>比較</b><label>比較B<select id="series-compare-b">${MANUFACTURERS.map((maker)=>`<option value="${maker.id}" ${compareB.maker.id===maker.id?'selected':''}>${escapeHtml(makerDexName(maker))}</option>`).join('')}</select></label></div><div class="series-maker-compare-grid">${compareCard(compareA,'a')}${compareCard(compareB,'b')}</div><small class="series-maker-compare-note">比較値はあなたのセーブ内で実際に加入・育成した機体の実績。未加入系列の内部性能は比較に使用しません。</small></details>`;
@@ -2071,7 +2096,7 @@ function renderSeriesEncyclopedia() {
       const makerRows = rows.filter((row) => row.manufacturerId === maker.id);
       const discovered = makerRows.filter((row) => row.discovery !== 'unseen').length;
       const joined = makerRows.filter((row) => joinedStatuses.has(row.discovery)).length;
-      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(makerDexName(maker))}</strong><span>${discovered}/120 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${Math.min(100, discovered / 120 * 100)}%"></b></i></button>`;
+      return `<button type="button" class="series-dex-progress-card" data-series-maker="${maker.id}"><strong>${escapeHtml(makerDexName(maker))}</strong><span>${discovered}/${makerRows.length} 発見</span><small>自軍加入 ${joined}系列</small><i><b style="width:${Math.min(100, discovered / Math.max(1, makerRows.length) * 100)}%"></b></i></button>`;
     }).join('');
     return `${selector}${summaryHtml}${compareHtml}<div class="series-dex-progress-grid">${makerProgress}</div>`;
   }
@@ -2087,7 +2112,7 @@ function renderSeriesEncyclopedia() {
   const maker = makerMap.get(uiState.seriesDexManufacturer) ?? MANUFACTURERS[0];
   const makerRows = rows.filter((row)=>row.manufacturerId===maker.id);
   const found = makerRows.filter((row)=>row.discovery!=='unseen').length;
-  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(makerDexName(maker))}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/140</b></div>${resultHead}${truncation}<div class="series-dex-full-list">${listHtml}</div>`;
+  return `${selector}${summaryHtml}<div class="series-dex-maker-header"><div><span>${escapeHtml(maker.theme)}系メーカー</span><strong>${escapeHtml(makerDexName(maker))}</strong><small>${escapeHtml(maker.philosophy)}</small></div><b>${found}/${makerRows.length}</b></div>${resultHead}${truncation}<div class="series-dex-full-list">${listHtml}</div>`;
 }
 function renderHallOfFame() {
   const entries = state.hallOfFame ?? [];
@@ -2178,7 +2203,7 @@ function renderSettingsPanel() {
       </div>
     </div>
     ${renderStatusGuide()}
-    <p class="settings-note">シリーズは各メーカー200系列・合計4000系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
+    <p class="settings-note">シリーズは各メーカー${200 + MANUFACTURERS.length}系列・合計${MANUFACTURERS.length * (200 + MANUFACTURERS.length)}系列を収録。図鑑には遭遇・加入・育成完了・殿堂の履歴が蓄積されます。マネージャーのマイカスタム設定はゲームセーブ本体とは別に保存されます。</p>
   `;
 }
 
@@ -3024,7 +3049,7 @@ function render() {
       state.partInventory.splice(index, 1);
       const abilityText = result.gainedAbility ? ` 特殊能力「${SPECIAL_ABILITIES[result.gainedAbility].name}」を獲得。` : '';
       state.log = [`${sName(target)}に${part.name}を使用。${abilityText}`, ...state.log].slice(0, 28);
-      setManagerMessage('partUse', { robotObject: target, part: part.name, ability: result.gainedAbility ? SPECIAL_ABILITIES[result.gainedAbility]?.name : '---' });
+      setManagerMessage(target.manufacturerId === 'libido' ? 'libidoPart' : (target.manufacturerId === 'tokiwa' ? 'tokiwaPart' : 'partUse'), { robotObject: target, part: part.name, ability: result.gainedAbility ? SPECIAL_ABILITIES[result.gainedAbility]?.name : '---' });
       state.lastBattle = null;
       commit();
     });

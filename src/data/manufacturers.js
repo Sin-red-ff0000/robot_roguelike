@@ -918,7 +918,134 @@ export const MANUFACTURERS = [
         "eccentric": 16
       }
     }
+  },
+  {
+    "id": "mikage",
+    "name": "御影造機",
+    "originalName": "MIKAGE MACHINE WORKS",
+    "region": "jp",
+    "theme": "日本建築・工芸",
+    "philosophy": "強い機械より、使い続けられる機械を作る。整備性・交換性・現場改修を設計段階から織り込み、三年間で運用側が完成形を選べる余白を残す。",
+    "profile": {
+      "groupBias": {"output":0,"mobility":1,"control":3,"engine":3,"compute":1,"sensor":2,"ai":0},
+      "growthBias": {"output":0.01,"mobility":0.01,"control":0.03,"engine":0.03,"compute":0.01,"sensor":0.02,"ai":0.01},
+      "reliabilityBias": 7,
+      "resistanceBias": 2,
+      "statVariance": 0.86,
+      "growthVariance": 0.9,
+      "reliabilityVariance": 0.72,
+      "annualSensitivity": 1.0,
+      "seriesIntensity": 0.92,
+      "weaponBias": {"rifle":3,"machineGun":2,"lance":2,"missile":1},
+      "traitWeights": {"standard":88,"promising":7,"lateBloom":4,"eccentric":1}
+    }
+  },
+  {
+    "id": "meridian",
+    "name": "メリディアン・ダイナミクス",
+    "originalName": "MERIDIAN DYNAMICS",
+    "region": "overseas",
+    "theme": "航海・探検・地理",
+    "philosophy": "戦場へ到達できなければ性能は存在しないのと同じである。遠征・展開速度・索敵・長距離運用を一体設計し、場所を選ばず戦える機動プラットフォームを作る。",
+    "profile": {
+      "groupBias": {"output":0,"mobility":5,"control":2,"engine":2,"compute":2,"sensor":5,"ai":1},
+      "growthBias": {"output":0,"mobility":0.04,"control":0.02,"engine":0.02,"compute":0.02,"sensor":0.04,"ai":0.01},
+      "reliabilityBias": 1,
+      "resistanceBias": -2,
+      "statVariance": 0.98,
+      "growthVariance": 1.0,
+      "reliabilityVariance": 0.95,
+      "annualSensitivity": 1.1,
+      "seriesIntensity": 1.0,
+      "weaponBias": {"rifle":3,"missile":4,"drone":4,"machineGun":2,"lance":1},
+      "traitWeights": {"standard":78,"promising":13,"lateBloom":6,"eccentric":3}
+    }
+  },
+  {
+    "id": "tokiwa",
+    "name": "常盤ホームテック",
+    "originalName": "TOKIWA HOME TECH",
+    "region": "jp",
+    "theme": "家具・家電・住宅設備",
+    "philosophy": "家具と生活家電の傍ら、家庭用駆動技術の実証機として戦闘ロボットを作ったところ予想外の大ヒット。経営陣は何度も撤退を検討したが、利益とユーザー人気が大きすぎてやめるにやめられず、今では本業並みの主力部門になっている。",
+    "profile": {
+      "groupBias": {"output":0,"mobility":1,"control":5,"engine":3,"compute":1,"sensor":3,"ai":2},
+      "growthBias": {"output":0.01,"mobility":0.01,"control":0.04,"engine":0.03,"compute":0.01,"sensor":0.03,"ai":0.02},
+      "reliabilityBias": 7,
+      "resistanceBias": 2,
+      "statVariance": 0.86,
+      "growthVariance": 0.9,
+      "reliabilityVariance": 0.72,
+      "annualSensitivity": 0.95,
+      "seriesIntensity": 0.94,
+      "weaponBias": {"rifle":3,"machineGun":3,"laser":2,"drone":2,"lance":1},
+      "traitWeights": {"standard":87,"promising":7,"lateBloom":4,"eccentric":2}
+    }
+  },
+  {
+    "id": "heritage",
+    "name": "ヘリテージ・ゲート・トラベル",
+    "originalName": "HERITAGE GATE TRAVEL",
+    "region": "overseas",
+    "theme": "旅行・世界遺産",
+    "philosophy": "本業は世界各地のツアー運営。僻地輸送、現地整備、多言語案内、悪天候時の行程再構築で蓄積した運用技術をロボットへ転用した。系列名はすべて世界遺産を基準にし、『どこへでも連れて行き、必ず帰す』を戦闘運用でも守る。",
+    "profile": {
+      "groupBias": {"output":-1,"mobility":4,"control":2,"engine":4,"compute":2,"sensor":5,"ai":2},
+      "growthBias": {"output":0,"mobility":0.04,"control":0.02,"engine":0.04,"compute":0.02,"sensor":0.04,"ai":0.02},
+      "reliabilityBias": 6,
+      "resistanceBias": 5,
+      "statVariance": 0.92,
+      "growthVariance": 0.94,
+      "reliabilityVariance": 0.78,
+      "annualSensitivity": 1.05,
+      "seriesIntensity": 0.98,
+      "weaponBias": {"rifle":3,"missile":4,"drone":4,"machineGun":2,"emp":1},
+      "traitWeights": {"standard":84,"promising":9,"lateBloom":5,"eccentric":2}
+    }
+  },
+  {
+    "id": "libido",
+    "name": "LIBIDO FRAME LAB",
+    "originalName": "LIBIDO FRAME LAB",
+    "region": "special",
+    "theme": "成人型セクサロイド・フェティッシュデザイン",
+    "philosophy": "『戦えるセクサロイドが好き』という一点で集まった高技能の成人向けアンドロイド技術者集団。全機を成人型として設計し、強さより各設計者の美意識・フェティッシュ・魅力表現を優先する。ところが人工筋肉、姿勢制御、触覚センサー、対人AIの技術水準が異常に高く、悪ふざけのまま業界で普通に戦える機体を作ってしまった。",
+    "profile": {
+      "groupBias": {"output":0,"mobility":5,"control":7,"engine":-1,"compute":3,"sensor":6,"ai":5},
+      "growthBias": {"output":0.01,"mobility":0.04,"control":0.05,"engine":0,"compute":0.03,"sensor":0.05,"ai":0.04},
+      "reliabilityBias": 0,
+      "resistanceBias": -1,
+      "statVariance": 1.18,
+      "growthVariance": 1.22,
+      "reliabilityVariance": 1.12,
+      "annualSensitivity": 1.25,
+      "seriesIntensity": 1.15,
+      "weaponBias": {"blade":3,"beamBlade":5,"rifle":3,"laser":3,"emp":3,"drone":2},
+      "traitWeights": {"standard":52,"promising":18,"lateBloom":8,"eccentric":22}
+    }
+  },
+  {
+    "id": "nomad",
+    "name": "NOMAD CELL",
+    "originalName": "NOMAD CELL",
+    "region": "special",
+    "theme": "移動工房・再利用・規格外モジュール",
+    "philosophy": "固定工場も標準完成形も持たない。調達できる部材と得られた実戦データから機体を組み替え、同じ系列でも別の勝ち筋へ到達できることを価値とする分散型開発集団。",
+    "profile": {
+      "groupBias": {"output":1,"mobility":2,"control":1,"engine":0,"compute":2,"sensor":1,"ai":2},
+      "growthBias": {"output":0.01,"mobility":0.02,"control":0.01,"engine":0.01,"compute":0.02,"sensor":0.01,"ai":0.02},
+      "reliabilityBias": -5,
+      "resistanceBias": 0,
+      "statVariance": 1.48,
+      "growthVariance": 1.52,
+      "reliabilityVariance": 1.42,
+      "annualSensitivity": 1.55,
+      "seriesIntensity": 1.25,
+      "weaponBias": {"blade":1,"hammer":1,"lance":1,"beamBlade":1,"rifle":1,"machineGun":1,"cannon":1,"laser":1,"beamCannon":1,"missile":1,"emp":2,"drone":2},
+      "traitWeights": {"standard":45,"promising":18,"lateBloom":14,"eccentric":23}
+    }
   }
+
 ];
 
 export const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));

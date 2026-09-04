@@ -1,9 +1,9 @@
-import { RIVAL_TEAMS } from '../data/rivalTeamDefinitions.js?v=4.7';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { getSeriesForManufacturer } from '../data/seriesDefinitions.js?v=4.7';
-import { WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.7';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
-import { clamp } from '../utils/random.js?v=4.7';
+import { RIVAL_TEAMS } from '../data/rivalTeamDefinitions.js?v=4.8';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { getSeriesForManufacturer } from '../data/seriesDefinitions.js?v=4.8';
+import { WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.8';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.8';
+import { clamp } from '../utils/random.js?v=4.8';
 
 function seededIndex(state, context, length) {
   const text = `${state.year}|${context?.tournamentId ?? 'scrim'}|${context?.roundIndex ?? 0}|${state.teamRecord?.wins ?? 0}|${state.teamRecord?.losses ?? 0}`;
@@ -116,8 +116,8 @@ export function rivalArchiveRows(state) {
 
 function generationSeries(team, manufacturerId) {
   const all = getSeriesForManufacturer(manufacturerId);
-  const generation = Math.max(1, Math.min(10, Number(team.generation ?? 1)));
-  return all.filter(s => Math.ceil(Number(s.seriesNumber ?? 1) / 20) === generation);
+  const generation = Math.max(1, Math.min(11, Number(team.generation ?? 1)));
+  return all.filter(s => (Number(s.seriesNumber ?? 1) >= 201 ? 11 : Math.ceil(Number(s.seriesNumber ?? 1) / 20)) === generation);
 }
 
 export function rivalGenerationOptions(team, slot) {
@@ -130,8 +130,8 @@ export function rivalGenerationOptions(team, slot) {
     manufacturerId ??= team.manufacturerId;
   } else if (team.traits.includes('generation') || team.traits.includes('oldGeneration') || team.traits.includes('latestGeneration')) {
     manufacturerId ??= MANUFACTURERS[(slot + team.generation) % MANUFACTURERS.length].id;
-    const g = team.traits.includes('oldGeneration') ? 1 + (team.generation % 3) : team.traits.includes('latestGeneration') ? 10 : team.generation;
-    const list = getSeriesForManufacturer(manufacturerId).filter(s => Math.ceil(Number(s.seriesNumber ?? 1) / 20) === g);
+    const g = team.traits.includes('oldGeneration') ? 1 + (team.generation % 3) : team.traits.includes('latestGeneration') ? 11 : team.generation;
+    const list = getSeriesForManufacturer(manufacturerId).filter(s => (Number(s.seriesNumber ?? 1) >= 201 ? 11 : Math.ceil(Number(s.seriesNumber ?? 1) / 20)) === g);
     seriesId = list[slot % Math.max(1,list.length)]?.id ?? null;
   }
   if (team.traits.includes('singleWeapon')) weaponKey = team.weaponKey;
@@ -166,7 +166,7 @@ const LABELS = {
  manufacturer: t=>`全機を${t.manufacturerName}で統一`, generation:t=>`第${t.generation}世代中心`, series:()=>`同一系列だけで15機を揃える異例の編成`,
  singleWeapon:t=>`${t.weaponName}偏執編成`, singleRange:t=>`${WEAPON_CATEGORIES[t.weaponKey].range}へ極端に集中`, superGroup:t=>`${t.groupName}を超特化育成`, superStat:t=>`${t.statName}だけを異常な水準まで育成`,
  aceAndFodder:()=>`上位3機へ資源を集中した一点豪華型`, uniform:()=>`15機をほぼ同一水準に揃える均一型`, reliabilityTank:()=>`信頼性最優先`, unstableMonster:()=>`低信頼性と引き換えに基礎性能を極端に強化`,
- abilityHeavy:()=>`特殊能力を大量に積む構成`, abilityLight:()=>`特殊能力を捨て基礎性能を優先`, oldGeneration:()=>`旧世代機を意図的に運用`, latestGeneration:()=>`最新第10世代中心`, mixedManufacturers:()=>`メーカーを意図的に分散した混成編成`
+ abilityHeavy:()=>`特殊能力を大量に積む構成`, abilityLight:()=>`特殊能力を捨て基礎性能を優先`, oldGeneration:()=>`旧世代機を意図的に運用`, latestGeneration:()=>`最新第11世代中心`, mixedManufacturers:()=>`メーカーを意図的に分散した混成編成`
 };
 export function rivalTraitLabels(team) { return team.traits.map(id => LABELS[id]?.(team)).filter(Boolean); }
 export function rivalAnalysis(team, level=0, history=null) {

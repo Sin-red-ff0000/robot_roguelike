@@ -6,5 +6,5 @@ const profiles=SERIES_DEFINITIONS.map(resolveSeriesProfile);
 const fields=['namingConcept','concept','developmentBackground','engineeringNotes','weaponDoctrine','trainingNotes'];
 const lengths=Object.fromEntries(fields.map(f=>[f,profiles.map(p=>String(p[f]??'').length)]));
 const out={abilities:Object.keys(SPECIAL_ABILITIES).length,events:EVENT_EXPANSION_TEMPLATES.length,eventIds:new Set(EVENT_EXPANSION_TEMPLATES.map(x=>x.id)).size,synergies:BASE_SYNERGY_RULES.length,synergyStats:new Set(BASE_SYNERGY_RULES.map(x=>x.triggerStat)).size,series:profiles.length,narratives:Object.fromEntries(fields.map(f=>[f,{min:Math.min(...lengths[f]),avg:Number((lengths[f].reduce((a,b)=>a+b,0)/lengths[f].length).toFixed(1)),max:Math.max(...lengths[f])}]))};
-if(out.abilities!==192||out.events!==150||out.eventIds!==150||out.synergies!==41||out.synergyStats!==41||out.series!==4000) throw new Error(JSON.stringify(out));
+if(out.abilities!==216||out.events!==230||out.eventIds!==230||out.synergies!==41||out.synergyStats!==41||out.series!==5876) throw new Error(JSON.stringify(out));
 console.log(JSON.stringify(out,null,2));

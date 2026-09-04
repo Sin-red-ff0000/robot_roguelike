@@ -1,6 +1,6 @@
-import { MANUFACTURERS } from './manufacturers.js?v=4.7';
-import { WEAPON_CATEGORIES, WEAPON_KEYS } from './weaponDefinitions.js?v=4.7';
-import { GROUP_KEYS, STAT_GROUPS } from './statDefinitions.js?v=4.7';
+import { MANUFACTURERS } from './manufacturers.js?v=4.8';
+import { WEAPON_CATEGORIES, WEAPON_KEYS } from './weaponDefinitions.js?v=4.8';
+import { GROUP_KEYS, STAT_GROUPS } from './statDefinitions.js?v=4.8';
 
 const COLORS = ['蒼','紅','白','黒','銀','金','翠','紫','灰','藍','橙','群青'];
 const NOUNS = ['機兵団','技術部','実証隊','競技班','研究会','工学部','選抜隊','戦術科','開発局','実験隊','機装部','演習班','特務班','競技会','技研'];
@@ -41,7 +41,7 @@ export const RIVAL_TEAMS = Array.from({ length: 240 }, (_, index) => {
   const weaponKey = WEAPON_KEYS[(index * 5 + 2) % WEAPON_KEYS.length];
   const groupKey = GROUP_KEYS[(index * 3 + 1) % GROUP_KEYS.length];
   const statName = STAT_GROUPS[groupKey].stats[index % STAT_GROUPS[groupKey].stats.length];
-  const generation = (index % 10) + 1;
+  const generation = (index % 11) + 1;
   return {
     id: `rival-${String(index + 1).padStart(3,'0')}`,
     name: `${COLORS[index % COLORS.length]}${manufacturer.name.replace(/(重工|産業|工廠|重機|精機|技研|機工|機関|研究所)$/,'')}${NOUNS[(index * 7) % NOUNS.length]}`,

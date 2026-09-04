@@ -60,7 +60,7 @@ for (const [name, context] of Object.entries(contextCases)) {
   const seen = new Set();
   let contextual = 0;
   let total = 0;
-  for (let i = 0; i < 4000; i += 1) {
+  for (let i = 0; i < 5000; i += 1) {
     for (const choice of generateTrainingChoices(5, [], 0, context)) {
       total += 1;
       if (choice.contextualVariant) {

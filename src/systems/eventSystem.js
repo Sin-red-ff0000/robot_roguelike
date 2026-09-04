@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=4.7';
-import { NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.7';
-import { EVENT_EXPANSION_TEMPLATES } from '../data/eventExpansionDefinitions.js?v=4.7';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.7';
-import { generateCustomPart } from './partSystem.js?v=4.7';
+import { GAME_CONFIG } from '../config.js?v=4.8';
+import { NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.8';
+import { EVENT_EXPANSION_TEMPLATES } from '../data/eventExpansionDefinitions.js?v=4.8';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.8';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.8';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.8';
+import { generateCustomPart } from './partSystem.js?v=4.8';
 import {
   addAbility,
   describeAbilityChange,
@@ -14,8 +14,8 @@ import {
   randomUpgradableAbility,
   removeAbility,
   upgradeAbility,
-} from './specialAbilitySystem.js?v=4.7';
-import { eventChanceMultiplier } from './settingsSystem.js?v=4.7';
+} from './specialAbilitySystem.js?v=4.8';
+import { eventChanceMultiplier } from './settingsSystem.js?v=4.8';
 
 function eventId(prefix) {
   return `${prefix}-${Date.now()}-${randomInt(1000, 9999)}`;
@@ -388,6 +388,10 @@ function robotGroupAverage(robot, groupKey) {
 
 function expandedEventCandidates(state, template) {
   const roster = state.roster ?? [];
+  if (String(template.condition ?? '').startsWith('manufacturer:')) {
+    const manufacturerId = String(template.condition).slice('manufacturer:'.length);
+    return roster.filter((robot) => robot.manufacturerId === manufacturerId);
+  }
   switch (template.condition) {
     case 'weapon': return roster.filter((robot) => robot.weaponKey === template.weaponKey);
     case 'year1': return roster.filter((robot) => Number(robot.cohortYear ?? 1) === 1);
@@ -472,6 +476,10 @@ function applyExpandedEventEffect(robot, template) {
     learnedAbilityId = weaponCandidates.length ? pick(weaponCandidates) : learnedAbilityId;
   }
   if (template.family === 'tournament' && Math.random() < 0.12 && !robot.specialAbilities?.includes('bigStage')) learnedAbilityId = 'bigStage';
+  if (['homeTech', 'tokiwaLivingRoom', 'tokiwaApplianceDuty', 'tokiwaHomeSupport'].includes(template.family) && Math.random() < 0.18) learnedAbilityId = pick(['homeTechErgonomics', 'fieldMaintainability'].filter((id) => !robot.specialAbilities?.includes(id))) ?? learnedAbilityId;
+  if (template.family === 'heritageTour' && Math.random() < 0.18) learnedAbilityId = pick(['expeditionSense', 'itineraryRebuild'].filter((id) => !robot.specialAbilities?.includes(id))) ?? learnedAbilityId;
+  if (template.family === 'libidoLab' && Math.random() < 0.20) learnedAbilityId = pick(['sensualKinetics', 'poseControl', 'tactileCombatSense'].filter((id) => !robot.specialAbilities?.includes(id))) ?? learnedAbilityId;
+  if (['libidoAfterHours', 'libidoFitting', 'libidoRedacted', 'libidoIntimateCalibration', 'libidoAdultInterface', 'libidoBodyOption', 'libidoPrivacyMode', 'libidoCompanionService', 'libidoPrivateSuite', 'libidoAftercareUse'].includes(template.family) && Math.random() < 0.12) learnedAbilityId = pick(['sensualKinetics', 'poseControl', 'tactileCombatSense'].filter((id) => !robot.specialAbilities?.includes(id))) ?? learnedAbilityId;
   if (learnedAbilityId) {
     const change = addAbility(robot, learnedAbilityId);
     if (change) details.push(`特殊能力「${SPECIAL_ABILITIES[learnedAbilityId].name}」を獲得`);

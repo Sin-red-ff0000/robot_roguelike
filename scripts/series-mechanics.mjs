@@ -121,5 +121,5 @@ console.log(JSON.stringify({
   growth,
   custom,
   appliedDelta,
-  note:'v4.7 keeps all ten generations on the same verified growth/custom execution path.'
+  note:'v4.8 keeps all eleven generations, including joint-development series, on the same verified growth/custom execution path.'
 }, null, 2));

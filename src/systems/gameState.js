@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=4.7';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.7';
-import { randomFloat, randomInt } from '../utils/random.js?v=4.7';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.7';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.7';
-import { generateCohort } from './robotGenerator.js?v=4.7';
-import { generateTrainingChoices, generateTrainingChoicesWithCarryover } from './trainingSystem.js?v=4.7';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities } from './facilitySystem.js?v=4.7';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.7';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.7';
-import { createRobotSnapshot, robotCareerHighlights } from './recordSystem.js?v=4.7';
-import { getAnnualTrend } from './annualTrendSystem.js?v=4.7';
+import { GAME_CONFIG } from '../config.js?v=4.8';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.8';
+import { randomFloat, randomInt } from '../utils/random.js?v=4.8';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.8';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.8';
+import { generateCohort } from './robotGenerator.js?v=4.8';
+import { generateTrainingChoices, generateTrainingChoicesWithCarryover } from './trainingSystem.js?v=4.8';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities } from './facilitySystem.js?v=4.8';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.8';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.8';
+import { createRobotSnapshot, robotCareerHighlights } from './recordSystem.js?v=4.8';
+import { getAnnualTrend } from './annualTrendSystem.js?v=4.8';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -219,7 +219,7 @@ export function createInitialState() {
     tournamentHistory: [],
     retirementHistory: [],
     seriesEncounters: Object.fromEntries(roster.filter((robot) => robot.seriesId).map((robot) => [robot.seriesId, 1])),
-    log: ['v4.7作業版を開始しました。10世代・4000シリーズを収録し、設備・練習・ライバル・歴代記録を拡張しています。'],
+    log: [`v4.8作業版を開始しました。${MANUFACTURERS.length}メーカー・11世代・${MANUFACTURERS.length * (200 + MANUFACTURERS.length)}シリーズを収録しています。`],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),

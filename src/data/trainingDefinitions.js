@@ -1,4 +1,4 @@
-import { STAT_GROUPS } from './statDefinitions.js?v=4.7';
+import { STAT_GROUPS } from './statDefinitions.js?v=4.8';
 
 const GROUP_VARIANTS = {
   output: [['基礎出力訓練', [], '基礎', '安定'], ['瞬発出力試験', ['瞬間出力','出力応答'], '一点集中', '安定'], ['高負荷稼働試験', ['持続出力','過負荷出力'], '専門', '高振れ幅']],

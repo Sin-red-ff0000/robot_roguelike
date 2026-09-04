@@ -18,13 +18,17 @@ import { SERIES_DEFINITIONS, getSeriesForManufacturer, resolveSeriesProfile } fr
 import { MANUFACTURERS } from '../src/data/manufacturers.js';
 import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
+const NEW_MAKER_IDS = new Set(['mikage','meridian','nomad','tokiwa','heritage','libido']);
+const ORIGINAL_SERIES = SERIES_DEFINITIONS.filter((series)=>!NEW_MAKER_IDS.has(series.manufacturerId));
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (seriesRecords(state).length !== 4000) throw new Error('series encyclopedia row count');
+const expectedSeriesPerMaker = 200 + MANUFACTURERS.length;
+const expectedSeriesTotal = MANUFACTURERS.length * expectedSeriesPerMaker;
+if (seriesRecords(state).length !== expectedSeriesTotal) throw new Error('series encyclopedia row count');
 if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
-if (SERIES_DEFINITIONS.length !== 4000) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 200) throw new Error(`series count for ${manufacturer.id}`); }
-const legacyProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
+if (SERIES_DEFINITIONS.length !== expectedSeriesTotal) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== expectedSeriesPerMaker) throw new Error(`series count for ${manufacturer.id}`); }
+const legacyProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
 if (legacyProfiles.length !== 400) throw new Error(`legacy refit count ${legacyProfiles.length}`);
 for (const profile of legacyProfiles) {
   if (!profile.legacyRefit) throw new Error(`legacy refit flag missing: ${profile.id}`);
@@ -37,7 +41,7 @@ for (const profile of legacyProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`legacy identity refit missing: ${profile.id}`);
 }
-const secondGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 21 && series.seriesNumber <= 40).map(resolveSeriesProfile);
+const secondGenProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber >= 21 && series.seriesNumber <= 40).map(resolveSeriesProfile);
 if (secondGenProfiles.length !== 400) throw new Error(`second-generation refit count ${secondGenProfiles.length}`);
 for (const profile of secondGenProfiles) {
   if (!profile.secondGenerationRefit || profile.refitGeneration !== 2 || profile.refitVersion !== '3.2') throw new Error(`second-generation refit flag missing: ${profile.id}`);
@@ -49,7 +53,7 @@ for (const profile of secondGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`second-generation identity refit missing: ${profile.id}`);
 }
-const thirdGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 41 && series.seriesNumber <= 60).map(resolveSeriesProfile);
+const thirdGenProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber >= 41 && series.seriesNumber <= 60).map(resolveSeriesProfile);
 if (thirdGenProfiles.length !== 400) throw new Error(`third-generation refit count ${thirdGenProfiles.length}`);
 for (const profile of thirdGenProfiles) {
   if (!profile.thirdGenerationRefit || profile.refitGeneration !== 3 || profile.refitVersion !== '3.3') throw new Error(`third-generation refit flag missing: ${profile.id}`);
@@ -61,7 +65,7 @@ for (const profile of thirdGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`third-generation identity refit missing: ${profile.id}`);
 }
-const fourthGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 61 && series.seriesNumber <= 80).map(resolveSeriesProfile);
+const fourthGenProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber >= 61 && series.seriesNumber <= 80).map(resolveSeriesProfile);
 if (fourthGenProfiles.length !== 400) throw new Error(`fourth-generation refit count ${fourthGenProfiles.length}`);
 for (const profile of fourthGenProfiles) {
   if (!profile.fourthGenerationRefit || profile.refitGeneration !== 4 || profile.refitVersion !== '3.4') throw new Error(`fourth-generation refit flag missing: ${profile.id}`);
@@ -73,7 +77,7 @@ for (const profile of fourthGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`fourth-generation identity refit missing: ${profile.id}`);
 }
-const fifthGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 81 && series.seriesNumber <= 100).map(resolveSeriesProfile);
+const fifthGenProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber >= 81 && series.seriesNumber <= 100).map(resolveSeriesProfile);
 if (fifthGenProfiles.length !== 400) throw new Error(`fifth-generation count ${fifthGenProfiles.length}`);
 for (const profile of fifthGenProfiles) {
   if (!profile.fifthGeneration || profile.refitGeneration !== 5 || profile.refitVersion !== '3.5') throw new Error(`fifth-generation flag missing: ${profile.id}`);
@@ -84,7 +88,7 @@ for (const profile of fifthGenProfiles) {
   }
   if (!profile.growthCurve?.label || !profile.customAptitude?.label || !profile.intrinsicTrait?.label) throw new Error(`fifth-generation identity missing: ${profile.id}`);
 }
-const sixthGenProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber >= 101 && series.seriesNumber <= 120).map(resolveSeriesProfile);
+const sixthGenProfiles = ORIGINAL_SERIES.filter((series) => series.seriesNumber >= 101 && series.seriesNumber <= 120).map(resolveSeriesProfile);
 if (sixthGenProfiles.length !== 400) throw new Error(`sixth-generation count ${sixthGenProfiles.length}`);
 for (const profile of sixthGenProfiles) {
   if (!profile.sixthGeneration || profile.refitGeneration !== 6 || profile.refitVersion !== '3.7') throw new Error(`sixth-generation flag missing: ${profile.id}`);
@@ -174,7 +178,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '4.7') throw new Error('migration version');
+if (!migrated || migrated.version !== '4.8') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');

@@ -1,13 +1,13 @@
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { simulateBattle } from './battleSystem.js?v=4.7';
-import { historicalBest15 } from './recordSystem.js?v=4.7';
-import { robotSelectionScore } from './teamMatchSystem.js?v=4.7';
-import { battleWinTable } from './settingsSystem.js?v=4.7';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { simulateBattle } from './battleSystem.js?v=4.8';
+import { historicalBest15 } from './recordSystem.js?v=4.8';
+import { robotSelectionScore } from './teamMatchSystem.js?v=4.8';
+import { battleWinTable } from './settingsSystem.js?v=4.8';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((m) => [m.id, m]));
 
 function generationOf(robot) {
-  return Math.max(1, Math.ceil(Number(robot.seriesNumber ?? 1) / 20));
+  return Number(robot.seriesNumber ?? 1) >= 201 ? 11 : Math.max(1, Math.ceil(Number(robot.seriesNumber ?? 1) / 20));
 }
 
 function cloneRobot(robot, prefix, index) {
@@ -43,7 +43,7 @@ export function exhibitionTeamOptions(state) {
     }
   }
   const retired = historicalPool(state);
-  for (let generation = 1; generation <= 10; generation += 1) {
+  for (let generation = 1; generation <= 11; generation += 1) {
     const count = retired.filter((r) => generationOf(r) === generation).length;
     if (count >= 15) options.push({ id:`generation:${generation}`, label:`歴代・第${generation}世代ベスト15`, kind:'generation', count });
   }

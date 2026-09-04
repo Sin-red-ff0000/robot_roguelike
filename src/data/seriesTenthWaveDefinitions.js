@@ -1,6 +1,6 @@
 // v4.7 tenth generation: real words/proper names only; no coined-name generator.
-import { MANUFACTURERS } from './manufacturers.js?v=4.7';
-import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.7';
+import { MANUFACTURERS } from './manufacturers.js?v=4.8';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.8';
 const POOLS = {
   "kirishima": [
     "阿蘇",

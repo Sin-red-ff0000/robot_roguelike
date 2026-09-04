@@ -1,7 +1,7 @@
-import { GROUP_KEYS } from '../data/statDefinitions.js?v=4.7';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
-import { SERIES_DEFINITIONS, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=4.7';
+import { GROUP_KEYS } from '../data/statDefinitions.js?v=4.8';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.8';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.8';
+import { SERIES_DEFINITIONS, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=4.8';
 
 function appearances(robot) {
   return (robot.record?.wins ?? 0) + (robot.record?.losses ?? 0);

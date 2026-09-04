@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SERIES_DEFINITIONS } from '../src/data/seriesDefinitions.js';
+import { MANUFACTURERS } from '../src/data/manufacturers.js';
 import { EVENT_EXPANSION_TEMPLATES, EVENT_EXPANSION_FAMILY_COUNT } from '../src/data/eventExpansionDefinitions.js';
 import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES } from '../src/data/managerDefinitions.js';
 import { managerLine, managerRobotInsightContext, normalizeManagerProfile } from '../src/systems/managerSystem.js';
@@ -10,9 +11,13 @@ import { resolvePostTrainingEvent } from '../src/systems/eventSystem.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const g10 = SERIES_DEFINITIONS.filter((s) => s.seriesNumber >= 181 && s.seriesNumber <= 200);
-if (g10.length !== 400) throw new Error(`第10世代系列数が400ではありません: ${g10.length}`);
-if (new Set(g10.map((s) => s.nameKana)).size !== 400) throw new Error('第10世代の日本語名に重複があります');
-if (new Set(g10.map((s) => s.nameLatin)).size !== 400) throw new Error('第10世代のLatin名に重複があります');
+const expectedG10 = MANUFACTURERS.length * 20;
+const expectedPerMaker = 200 + MANUFACTURERS.length;
+const expectedTotal = MANUFACTURERS.length * expectedPerMaker;
+const expectedG11 = MANUFACTURERS.length * MANUFACTURERS.length;
+if (g10.length !== expectedG10) throw new Error(`第10世代系列数が${expectedG10}ではありません: ${g10.length}`);
+if (new Set(g10.map((s) => s.nameKana)).size !== expectedG10) throw new Error('第10世代の日本語名に重複があります');
+if (new Set(g10.map((s) => s.nameLatin)).size !== expectedG10) throw new Error('第10世代のLatin名に重複があります');
 if (g10.some((s) => /[^\x00-\x7F]/.test(s.nameLatin))) throw new Error('第10世代Latin名に非ASCII文字があります');
 if (g10.some((s) => new RegExp(`^${s.manufacturerId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-?\\d+$`, 'i').test(s.nameLatin))) throw new Error('第10世代Latin名にメーカーID仮置きが残っています');
 for (const field of ['summary','concept','namingConcept','developmentBackground','engineeringNotes','trainingNotes']) {
@@ -20,8 +25,8 @@ for (const field of ['summary','concept','namingConcept','developmentBackground'
   if (short.length) throw new Error(`第10世代 ${field} が短すぎます: ${short.slice(0,3).map((s)=>s.id).join(', ')}`);
 }
 
-if (EVENT_EXPANSION_TEMPLATES.length !== 150 || EVENT_EXPANSION_FAMILY_COUNT !== 15) throw new Error('拡張イベント定義数が不正です');
-if (new Set(EVENT_EXPANSION_TEMPLATES.map((e) => e.title)).size !== 150) throw new Error('拡張イベントタイトルが150件すべて固有ではありません');
+if (EVENT_EXPANSION_TEMPLATES.length !== 330 || EVENT_EXPANSION_FAMILY_COUNT !== 33) throw new Error('拡張イベント定義数が不正です');
+if (new Set(EVENT_EXPANSION_TEMPLATES.map((e) => e.title)).size !== 330) throw new Error('拡張イベントタイトルが330件すべて固有ではありません');
 
 const managerIds = Object.keys(MANAGER_PERSONALITIES);
 const contexts = Object.keys(MANAGER_CONTEXT_LABELS);
@@ -68,13 +73,14 @@ if (exactRecentRate > 0.08) throw new Error(`同一イベントの短期再発�
 
 
 const catalogText = fs.readFileSync(path.join(root, 'SERIES_CATALOG.md'), 'utf8');
-if (!catalogText.startsWith('# SERIES CATALOG v4.7')) throw new Error('系列カタログの版表記がv4.7ではありません');
-if (!catalogText.includes('20メーカー × 200シリーズ = 合計4000シリーズ。')) throw new Error('系列カタログの収録数表記が4000系列と一致しません');
-if ((catalogText.match(/### 第10世代20系列 詳細解説/g) ?? []).length !== 20) throw new Error('系列カタログに第10世代詳細が20メーカー分ありません');
+if (!catalogText.startsWith('# SERIES CATALOG v4.8')) throw new Error('系列カタログの版表記がv4.8ではありません');
+if (!catalogText.includes(`${MANUFACTURERS.length}メーカー × ${expectedPerMaker}シリーズ = 合計${expectedTotal}シリーズ。`)) throw new Error('系列カタログの収録数表記が現行系列数と一致しません');
+if ((catalogText.match(/### 第10世代20系列 詳細解説/g) ?? []).length !== MANUFACTURERS.length) throw new Error(`系列カタログに第10世代詳細が${MANUFACTURERS.length}メーカー分ありません`);
 if (catalogText.includes('系譜上の系譜上の')) throw new Error('系列カタログに重複文言が残っています');
 const readmeText = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
-if (!readmeText.includes('第10世代（各メーカー181～200番）400系列')) throw new Error('READMEの第10世代範囲表記が現行仕様と一致しません');
-if (!readmeText.includes('20メーカー × 200系列 = 合計4000系列')) throw new Error('READMEの系列総数表記が現行仕様と一致しません');
+if (!readmeText.includes(`第10世代（各メーカー181～200番）${expectedG10}系列`)) throw new Error('READMEの第10世代範囲表記が現行仕様と一致しません');
+if (!readmeText.includes(`第11世代（各メーカー201～${expectedPerMaker}番）${expectedG11}系列`)) throw new Error('READMEの第11世代範囲表記が現行仕様と一致しません');
+if (!readmeText.includes(`${MANUFACTURERS.length}メーカー × ${expectedPerMaker}系列 = 合計${expectedTotal}系列`)) throw new Error('READMEの系列総数表記が現行仕様と一致しません');
 
 const staleTargets = ['index.html','sw.js','README.md','ROADMAP.md','BALANCE.md','SERIES_CATALOG.md','src/systems/managerSystem.js','src/systems/eventSystem.js','src/data/seriesTenthWaveDefinitions.js'];
 const stale = [];
@@ -86,7 +92,7 @@ if (stale.length) throw new Error(`旧版表記が残っています: ${stale.jo
 
 console.log(JSON.stringify({
   ok:true,
-  generation10:{series:g10.length,uniqueKana:400,uniqueLatin:400},
+  generation10:{series:g10.length,uniqueKana:expectedG10,uniqueLatin:expectedG10},
   manager:{personalities:managerIds.length,contexts:contexts.length},
   events:{templates:EVENT_EXPANSION_TEMPLATES.length,observed:expanded.length,familyRepeatRate:Number(familyRepeatRate.toFixed(3)),exactRecentRate:Number(exactRecentRate.toFixed(3))},
   staleVersionTargets:stale.length,

@@ -1,7 +1,7 @@
-import { FACILITY_DEFINITIONS } from '../data/facilityDefinitions.js?v=4.7';
-import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=4.7';
-import { GAME_CONFIG } from '../config.js?v=4.7';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
+import { FACILITY_DEFINITIONS } from '../data/facilityDefinitions.js?v=4.8';
+import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=4.8';
+import { GAME_CONFIG } from '../config.js?v=4.8';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.8';
 
 export function defaultFacilities() {
   return Object.fromEntries(Object.keys(FACILITY_DEFINITIONS).map((id) => [id, 0]));

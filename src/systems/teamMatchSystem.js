@@ -1,15 +1,15 @@
-import { GAME_CONFIG } from '../config.js?v=4.7';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
-import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
-import { WEAPON_DOCTRINE_RULES } from '../data/battleRules.js?v=4.7';
-import { generateCohort } from './robotGenerator.js?v=4.7';
-import { simulateBattle } from './battleSystem.js?v=4.7';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.7';
-import { clamp, randomInt } from '../utils/random.js?v=4.7';
-import { battleWinTable } from './settingsSystem.js?v=4.7';
-import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.7';
-import { selectRivalTeam, rivalGenerationOptions, applyRivalTraits, rivalAnalysis, rivalManagerLine, rivalHistoryEntry, rivalryTier, recordRivalResult } from './rivalTeamSystem.js?v=4.7';
-import { combatResearchLevel } from './facilitySystem.js?v=4.7';
+import { GAME_CONFIG } from '../config.js?v=4.8';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.8';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.8';
+import { WEAPON_DOCTRINE_RULES } from '../data/battleRules.js?v=4.8';
+import { generateCohort } from './robotGenerator.js?v=4.8';
+import { simulateBattle } from './battleSystem.js?v=4.8';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.8';
+import { clamp, randomInt } from '../utils/random.js?v=4.8';
+import { battleWinTable } from './settingsSystem.js?v=4.8';
+import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.8';
+import { selectRivalTeam, rivalGenerationOptions, applyRivalTraits, rivalAnalysis, rivalManagerLine, rivalHistoryEntry, rivalryTier, recordRivalResult } from './rivalTeamSystem.js?v=4.8';
+import { combatResearchLevel } from './facilitySystem.js?v=4.8';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);

@@ -108,6 +108,7 @@ if (!app.html.includes('第7世代 (#121～140)')) throw new Error('seventh gene
 if (!app.html.includes('第8世代 (#141～160)')) throw new Error('eighth generation filter missing');
 if (!app.html.includes('第9世代 (#161～180)')) throw new Error('ninth generation filter missing');
 if (!app.html.includes('第10世代 (#181～200)')) throw new Error('tenth generation filter missing');
+if (!app.html.includes('第11世代 (#201～223)')) throw new Error('eleventh generation filter missing');
 
 settingsViewButton.click();
 if (!app.html.includes('能力解説') || !app.html.includes('ステータス・戦闘指標を詳しく見る')) throw new Error('status guide missing');
