@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=4.0';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.0';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.0';
-import { randomFloat, randomInt } from '../utils/random.js?v=4.0';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.0';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.0';
-import { generateCohort } from './robotGenerator.js?v=4.0';
-import { generateTrainingChoices } from './trainingSystem.js?v=4.0';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=4.0';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.0';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.0';
-import { createRobotSnapshot } from './recordSystem.js?v=4.0';
-import { getAnnualTrend } from './annualTrendSystem.js?v=4.0';
+import { GAME_CONFIG } from '../config.js?v=4.6';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.6';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.6';
+import { randomFloat, randomInt } from '../utils/random.js?v=4.6';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.6';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.6';
+import { generateCohort } from './robotGenerator.js?v=4.6';
+import { generateTrainingChoices } from './trainingSystem.js?v=4.6';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=4.6';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.6';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.6';
+import { createRobotSnapshot } from './recordSystem.js?v=4.6';
+import { getAnnualTrend } from './annualTrendSystem.js?v=4.6';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -191,7 +191,7 @@ export function createInitialState() {
     tournamentHistory: [],
     retirementHistory: [],
     seriesEncounters: Object.fromEntries(roster.filter((robot) => robot.seriesId).map((robot) => [robot.seriesId, 1])),
-    log: ['v4.0を開始しました。第9世代400シリーズ、全41基礎ステータスと兵装の相乗関係、シリーズ設計解説の増補を追加し、3600シリーズになりました。'],
+    log: ['v4.0を開始しました。第9世代400シリーズ、全41基礎ステータスと兵装の相乗関係、シリーズ設計解説の増補を追加し、4000シリーズになりました。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),

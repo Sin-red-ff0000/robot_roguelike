@@ -2,9 +2,9 @@
 // The ninth generation continues clean-sheet naming and explicitly forbids inherited-name subtitles/suffixes.
 // Every series uses a standalone clean-sheet name: no inherited stem and no subtitle/suffix.
 
-import { MANUFACTURERS } from './manufacturers.js?v=4.0';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.0';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.0';
+import { MANUFACTURERS } from './manufacturers.js?v=4.6';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.6';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.6';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
 const MAKER_INDEX = new Map(MANUFACTURERS.map((maker, index) => [maker.id, index]));

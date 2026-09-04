@@ -1,16 +1,18 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.0';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.0';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.0';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.0';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.0';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.0';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.0';
-import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.0';
-import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.0';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.0';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.0';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.0';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.0';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.6';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.6';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.6';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.6';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.6';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.6';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.6';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.6';
+import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.6';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.6';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.6';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.6';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.6';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.6';
+import { BASE_SYNERGY_RULES } from './battleRules.js?v=4.6';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -8998,8 +9000,9 @@ const SIXTH_GENERATION_SERIES = SIXTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ .
 const SEVENTH_GENERATION_SERIES = SEVENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const EIGHTH_GENERATION_SERIES = EIGHTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 const NINTH_GENERATION_SERIES = NINTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
+const TENTH_GENERATION_SERIES = TENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ ...base }));
 
-SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES);
+SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES, ...TENTH_GENERATION_SERIES);
 
 // v3.7 Japanese-label repair: older generation data sometimes stored the Latin/original
 // name directly in nameKana.  Normalize the whole catalog once so both newly generated
@@ -9216,7 +9219,8 @@ export function resolveSeriesProfile(seriesLike) {
   const preferredWeapons = [...new Set([...(archetype.preferredWeapons ?? []), ...(series.preferredWeapons ?? [])])];
   const avoidedWeapons = [...new Set(series.avoidedWeapons ?? [])].filter((weaponKey) => !preferredWeapons.includes(weaponKey));
   const localizedSummary = localizeNarrativeText(series, lineage, series.summary ?? series.concept ?? archetype.summary);
-  const localizedConcept = localizeNarrativeText(series, lineage, series.concept ?? series.summary ?? archetype.summary);
+  const baseLocalizedConcept = localizeNarrativeText(series, lineage, series.concept ?? series.summary ?? archetype.summary);
+  const localizedConcept = `${baseLocalizedConcept} 総合コンセプトとしては、系列固有の得意分野を兵装・特殊能力・信頼性・耐性まで同じ勝ち筋へ接続し、3年間の育成で完成形へ近づけることを重視する。初期値だけで評価せず、成長曲線とカスタム適性を含めて長所を伸ばすか弱点を補うかを選択できる設計である。比較項目が試合ごとに変化するため、単一能力の最高値よりも複数の得意項目を実戦へ持ち込めることが系列らしさになる。`.trim();
   const baseNamingConcept = localizeNarrativeText(series, lineage, series.namingConcept ?? '');
   const combinedGroupBias = mergeNumberMaps(archetype.groupBias, series.groupAdjustments);
   const groupLabels = { output:'出力', mobility:'駆動', control:'制御', engine:'機関', compute:'演算', sensor:'センサー', ai:'AI' };
@@ -9226,10 +9230,16 @@ export function resolveSeriesProfile(seriesLike) {
   const motifExpansion = ` 設計モチーフを能力面から見ると、${motifGroups.length ? motifGroups.join('・') : '全体の均衡'}を主要な骨格とし、${motifWeapons.length ? `${motifWeapons.join('・')}などの兵装運用` : '特定兵装へ固定しない運用'}へつながるよう各系統の配分が組まれている。さらに成長曲線「${(SERIES_GROWTH_CURVES[inferredGrowthCurveId(series, series.archetypeId)] ?? SERIES_GROWTH_CURVES.steady).label}」とカスタム適性「${(SERIES_CUSTOM_APTITUDES[inferredCustomAptitudeId(series, series.archetypeId)] ?? SERIES_CUSTOM_APTITUDES.balanced).label}」まで含めて一つの設計像としており、名称は見た目の印象だけでなく、どの能力を伸ばし、どの改修で完成させる系列なのかを読む手掛かりとして扱う。`;
   const weaponRelationExpansion = ` 兵装との関係では、${motifGroups.length ? motifGroups.join('・') : '基礎能力全般'}を兵装性能へ変換する設計を重視する。41基礎ステータスは兵装側の威力・精度・制御・応答・安定・効率と相乗し、同じ兵装値でも基礎側の組み合わせで実戦性能が変わる。育成では成長倍率・成長曲線・カスタム適性・推奨兵装まで合わせ、名称のモチーフが示す長所をどの兵装で結果へ変えるかを見ると設計意図を掴みやすい。`;
   const localizedNamingConcept = `${baseNamingConcept}${motifExpansion}${weaponRelationExpansion}`.trim();
-  const localizedDevelopmentBackground = localizeNarrativeText(series, lineage, series.developmentBackground ?? '');
-  const localizedEngineeringNotes = localizeNarrativeText(series, lineage, series.engineeringNotes ?? '');
-  const localizedTrainingNotes = localizeNarrativeText(series, lineage, series.trainingNotes ?? '');
-  const localizedWeaponDoctrine = localizeNarrativeText(series, lineage, series.weaponDoctrine ?? '');
+  const baseDevelopmentBackground = localizeNarrativeText(series, lineage, series.developmentBackground ?? '');
+  const localizedDevelopmentBackground = `${baseDevelopmentBackground} 開発背景では、メーカーの得意技術と世代ごとの運用要求を両立させ、試験場の最高値だけでなく三年間の育成・改修余地を残すことが重視された。兵装交換や特殊能力獲得によって完成形が変わることも想定し、固定装備専用機ではなく運用側が発展方向を選べる余白を確保している。`.trim();
+  const baseEngineeringNotes = localizeNarrativeText(series, lineage, series.engineeringNotes ?? '');
+  const localizedEngineeringNotes = `${baseEngineeringNotes} 設計上の癖は、得意能力へ資源を集中する代わりに一部の能力を育成側へ委ねている点に現れる。弱点を均すだけでは系列本来の伸びを薄める場合があり、得意領域を残したままカスタムパーツで最低限の穴を塞ぐと扱いやすい。特殊能力も同じ方向へ重ねるほど役割が明確になる。`.trim();
+  const baseTrainingNotes = localizeNarrativeText(series, lineage, series.trainingNotes ?? '');
+  const trainingExpansion = ` 育成・改修の見方では、まず現在値と伸びしろを分けて考える。基礎能力倍率は現時点の完成度、成長倍率と成長曲線は残り期間でどこまで伸ばせるか、カスタム適性はパーツ投入の効率を示すため、三者を同じ指標として扱わないことが重要である。1年目は成長倍率の高い得意項目と兵装適性を見極め、2年目は主力兵装と特殊能力の方向を揃え、3年目は残り練習回数を考えて完成度の高い項目を仕上げるのが基本となる。弱点補強は、比較で頻繁に負ける項目や信頼性・耐性の穴を最低限まで引き上げる場合に有効だが、全能力を平均化すると系列固有の強みを失いやすい。逆に長所特化は対応する兵装6軸・41基礎ステータス相乗・特殊能力が重なった時に大きな勝ち筋になるが、苦手な相手への回答役をチーム内に別途用意する必要がある。カスタムパーツは単純な数値上昇だけでなく、成長倍率や特殊能力付与まで含めて投入先を選び、同じメーカー・系列でも個体差に応じて完成形を変える。最終的には「現在の強さ」「残り期間の伸び」「兵装との相乗」「特殊能力」「信頼性・耐性」「チーム内の役割」の六点をまとめて見て、弱点修正型・長所特化型・バランス型のどこへ着地させるか判断するのがこの系列の育成指針となる。`;
+  const localizedTrainingNotes = `${baseTrainingNotes}${trainingExpansion}`.trim();
+  const baseWeaponDoctrine = localizeNarrativeText(series, lineage, series.weaponDoctrine ?? '');
+  const doctrineRelations = BASE_SYNERGY_RULES.slice(0,6).map((rule)=>`${rule.triggerStat}→${rule.weaponAxis}`).join('、');
+  const localizedWeaponDoctrine = `${baseWeaponDoctrine} 兵装ドクトリンでは、兵装側の数値だけでなく対応する基礎ステータスとの同時選出による相乗を重視する。41基礎ステータスすべてに兵装との関係があり、特殊能力も同じ兵装・軸へ寄せることで明確な勝ち筋を作れる。推奨兵装は装備制限ではなく、個体の成長倍率や獲得能力次第で別構成への換装も成立する。代表的な関係は${doctrineRelations}などである。`.trim();
   return {
     ...series,
     ...lineage,

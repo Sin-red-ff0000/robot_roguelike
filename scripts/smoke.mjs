@@ -20,10 +20,10 @@ import { getAnnualTrend } from '../src/systems/annualTrendSystem.js';
 
 let state = createInitialState();
 if (state.roster.length < 15) throw new Error('roster too small');
-if (seriesRecords(state).length !== 3600) throw new Error('series encyclopedia row count');
+if (seriesRecords(state).length !== 4000) throw new Error('series encyclopedia row count');
 if (seriesDiscoverySummary(state).discovered < 1) throw new Error('initial series discovery missing');
-if (SERIES_DEFINITIONS.length !== 3600) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
-for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 180) throw new Error(`series count for ${manufacturer.id}`); }
+if (SERIES_DEFINITIONS.length !== 4000) throw new Error(`series count ${SERIES_DEFINITIONS.length}`);
+for (const manufacturer of MANUFACTURERS) { if (getSeriesForManufacturer(manufacturer.id).length !== 200) throw new Error(`series count for ${manufacturer.id}`); }
 const legacyProfiles = SERIES_DEFINITIONS.filter((series) => series.seriesNumber <= 20).map(resolveSeriesProfile);
 if (legacyProfiles.length !== 400) throw new Error(`legacy refit count ${legacyProfiles.length}`);
 for (const profile of legacyProfiles) {
@@ -174,7 +174,7 @@ migratedInput.version = '0.9';
 delete migratedInput.onboarding;
 delete migratedInput.lastYearSummary;
 const migrated = migrateState(migratedInput);
-if (!migrated || migrated.version !== '4.0') throw new Error('migration version');
+if (!migrated || migrated.version !== '4.6') throw new Error('migration version');
 if (!migrated.onboarding?.completed) throw new Error('legacy onboarding should be completed');
 let manager = normalizeManagerProfile({ personalityId: 'calm', name: 'Test Manager' });
 if (!managerLine(manager, 'training')) throw new Error('manager line missing');

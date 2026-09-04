@@ -3,9 +3,9 @@
 // trade universal strength for a sharper three-year plan.  They are sidegrades rather than
 // direct upgrades, preserving the value of earlier generations.
 
-import { MANUFACTURERS } from './manufacturers.js?v=4.0';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.0';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.0';
+import { MANUFACTURERS } from './manufacturers.js?v=4.6';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.6';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.6';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
 const GROUP_LABEL = { output:'出力', mobility:'駆動', control:'制御', engine:'機関', compute:'演算', sensor:'センサー', ai:'AI' };

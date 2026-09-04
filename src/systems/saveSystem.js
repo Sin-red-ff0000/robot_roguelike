@@ -1,4 +1,4 @@
-import { GAME_CONFIG } from '../config.js?v=4.0';
+import { GAME_CONFIG } from '../config.js?v=4.6';
 
 export function saveFileName(state) {
   const year = Number(state?.year ?? 1);

@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=4.0';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.0';
-import { generateCohort } from './robotGenerator.js?v=4.0';
-import { simulateBattle } from './battleSystem.js?v=4.0';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.0';
-import { clamp, randomInt } from '../utils/random.js?v=4.0';
-import { battleWinTable } from './settingsSystem.js?v=4.0';
-import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.0';
+import { GAME_CONFIG } from '../config.js?v=4.6';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
+import { generateCohort } from './robotGenerator.js?v=4.6';
+import { simulateBattle } from './battleSystem.js?v=4.6';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.6';
+import { clamp, randomInt } from '../utils/random.js?v=4.6';
+import { battleWinTable } from './settingsSystem.js?v=4.6';
+import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.6';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);

@@ -1,7 +1,7 @@
-import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=4.0';
-import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=4.0';
-import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=4.0';
-import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=4.0';
+import { STAT_GROUPS } from '../src/data/statDefinitions.js?v=4.6';
+import { SERIES_CUSTOM_APTITUDES, SERIES_GROWTH_CURVES, SERIES_INTRINSIC_TRAITS } from '../src/data/seriesDefinitions.js?v=4.6';
+import { adjustedCustomPartEffects, useCustomPart } from '../src/systems/partSystem.js?v=4.6';
+import { seriesGrowthMultiplier } from '../src/systems/trainingSystem.js?v=4.6';
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function almost(actual, expected, tolerance = 0.001) { return Math.abs(actual - expected) <= tolerance; }

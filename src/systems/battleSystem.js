@@ -1,8 +1,9 @@
-import { GAME_CONFIG } from '../config.js?v=4.0';
-import { BASE_SYNERGY_RULES, RESISTANCE_BANDS } from '../data/battleRules.js?v=4.0';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.0';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.0';
-import { clamp, randomFloat, shuffle } from '../utils/random.js?v=4.0';
+import { GAME_CONFIG } from '../config.js?v=4.6';
+import { BASE_SYNERGY_RULES, RESISTANCE_BANDS } from '../data/battleRules.js?v=4.6';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.6';
+import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.6';
+import { clamp, randomFloat, shuffle } from '../utils/random.js?v=4.6';
 
 function hasAbility(robot, id) {
   return robot.specialAbilities?.includes(id) ?? false;
@@ -26,6 +27,26 @@ const GROUP_ABILITY_RULES = {
   sensor: { normal: 'sensorTune', upper: 'omniscientSensor', negative: 'sensorNoise', normalMult: 1.08, upperMult: 1.15, negativeMult: 0.92 },
   ai: { normal: 'aiTune', upper: 'tacticalForesight', negative: 'aiHesitation', normalMult: 1.08, upperMult: 1.15, negativeMult: 0.92 },
 };
+
+function expandedAbilityMultiplier(robot, opponent, context, slot) {
+  let multiplier=1; const notes=[]; const weapon=WEAPON_CATEGORIES[robot.weaponKey];
+  for (const id of robot.specialAbilities ?? []) {
+    const a=SPECIAL_ABILITIES[id], e=a?.effect; if(!e) continue; let ok=false;
+    if(e.kind==='group') ok=slot?.kind==='base'&&slot.groupKey===e.groupKey;
+    else if(e.kind==='weaponAxis') ok=slot?.kind==='weapon'&&robot.weaponKey===e.weaponKey&&slot.axis===e.axis;
+    else if(e.kind==='global') {
+      if(e.condition==='range') ok=weapon.range===e.value;
+      else if(e.condition==='type') ok=weapon.type===e.value;
+      else if(e.condition==='reliabilityMin') ok=robot.reliability>=Number(e.value);
+      else if(e.condition==='reliabilityMax') ok=robot.reliability<=Number(e.value);
+      else if(e.condition==='official') ok=Boolean(context.official)===Boolean(e.value);
+      else if(e.condition==='yearMin') ok=Number(robot.year??robot.grade??1)>=Number(e.value);
+      else if(e.condition==='yearMax') ok=Number(robot.year??robot.grade??1)<=Number(e.value);
+      else if(e.condition==='underdog') ok=overallBaseScore(robot)<overallBaseScore(opponent);
+    }
+    if(ok){multiplier*=Number(e.multiplier??1);notes.push(`${a.name}×${Number(e.multiplier??1).toFixed(2)}`);}
+  } return {multiplier,notes};
+}
 
 function reliabilitySpreadMultiplier(robot, context) {
   let multiplier = 1;
@@ -249,14 +270,15 @@ function weaponMultiplier(robot, opponent, axis, selectedNames) {
 function baseValue(robot, opponent, slot, reliabilityModifiers, context) {
   const global = globalAbilityMultiplier(robot, opponent, context);
   const ability = baseAbilityMultiplier(robot, slot);
+  const expanded = expandedAbilityMultiplier(robot, opponent, context, slot);
   const multiplier = clamp(
-    global.multiplier * ability.multiplier,
+    global.multiplier * ability.multiplier * expanded.multiplier,
     GAME_CONFIG.battleMultiplierMin,
     GAME_CONFIG.battleMultiplierMax,
   );
   return {
     value: robot.stats[slot.groupKey][slot.statName] * reliabilityModifiers[slot.groupKey] * multiplier,
-    notes: [...global.notes, ...ability.notes],
+    notes: [...global.notes, ...ability.notes, ...expanded.notes],
   };
 }
 
@@ -264,12 +286,13 @@ function weaponValue(robot, opponent, slot, reliabilityModifiers, selectedNames,
   const base = robot.weaponStats[slot.axis] * reliabilityModifiers.weapon;
   const synergy = weaponMultiplier(robot, opponent, slot.axis, selectedNames);
   const global = globalAbilityMultiplier(robot, opponent, context);
+  const expanded = expandedAbilityMultiplier(robot, opponent, context, slot);
   const multiplier = clamp(
-    synergy.multiplier * global.multiplier,
+    synergy.multiplier * global.multiplier * expanded.multiplier,
     GAME_CONFIG.battleMultiplierMin,
     GAME_CONFIG.battleMultiplierMax,
   );
-  return { value: base * multiplier, notes: [...synergy.notes, ...global.notes] };
+  return { value: base * multiplier, notes: [...synergy.notes, ...global.notes, ...expanded.notes] };
 }
 
 function compareSlot(robotA, robotB, slot, modA, modB, selectedNames, context) {

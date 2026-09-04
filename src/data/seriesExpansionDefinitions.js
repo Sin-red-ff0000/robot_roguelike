@@ -10094,7 +10094,7 @@ export const EXPANDED_SERIES_DEFINITIONS = [
     "statVarianceMultiplier": 1.296,
     "growthVarianceMultiplier": 1.15,
     "eccentricBonusAdjustment": 0.06,
-    "availabilityWeight": 0.48360000000000003
+    "availabilityWeight": 0.48400000000000003
   },
   {
     "id": "eidolon-nightmare",
@@ -10245,7 +10245,7 @@ export const EXPANDED_SERIES_DEFINITIONS = [
     "statVarianceMultiplier": 1.5,
     "growthVarianceMultiplier": 1.4375,
     "eccentricBonusAdjustment": 0.16,
-    "availabilityWeight": 0.48360000000000003
+    "availabilityWeight": 0.48400000000000003
   },
   {
     "id": "eidolon-shadow",
@@ -10517,7 +10517,7 @@ export const EXPANDED_SERIES_DEFINITIONS = [
     "statVarianceMultiplier": 1.2,
     "growthVarianceMultiplier": 1.15,
     "eccentricBonusAdjustment": 0.06,
-    "availabilityWeight": 0.48360000000000003
+    "availabilityWeight": 0.48400000000000003
   },
   {
     "id": "eidolon-reverie",
@@ -10602,7 +10602,7 @@ export const EXPANDED_SERIES_DEFINITIONS = [
     "statVarianceMultiplier": 1.38,
     "growthVarianceMultiplier": 1.265,
     "eccentricBonusAdjustment": 0.11,
-    "availabilityWeight": 0.48360000000000003
+    "availabilityWeight": 0.48400000000000003
   },
   {
     "id": "logos-ratio",

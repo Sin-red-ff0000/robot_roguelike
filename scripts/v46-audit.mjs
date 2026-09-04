@@ -1,0 +1,4 @@
+import {SERIES_DEFINITIONS} from '../src/data/seriesDefinitions.js?v=4.6';
+const g10=SERIES_DEFINITIONS.filter(x=>x.seriesNumber>=181&&x.seriesNumber<=200);
+const out={total:SERIES_DEFINITIONS.length,g10:g10.length,uniqueIds:new Set(g10.map(x=>x.id)).size,uniqueNames:new Set(g10.map(x=>x.nameKana)).size,realWord:g10.filter(x=>x.realWordNaming).length,cleanSheet:g10.filter(x=>x.cleanSheetNaming).length,badSubtitle:g10.filter(x=>/[：:／/]/.test(x.nameKana)).length,predecessorRange:g10.every(x=>x.predecessorNumber>=161&&x.predecessorNumber<=180)};
+if(out.g10!==400||out.uniqueIds!==400||out.realWord!==400||out.cleanSheet!==400||out.badSubtitle||!out.predecessorRange)throw new Error(JSON.stringify(out));console.log(JSON.stringify(out,null,2));
