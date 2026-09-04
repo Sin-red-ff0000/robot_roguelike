@@ -31,6 +31,7 @@
     "ui-longplay-audit": "node scripts/ui-longplay-audit.mjs",
     "journey-audit": "node scripts/gameplay-journey-audit.mjs",
     "g11-audit": "node scripts/g11-collaboration-audit.mjs",
-    "quirky-maker-audit": "node scripts/quirky-manufacturer-audit.mjs"
+    "quirky-maker-audit": "node scripts/quirky-manufacturer-audit.mjs",
+    "g11-naming-audit": "node scripts/g11-naming-audit.mjs"
   }
 }

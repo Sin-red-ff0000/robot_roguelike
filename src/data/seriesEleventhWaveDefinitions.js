@@ -2,6 +2,7 @@
 import { MANUFACTURERS } from './manufacturers.js?v=4.8';
 import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.8';
 import { NEW_MANUFACTURER_PRE_G11_SERIES } from './seriesNewManufacturerDefinitions.js?v=4.8';
+import { G11_NAME_POOLS } from './seriesEleventhNamingDefinitions.js?v=4.8';
 
 const SHORT_KANA = {
   kirishima:'霧島', mizuho:'瑞穂', gogaku:'剛岳', yashima:'八洲', hokushin:'北辰', shinonome:'東雲', amagi:'天城', kamishiro:'神代',
@@ -78,8 +79,9 @@ function bilateralSeries(maker, partner, slotIndex) {
     Object.fromEntries(partnerWeapons.map((key, i)=>[key, round3(0.045 - i*0.008)])),
   );
   const n = 201 + slotIndex;
-  const nameKana = `${SHORT_KANA[maker.id]}×${SHORT_KANA[partner.id]}`;
-  const nameLatin = `${SHORT_LATIN[maker.id]} x ${SHORT_LATIN[partner.id]}`;
+  const curatedName = G11_NAME_POOLS[maker.id]?.[slotIndex];
+  const nameKana = curatedName?.kana ?? `${SHORT_KANA[maker.id]}×${SHORT_KANA[partner.id]}`;
+  const nameLatin = curatedName?.latin ?? `${SHORT_LATIN[maker.id]} x ${SHORT_LATIN[partner.id]}`;
   const ownStrengthText = ownStrengths.map((k)=>GROUP_LABEL[k]).join('・') || '総合運用';
   const partnerStrengthText = partnerStrengths.map((k)=>GROUP_LABEL[k]).join('・') || '総合運用';
   const weaponText = preferredWeapons.slice(0,3).map((k)=>WEAPON_LABEL[k]).join(' / ') || '汎用兵装';
@@ -91,7 +93,7 @@ function bilateralSeries(maker, partner, slotIndex) {
     nameLatin,
     summary:`${maker.name}と${partner.name}の共同開発系列。${maker.name}の${ownStrengthText}を骨格に、${partner.name}の${partnerStrengthText}と兵装思想を取り込み、単独企業では作りにくい複合的な育成先を持つ。`,
     concept:`第11世代の企業間共同開発計画で成立した系列。主設計と最終調整は${maker.name}が担当し、${partner.name}から基礎技術・制御ロジック・兵装運用の一部を導入する。両社の長所を単純平均せず、${maker.name}側の機体として三年間の育成で完成させることを前提とする。`,
-    namingConcept:`名称「${nameKana}」は共同開発した二社をそのまま示す正式な共同計画表記で、造語を使わない。第11世代では名称そのものから協業相手が判別でき、系列の性能差は両社の設計思想の混合比率として表現する。`,
+    namingConcept:`名称「${nameKana}」は${maker.name}の命名文化を主軸に、${partner.name}との共同開発機にふさわしい実在語・固有名詞から選定した。メーカー名を連結した仮称ではなく、主導企業側の製品系列として独立して記憶できる名称を採用し、逆主導の共同開発系列とは別名になる。`,
     developmentBackground:`単独メーカー内で成熟した第10世代技術を他社規格へ接続するため、電力・制御・AI・兵装インターフェースを共通化した上で共同試験を実施した。${partner.name}の得意分野をそのまま移植するのではなく、${maker.name}側の整備体系と育成方針へ合わせて再調整している。`,
     engineeringNotes:`主軸は${maker.name}の${ownStrengthText}。そこへ${partner.name}の${partnerStrengthText}を加え、推奨兵装は${weaponText}を中心に設定する。共同規格のためカスタム時の方向転換がしやすい反面、両社の長所を同時に最大化しようとすると育成が散りやすい。`,
     trainingNotes:`1年目は${maker.name}側の基礎骨格を育て、2年目から${partner.name}由来の${partnerStrengthText}や推奨兵装へ寄せる。3年目は両方を平均化するより、完成した個体の伸びに合わせて片方の思想を主軸に決めると強みを残しやすい。`,
@@ -128,13 +130,14 @@ function consortiumSeries(maker) {
   }
   for (const key of WEAPON_KEYS) avgWeapon[key] = round3(MANUFACTURERS.reduce((s,m)=>s+Number(m.profile?.weaponBias?.[key]??0),0)/MANUFACTURERS.length);
   const preferredWeapons = Object.entries(avgWeapon).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k])=>k);
+  const consortiumName = G11_NAME_POOLS[maker.id]?.[MANUFACTURERS.length - 1] ?? { kana:'全社共同規格', latin:'Common Standard' };
   return {
     ...predecessor,
     id:`${maker.id}-g11-${200 + MANUFACTURERS.length}`, seriesNumber:200 + MANUFACTURERS.length,
-    nameKana:'全社共同規格', nameLatin:'Common Standard',
+    nameKana:consortiumName.kana, nameLatin:consortiumName.latin,
     summary:`${MANUFACTURERS.length}メーカーが参加する第11世代共通規格計画の${maker.name}製系列。企業間で部品・兵装・制御規格を共有しつつ、最終的な能力配分と育成特性には${maker.name}の設計思想を残す。`,
     concept:`第11世代の締めとなる全社共同プロジェクト。${MANUFACTURERS.length}メーカー共通の接続規格を用いることで、多様なカスタムパーツと兵装運用へ対応する。完全な平均機ではなく、共通規格の上に${maker.name}固有の強みを載せる方式を採用する。`,
-    namingConcept:`名称「全社共同規格」は${MANUFACTURERS.length}メーカー共同の共通規格機であることをそのまま示す正式名称。造語や既存系列名の派生ではなく、各社が同一規格を別々の設計思想で製造する第11世代固有の枠として扱う。`,
+    namingConcept:`共通規格計画そのものは${MANUFACTURERS.length}社共同だが、${maker.name}製の完成機には固有系列名「${consortiumName.kana}」を与える。共通規格をそのまま製品名にせず、各社の命名文化に沿った実在語・固有名詞で市場上の系列を区別する。`,
     developmentBackground:'企業ごとに異なっていた電力、制御、兵装、AI、整備インターフェースを共同仕様へまとめ、相互運用性を実戦レベルまで引き上げるために始動した。各社の企業秘密に当たる中核技術は保持しつつ、交換可能な領域だけを標準化している。',
     engineeringNotes:`全社平均に近い拡張性を持ちながら、${maker.name}のメーカー補正を残す。突出した共同相手は持たない代わりに、兵装変更・カスタム・育成方針転換への対応力を第11世代で最も高く取る。`,
     trainingNotes:'特定の共同相手へ寄せる系列より初期の方向性は広い。1年目で個体差と成長曲線を見極め、2年目に主力兵装を決め、3年目は設備・カスタム・特殊能力まで同じ勝ち筋へ集約する運用が向く。',
