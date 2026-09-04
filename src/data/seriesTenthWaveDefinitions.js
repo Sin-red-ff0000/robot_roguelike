@@ -1,6 +1,6 @@
-// v4.6 tenth generation: real words/proper names only; no coined-name generator.
-import { MANUFACTURERS } from './manufacturers.js?v=4.6';
-import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.6';
+// v4.7 tenth generation: real words/proper names only; no coined-name generator.
+import { MANUFACTURERS } from './manufacturers.js?v=4.7';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.7';
 const POOLS = {
   "kirishima": [
     "阿蘇",
@@ -63,10 +63,10 @@ const POOLS = {
     "珊瑚",
     "金剛石",
     "白金",
-    "チタン",
-    "コバルト",
-    "タングステン",
-    "イリジウム"
+    "電気石",
+    "緑柱石",
+    "辰砂",
+    "孔雀石"
   ],
   "yashima": [
     "雷",
@@ -82,13 +82,13 @@ const POOLS = {
     "霜",
     "露",
     "虹",
-    "オーロラ",
-    "モンスーン",
+    "彩雲",
+    "春霞",
     "シロッコ",
-    "ミストラル",
-    "フェーン",
+    "木枯らし",
+    "霰",
     "ハリケーン",
-    "サイクロン"
+    "雹"
   ],
   "hokushin": [
     "シリウス",
@@ -234,7 +234,7 @@ const POOLS = {
     "Cobalt",
     "Azure",
     "Indigo",
-    "Violet",
+    "Magenta",
     "Mauve",
     "Ivory",
     "Pearl",
@@ -261,7 +261,7 @@ const POOLS = {
     "Zircon",
     "Platinum",
     "Titanium",
-    "Cobalt",
+    "Nickel",
     "Tungsten",
     "Osmium",
     "Iridium"
@@ -311,20 +311,20 @@ const POOLS = {
     "Elysium"
   ],
   "solberg": [
-    "Sirius",
-    "Vega",
-    "Altair",
-    "Deneb",
-    "Rigel",
-    "Antares",
-    "Spica",
-    "Regulus",
-    "Procyon",
-    "Capella",
     "Polaris",
-    "Arcturus",
-    "Canopus",
-    "Aldebaran",
+    "Castor",
+    "Bellatrix",
+    "Alnitak",
+    "Saiph",
+    "Mirfak",
+    "Dubhe",
+    "Merak",
+    "Alioth",
+    "Mizar",
+    "Alkaid",
+    "Alphard",
+    "Alphecca",
+    "Rasalhague",
     "Titan",
     "Europa",
     "Ganymede",
@@ -410,7 +410,7 @@ const POOLS = {
     "Umbra",
     "Persona",
     "Memory",
-    "Echo",
+    "Afterimage",
     "Mirage",
     "Reverie",
     "Somnus",
@@ -443,18 +443,47 @@ const POOLS = {
     "Telos"
   ]
 };
+
+const LATIN_POOLS = {
+  kirishima: ['Aso','Mount Fuji','Hotaka','Tateyama','Hakusan','Ishizuchi','Daisen','Tsurugi','Sobo','Kuju','Tone','Shinano','Kiso','Tenryu','Shimanto','Biwa','Awaji','Sado','Oki','Yaku'],
+  mizuho: ['Sakura','Ume','Kiku','Fuji','Tsubaki','Botan','Shobu','Hasu','Yuri','Ran','Sumire','Nadeshiko','Kikyo','Ajisai','Mokuren','Sazanka','Suisen','Hagi','Fuyo','Himawari'],
+  gogaku: ['Sekiei','Kokuyoseki','Hisui','Meno','Hotaruishi','Kaiseki','Otetsuko','Jitetsuko','Sekitetsuko','Kiseki','Choseki','Unmo','Kohaku','Sango','Kongoseki','Hakkin','Denkiseki','Ryokuchuseki','Shinsha','Kujakuseki'],
+  yashima: ['Kaminari','Kiri','Kasumi','Shigure','Fubuki','Tatsumaki','Taifu','Shuu','Kagero','Shinkiro','Shimo','Tsuyu','Niji','Saiun','Harugasumi','Shirokko','Kogarashi','Arare','Hariken','Hyo'],
+  hokushin: ['Sirius','Canopus','Altair','Vega','Deneb','Rigel','Betelgeuse','Aldebaran','Antares','Spica','Pollux','Regulus','Procyon','Arcturus','Fomalhaut','Capella','Mimosa','Achernar','Hadar','Alnilam'],
+  shinonome: ['Shu','Akane','Ai','Kon','Midori','Ao','Ruri','Gunjo','Shion','Fujiiro','Kohakuiro','Moegi','Yamabuki','Sakurairo','Byakuroku','Asagi','Tetsukon','Hiiro','Gofun','Nibiiro'],
+  amagi: ['Okami','Kitsune','Kuma','Taka','Hayabusa','Tsuru','Fukuro','Same','Kujira','Tora','Hyoju','Yamaneko','Tokage','Tonbo','Kamakiri','Hotaru','Kurage','Ika','Kinoko','Tochukaso'],
+  kamishiro: ['Susanoo','Amaterasu','Tsukuyomi','Takemikazuchi','Okuninushi','Yamato Takeru','Izanagi','Izanami','Konohanasakuya','Watatsumi','Yatagarasu','Kirin','Orochi','Ame-no-Murakumo','Yasakani','Yomotsu Hirasaka','Takamagahara','Ashihara','Hoori','Ugaya'],
+};
+const LATIN_NAME_OVERRIDES = { 'Rügen': 'Ruegen' };
+
+
+const G10_FOCUS = [
+  '初期性能の再現性を優先し、三年間の改修計画を立てやすくする',
+  '得意分野を明確に残しつつ、兵装変更後も育成方針が破綻しにくくする',
+  '個体差を活かした完成形の分岐を重視し、同系列でも役割を固定しすぎない',
+  '高負荷運用で露出する弱点を育成途中で補正し、公式戦での再現性を高める',
+  '系列適性・成長曲線・カスタム適性を別々に評価し、最終年度の伸びを無駄にしない',
+];
+const G10_ENGINEERING = [
+  '前身の長所をそのまま模倣せず、実戦ログから残す要素と切り替える要素を整理した',
+  '兵装六軸と基礎能力の噛み合わせを再設計し、単一の高数値だけに依存しない構成を狙った',
+  '信頼性と個体差の幅を含めた運用試験を重ね、育成後の完成像に複数の選択肢を残した',
+  '整備・訓練・カスタムを一体で評価し、途中の方針転換でも損失が大きくなりすぎないよう調整した',
+  'シリーズ固有の得意分野を保ちながら、不得意兵装を無理に万能化しない設計判断を採用した',
+];
+
 const MAKER_MAP=new Map(MANUFACTURERS.map(x=>[x.id,x]));
 export const TENTH_WAVE_SERIES_DEFINITIONS=NINTH_WAVE_SERIES_DEFINITIONS.map((predecessor,globalIndex)=>{
  const idx=globalIndex%20, maker=MAKER_MAP.get(predecessor.manufacturerId), realName=POOLS[predecessor.manufacturerId][idx], n=181+idx;
- const latin=/^[\x00-\x7F]+$/.test(realName)?realName:`${predecessor.manufacturerId.toUpperCase()}-${n}`;
+ const latin=LATIN_POOLS[predecessor.manufacturerId]?.[idx] ?? LATIN_NAME_OVERRIDES[realName] ?? realName;
  const kana=realName;
  return {...predecessor,id:`${predecessor.manufacturerId}-g10-${n}`,seriesNumber:n,nameKana:kana,nameLatin:latin,
- summary:`${realName}。第10世代の実在語・固有名詞命名系列。`,
- concept:`${realName}は${maker.name}の第10世代系列。第9世代の設計検証を踏まえつつ、名称は造語ではなくメーカーの命名テーマに属する実在語・固有名詞から独立して選定した。`,
- namingConcept:`名称「${realName}」は第10世代の命名規則に基づき、造語・前身名の語幹流用・副名称方式を使わず、${maker.theme}を必要に応じて隣接領域まで拡張した実在語または固有名詞から採用している。前身系列とは系譜情報のみを共有し、商品名としては独立している。`,
- developmentBackground:`第10世代ではクリーンシート命名をさらに整理し、名称ストックを人工的な造語で補わず、メーカー固有のテーマを自然な関連領域へ広げる方針を採用した。設計面では第9世代の運用データを参照しながら、三年間の育成・改修余地を維持する。`,
- engineeringNotes:`前身の得意分野を参考にしつつ、第10世代では個体差・成長曲線・カスタム適性による完成形の分岐を重視する。名称の独立性と同様、前身と同じ育成を強制しない。`,
+ summary:`${realName}。${maker.name}が第10世代で${G10_FOCUS[idx % G10_FOCUS.length]}ことを主題にした系列。`,
+ concept:`${realName}は${maker.name}の第10世代系列。${maker.philosophy} その思想を踏まえ、${G10_FOCUS[idx % G10_FOCUS.length]}設計としてまとめた。第9世代の検証結果は参照するが、完成形は前身の再現ではなく三年間の育成判断で分岐する。`,
+ namingConcept:`名称「${realName}」は第10世代の命名規則に基づき、造語・前身名の語幹流用・副名称方式を使わず、${maker.theme}を必要に応じて隣接領域まで拡張した実在語または固有名詞から採用している。前身系列とは系譜情報だけを共有し、製品名として独立させた。`,
+ developmentBackground:`第10世代では名称ストックを人工的な造語で補わず、メーカー固有のテーマを自然な関連領域へ広げた。同時に${G10_ENGINEERING[(idx + 2) % G10_ENGINEERING.length]}。これにより、名称だけでなく育成上の立ち位置も前世代から整理し直している。`,
+ engineeringNotes:`${G10_ENGINEERING[idx % G10_ENGINEERING.length]}。個体差・成長曲線・カスタム適性を別々に扱い、同じ系列でも兵装と特殊能力の組み合わせによって完成形が変わる余地を残す。`,
  weaponDoctrine:`推奨兵装は${(predecessor.preferredWeapons??[]).join(' / ')}。41基礎ステータスと兵装6軸の相乗を利用し、特殊能力まで同じ勝ち筋へ揃えることを基本とする。`,
  trainingNotes:`第10世代でも現在値・成長倍率・成長曲線・カスタム適性を分けて評価する。1年目は伸びしろ、2年目は兵装と特殊能力の方向、3年目は完成度を優先し、系列の長所を消さない範囲で弱点を補強する。`,
- marketPosition:`第10世代 / 実在語命名`,predecessorNumber:161+idx,tenthGeneration:true,ninthGeneration:false,refitGeneration:10,refitVersion:'4.6',cleanSheetNaming:true,realWordNaming:true};
+ marketPosition:`第10世代 / 実在語命名`,predecessorNumber:161+idx,tenthGeneration:true,ninthGeneration:false,refitGeneration:10,refitVersion:'4.7',cleanSheetNaming:true,realWordNaming:true};
 });

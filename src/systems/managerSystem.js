@@ -1,4 +1,4 @@
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from '../data/managerDefinitions.js?v=4.6';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from '../data/managerDefinitions.js?v=4.7';
 
 export const MANAGER_CUSTOM_MAX_LINES = 12;
 export const MANAGER_CUSTOM_MAX_LENGTH = 160;
@@ -64,9 +64,35 @@ export function managerPersonality(profile) {
   return MANAGER_PERSONALITIES[profile?.personalityId] ?? MANAGER_PERSONALITIES.cheerful;
 }
 
+function adaptContextualLine(personalityId, line) {
+  const text = String(line ?? '……');
+  switch (personalityId) {
+    case 'cheerful': return text.replace(/。$/u, '！');
+    case 'calm': return `状況を整理すると、${text}`;
+    case 'gentle': return `そうですね。${text}`;
+    case 'strict': return `${text} 判断材料にしてください。`;
+    case 'quirky': return `うーん、${text}`;
+    case 'silent': return `……${text.split('。')[0]}。`;
+    case 'hotblooded': return `よし！ ${text.replace(/。$/u, '！')}`;
+    case 'sarcastic': return `なるほど。${text}`;
+    case 'intellectual': return `分析すると、${text}`;
+    case 'worrier': return `少し気になります。${text}`;
+    case 'bold': return `ここは迷わず見ておきましょう。${text}`;
+    case 'airhead': return `あ、そういえば。${text}`;
+    case 'showoff': return `ここは見せ場ですね。${text}`;
+    case 'bigSister': return `大丈夫、落ち着いて見ましょう。${text}`;
+    case 'mysterious': return `……${text}`;
+    default: return text;
+  }
+}
+
 export function standardManagerLines(profile, context = 'generic') {
   const personality = managerPersonality(profile);
-  return [...(personality.lines[context] ?? personality.lines.generic ?? ['……'])];
+  const own = personality.lines[context];
+  if (own?.length) return [...own];
+  const contextual = MANAGER_CONTEXT_LINES[context];
+  if (contextual?.length) return contextual.map((line) => adaptContextualLine(personality.id, line));
+  return [...(personality.lines.generic ?? ['……'])];
 }
 
 export function customManagerLines(profile, context = 'generic') {
@@ -97,7 +123,67 @@ export function renderManagerTemplate(template, variables = {}) {
   });
 }
 
-const V43_CONTEXT_LINES = {"statGrowth": ["{robot}についてstatGrowthを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のstatGrowthに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "statStall": ["{robot}についてstatStallを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のstatStallに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "weaponSynergy": ["{robot}についてweaponSynergyを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のweaponSynergyに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "weaponMismatch": ["{robot}についてweaponMismatchを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のweaponMismatchに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "weaponChanged": ["{robot}についてweaponChangedを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のweaponChangedに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "abilityGain": ["{robot}についてabilityGainを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のabilityGainに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "abilityCombo": ["{robot}についてabilityComboを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のabilityComboに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "seriesConcept": ["{robot}についてseriesConceptを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のseriesConceptに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "manufacturerComment": ["{robot}についてmanufacturerCommentを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のmanufacturerCommentに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "growthCurveComment": ["{robot}についてgrowthCurveCommentを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のgrowthCurveCommentに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "customAptitudeComment": ["{robot}についてcustomAptitudeCommentを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のcustomAptitudeCommentに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "winStreak": ["{robot}についてwinStreakを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のwinStreakに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "lossStreak": ["{robot}についてlossStreakを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のlossStreakに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "tournamentProgress": ["{robot}についてtournamentProgressを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のtournamentProgressに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "rookieSpotlight": ["{robot}についてrookieSpotlightを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のrookieSpotlightに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "seniorFarewell": ["{robot}についてseniorFarewellを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のseniorFarewellに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "teamStrength": ["{robot}についてteamStrengthを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のteamStrengthに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "teamWeakness": ["{robot}についてteamWeaknessを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のteamWeaknessに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "reliabilityHigh": ["{robot}についてreliabilityHighを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のreliabilityHighに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "reliabilityLow": ["{robot}についてreliabilityLowを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のreliabilityLowに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "baseMultiplier": ["{robot}についてbaseMultiplierを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のbaseMultiplierに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "growthMultiplier": ["{robot}についてgrowthMultiplierを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のgrowthMultiplierに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "weaponStat": ["{robot}についてweaponStatを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のweaponStatに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "partCompatibility": ["{robot}についてpartCompatibilityを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のpartCompatibilityに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "awakeningFollowup": ["{robot}についてawakeningFollowupを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のawakeningFollowupに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "rivalWarning": ["{robot}についてrivalWarningを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のrivalWarningに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "selectionAdvice": ["{robot}についてselectionAdviceを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のselectionAdviceに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "recordMilestone": ["{robot}についてrecordMilestoneを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のrecordMilestoneに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "balancedUnit": ["{robot}についてbalancedUnitを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のbalancedUnitに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "specialistUnit": ["{robot}についてspecialistUnitを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のspecialistUnitに変化があります。兵装・成長・改修をまとめて見直しましょう。"], "yearProgress": ["{robot}についてyearProgressを確認しましょう。現在の育成方針と照らし合わせる材料になります。", "{robot}のyearProgressに変化があります。兵装・成長・改修をまとめて見直しましょう。"]};
+const MANAGER_CONTEXT_LINES = {
+  statGrowth: ['{robot}、ここ数回で伸び方が変わっています。伸びた項目を次の練習にもつなげましょう。', '{robot}の成長が目立ってきました。今の方針を続ける価値があります。'],
+  statStall: ['{robot}は少し伸びが鈍っています。違う系統を挟むのも手です。', '{robot}、同じ育て方だけでは伸びにくくなっているかもしれません。'],
+  weaponSynergy: ['{robot}と{weapon}は噛み合っています。この長所は試合でも使いやすそうです。', '{weapon}の要求と{robot}の得意分野が揃っています。素直に伸ばしてよさそうです。'],
+  weaponMismatch: ['{robot}は{weapon}を使えますが、今の能力構成だと少し無理をしています。', '{weapon}自体が悪いわけではありませんが、{robot}の強みを十分には使えていません。'],
+  weaponChanged: ['{robot}の兵装を{weapon}へ変更しました。しばらくは新しい運用を見ていきましょう。', '兵装変更ですね。{robot}の能力の見え方も少し変わりそうです。'],
+  abilityGain: ['{robot}が「{ability}」を獲得しました。今までと違う役割も狙えそうです。', '「{ability}」が加わりました。{robot}の使い方を一度見直してもよさそうです。'],
+  abilityCombo: ['{robot}の特殊能力、組み合わせで効きそうなものが増えてきました。', '{robot}は能力単体より、複数を噛み合わせた時の方が面白そうです。'],
+  seriesConcept: ['{robot}は系列本来の設計思想がはっきり出ています。育成でもそこを活かせそうです。', 'この系列は何でもできるより、設計上の得意分野を押し出す方が合っています。'],
+  manufacturerComment: ['{manufacturer}らしい設計傾向が出ていますね。系列だけでなくメーカー側の癖も見ておきたいです。', '{robot}を見ると、{manufacturer}が何を優先しているか分かりやすいです。'],
+  growthCurveComment: ['{robot}は今の年次で伸ばしやすい時期に入っています。', '{robot}の成長曲線を見ると、今どこへ投資するかが大事になりそうです。'],
+  customAptitudeComment: ['{robot}はカスタムへの反応に特徴があります。物資を使うなら適性を見て選びたいですね。', 'この機体は改修の乗り方に癖があります。数値だけでなく適性も確認しましょう。'],
+  winStreak: ['連勝が続いています。今の勝ち方が偶然か、再現できる形かを見ておきましょう。', '流れはいいです。ただ、勝っている時ほど編成の穴は見落としやすいです。'],
+  lossStreak: ['連敗中です。同じ対策を繰り返すより、編成か育成のどちらかを変えたいですね。', '負けが続いています。相手より弱いのか、噛み合わせが悪いのかを切り分けましょう。'],
+  tournamentProgress: ['大会が進んできました。ここからは相手の癖も強くなります。', '次のラウンドほど編成差が出やすくなります。15機の並びを丁寧に見ましょう。'],
+  rookieSpotlight: ['{robot}は新人の中でも目立っています。早めに育成方針を決めてもよさそうです。', '新人の{robot}、今のうちに特徴を掴んでおきたいですね。'],
+  seniorFarewell: ['{robot}は3年目。残り回数を考えると、弱点補強より完成形を優先する選択もあります。', 'この世代は仕上げの時期です。{robot}に何を残すか決めましょう。'],
+  teamStrength: ['今のチームは強みがはっきりしています。相手に押し付けられる形を作りたいですね。', '全体を見ると得意分野がまとまっています。大会ではその強みを崩さない編成がよさそうです。'],
+  teamWeakness: ['チーム全体で薄い分野があります。全員を直すより、選抜で補う方法もあります。', '弱点が共通しています。相手にそこを狙われた時の逃げ道を用意したいです。'],
+  reliabilityHigh: ['{robot}はかなり安定しています。高負荷な選択肢も検討しやすい個体です。', '{robot}なら多少攻めた調整をしても、運用の再現性を保ちやすそうです。'],
+  reliabilityLow: ['{robot}は性能以前に挙動のばらつきが気になります。大会で任せるならそこも考えたいです。', '{robot}は上振れますが、安定しません。強さの評価は平均値だけで見ない方がよさそうです。'],
+  baseMultiplier: ['{robot}は元々の設計適性に特徴があります。初期値だけでは判断しにくいタイプですね。', '基礎適性を見ると、{robot}は伸ばす場所を選んだ方が良さそうです。'],
+  growthMultiplier: ['{robot}の総合成長倍率を見ると、今の年次で伸ばしやすい項目が見えてきます。', '基礎成長だけでなく、現在の総合倍率まで含めて育成先を決めたいですね。'],
+  weaponStat: ['{robot}の{weapon}運用は、兵装能力そのものにも差が出ています。', '{weapon}を続けるなら、基礎能力だけでなく兵装側の完成度も見ておきましょう。'],
+  partCompatibility: ['{robot}はこの改修との相性を見てから投入先を決めたいです。', 'パーツの数値だけでなく、{robot}にどれくらい馴染むかも大事です。'],
+  awakeningFollowup: ['覚醒後の{robot}は、以前と同じ育成方針のままでいいか再確認したいです。', '{robot}は覚醒で評価が変わっています。得意分野をもう一度見直しましょう。'],
+  rivalWarning: ['この相手は普通の強豪とは少し違います。編成思想まで見て対策した方がよさそうです。', '相手の強さだけでなく、何を捨てて何を伸ばしているチームなのか確認しましょう。'],
+  selectionAdvice: ['15機の総合値だけで決めず、相手の偏りにぶつけられる機体を残したいです。', '選抜は強い順だけではなく、役割が重なりすぎていないかも見ておきましょう。'],
+  recordMilestone: ['{robot}が歴代記録に届きました。数字だけでなく、どんな育成だったかも残しておきたいですね。', '記録更新です。{robot}はこの周回を代表する一機になりそうです。'],
+  balancedUnit: ['{robot}は大きな穴がありません。相手を選ばず出しやすいのが強みです。', '{robot}は万能型ですね。突出値は少なくても、選抜では扱いやすいです。'],
+  specialistUnit: ['{robot}はかなり尖っています。刺さる相手には強い反面、出す場所は選びます。', 'この機体は役割がはっきりしています。万能化するより長所を残したいですね。'],
+  yearProgress: ['育成年次が進みました。新人・中堅・3年目で同じ練習の価値も変わってきます。', '年次が変わると完成までの残り回数も変わります。世代ごとに方針を分けましょう。'],
+};
+
+
+export function managerRobotInsightContext(robot) {
+  if (!robot) return 'robotSelected';
+  const abilities = robot.specialAbilities ?? [];
+  const awakenings = robot.awakenings ?? [];
+  const year = Number(robot.cohortYear ?? 1);
+  const reliability = Number(robot.reliability ?? 70);
+  const preferred = robot.seriesPreferredWeapons ?? [];
+  const avoided = robot.seriesAvoidedWeapons ?? [];
+  if (awakenings.length) return 'awakeningFollowup';
+  if (abilities.length >= 5) return 'abilityCombo';
+  if (avoided.includes(robot.weaponKey)) return 'weaponMismatch';
+  if (preferred.includes(robot.weaponKey)) return 'weaponSynergy';
+  if (reliability <= 58) return 'reliabilityLow';
+  if (reliability >= 90) return 'reliabilityHigh';
+  if (year >= 3) return 'seniorFarewell';
+  if (year <= 1) return 'rookieSpotlight';
+
+  const flatStats = Object.values(robot.stats ?? {}).flatMap((group) => Object.values(group ?? {}).map(Number));
+  if (flatStats.length) {
+    const max = Math.max(...flatStats);
+    const min = Math.min(...flatStats);
+    if (max - min >= 45 || max >= 125) return 'specialistUnit';
+    if (max - min <= 22) return 'balancedUnit';
+  }
+  return 'robotSelected';
+}
 
 export function managerLine(profile, context = 'generic', variables = {}) {
   const pool = managerLinePool(profile, context);

@@ -1,11 +1,11 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.6';
-import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=4.6';
-import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.6';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.6';
-import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.6';
-import { getAnnualTrend } from './annualTrendSystem.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
+import { getSeriesForManufacturer, resolveSeriesProfile } from '../data/seriesDefinitions.js?v=4.7';
+import { GROUP_KEYS, RESISTANCE_STATS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.7';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.7';
+import { NEGATIVE_ABILITY_IDS, NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.7';
+import { getAnnualTrend } from './annualTrendSystem.js?v=4.7';
 
 const makeRobotId = () => {
   if (globalThis.crypto?.randomUUID) return `robot-${globalThis.crypto.randomUUID()}`;
@@ -218,9 +218,10 @@ function generateReliability(manufacturer, seriesProfile, annualTrend, generatio
   return clamp(Math.round(midpoint + (raw - midpoint) * variance + bias), 35, 100);
 }
 
-export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
-  const manufacturer = pick(MANUFACTURERS);
-  const series = pickSeries(manufacturer);
+export function generateRobot({ year, cohortYear = 1, index = 1, manufacturerId = null, seriesId = null, weaponKey: forcedWeaponKey = null } = {}) {
+  const manufacturer = MANUFACTURERS.find((item) => item.id === manufacturerId) ?? pick(MANUFACTURERS);
+  const availableSeries = getSeriesForManufacturer(manufacturer.id);
+  const series = availableSeries.find((item) => item.id === seriesId) ?? pickSeries(manufacturer);
   const seriesProfile = resolveSeriesProfile(series);
   const productionYear = Math.max(1, Number(year ?? 1) - Number(cohortYear ?? 1) + 1);
   const annualTrend = getAnnualTrend(productionYear, manufacturer.id, series?.id ?? null);
@@ -269,7 +270,7 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
   const generationTrait = rollGenerationTrait(manufacturer, seriesProfile);
   const eccentricWeaponKey = applyGenerationTrait(stats, growthMultipliers, weaponCategoryGrowthMultipliers, generationTrait);
   const seriesJackpot = applySeriesJackpot(stats, growthMultipliers, weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile);
-  const weaponKey = chooseWeapon(weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile, eccentricWeaponKey ?? seriesJackpot?.weaponKey ?? null);
+  const weaponKey = WEAPON_KEYS.includes(forcedWeaponKey) ? forcedWeaponKey : chooseWeapon(weaponCategoryStats, weaponCategoryGrowthMultipliers, seriesProfile, eccentricWeaponKey ?? seriesJackpot?.weaponKey ?? null);
   const updatedGroupAverages = Object.fromEntries(GROUP_KEYS.map((groupKey) => [groupKey, average(Object.values(stats[groupKey]))]));
   const favoriteGroup = [...GROUP_KEYS].sort((a, b) =>
     (updatedGroupAverages[b] + averageGrowthForGroup(growthMultipliers, b) * 12)
@@ -350,6 +351,7 @@ export function generateRobot({ year, cohortYear = 1, index = 1 } = {}) {
   };
 }
 
-export function generateCohort({ year, cohortYear, count }) {
-  return Array.from({ length: count }, (_, index) => generateRobot({ year, cohortYear, index: index + 1 }));
+export function generateCohort({ year, cohortYear, count, manufacturerId = null, seriesId = null, weaponKey = null }) {
+  return Array.from({ length: count }, (_, index) => generateRobot({ year, cohortYear, index: index + 1, manufacturerId, seriesId, weaponKey }));
 }
+

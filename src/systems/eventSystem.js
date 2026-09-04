@@ -1,9 +1,10 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.6';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.6';
-import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.6';
-import { generateCustomPart } from './partSystem.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { NORMAL_POSITIVE_ABILITY_IDS, SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.7';
+import { EVENT_EXPANSION_TEMPLATES } from '../data/eventExpansionDefinitions.js?v=4.7';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
+import { clamp, pick, randomFloat, randomInt, weightedPick } from '../utils/random.js?v=4.7';
+import { generateCustomPart } from './partSystem.js?v=4.7';
 import {
   addAbility,
   describeAbilityChange,
@@ -13,9 +14,8 @@ import {
   randomUpgradableAbility,
   removeAbility,
   upgradeAbility,
-} from './specialAbilitySystem.js?v=4.6';
-import { logisticsLevel } from './facilitySystem.js?v=4.6';
-import { eventChanceMultiplier } from './settingsSystem.js?v=4.6';
+} from './specialAbilitySystem.js?v=4.7';
+import { eventChanceMultiplier } from './settingsSystem.js?v=4.7';
 
 function eventId(prefix) {
   return `${prefix}-${Date.now()}-${randomInt(1000, 9999)}`;
@@ -87,10 +87,9 @@ export function tickTrainingModifiers(state) {
 }
 
 function normalPartEvent(state) {
-  const logistics = logisticsLevel(state);
-  const multiChance = 0.14 + logistics * 0.08;
-  const count = Math.random() < multiChance ? randomInt(2, 4 + (logistics >= 3 ? 1 : 0)) : 1;
-  const parts = Array.from({ length: count }, () => generateCustomPart({ challenge: false, rarityBias: logistics }));
+  const multiChance = 0.14;
+  const count = Math.random() < multiChance ? randomInt(2, 4) : 1;
+  const parts = Array.from({ length: count }, () => generateCustomPart({ challenge: false }));
   state.partInventory.push(...parts);
   return eventResult(
     'part-supply',
@@ -103,7 +102,7 @@ function normalPartEvent(state) {
 }
 
 function challengePartEvent(state) {
-  const part = generateCustomPart({ challenge: true, rarityBias: logisticsLevel(state) });
+  const part = generateCustomPart({ challenge: true });
   state.partInventory.push(part);
   return eventResult(
     'challenge-part',
@@ -199,12 +198,11 @@ function individualBreakthroughEvent(state) {
 
 function manufacturerSupportEvent(state) {
   const robot = pick(state.roster);
-  const logistics = logisticsLevel(state);
-  const count = randomInt(2, 3 + (logistics >= 3 ? 1 : 0));
+  const count = randomInt(2, 3);
   const parts = Array.from({ length: count }, () => generateCustomPart({
     manufacturerId: robot.manufacturerId,
     challenge: false,
-    rarityBias: logistics + 1,
+
   }));
   state.partInventory.push(...parts);
   return eventResult(
@@ -381,6 +379,133 @@ function awakeningEvent(state) {
   );
 }
 
+
+function robotGroupAverage(robot, groupKey) {
+  const stats = STAT_GROUPS[groupKey]?.stats ?? [];
+  if (!stats.length) return 0;
+  return stats.reduce((sum, name) => sum + Number(robot.stats?.[groupKey]?.[name] ?? 0), 0) / stats.length;
+}
+
+function expandedEventCandidates(state, template) {
+  const roster = state.roster ?? [];
+  switch (template.condition) {
+    case 'weapon': return roster.filter((robot) => robot.weaponKey === template.weaponKey);
+    case 'year1': return roster.filter((robot) => Number(robot.cohortYear ?? 1) === 1);
+    case 'year3': return roster.filter((robot) => Number(robot.cohortYear ?? 1) >= 3);
+    case 'reliable': return roster.filter((robot) => Number(robot.reliability ?? 0) >= 82);
+    case 'unstable': return roster.filter((robot) => Number(robot.reliability ?? 100) <= 58);
+    case 'abilityRich': return roster.filter((robot) => (robot.specialAbilities ?? []).length >= 3);
+    case 'sameMaker': {
+      const counts = roster.reduce((map, robot) => map.set(robot.manufacturerId, (map.get(robot.manufacturerId) ?? 0) + 1), new Map());
+      return roster.filter((robot) => (counts.get(robot.manufacturerId) ?? 0) >= 4);
+    }
+    case 'mixedMaker': {
+      const makers = new Set(roster.map((robot) => robot.manufacturerId));
+      return makers.size >= 5 ? roster : [];
+    }
+    case 'highStat': return roster.filter((robot) => robotGroupAverage(robot, template.groupKey) >= 72);
+    case 'lowStat': return roster.filter((robot) => robotGroupAverage(robot, template.groupKey) <= 48);
+    case 'recentWin': return (state.teamRecord?.recentResults ?? []).slice(-3).includes('W') ? roster : [];
+    case 'recentLoss': return (state.teamRecord?.recentResults ?? []).slice(-3).includes('L') ? roster : [];
+    case 'tournament': return (state.career?.tournamentEntries ?? 0) > 0 || Object.values(state.tournamentYear?.entries ?? {}).some((entry) => entry?.status && entry.status !== 'locked') ? roster : [];
+    case 'any':
+    default: return roster;
+  }
+}
+
+function applyExpandedEventEffect(robot, template) {
+  const details = [];
+  const groupKey = template.groupKey;
+  const groupStats = STAT_GROUPS[groupKey]?.stats ?? [];
+  const weapon = WEAPON_CATEGORIES[robot.weaponKey];
+  const addGroup = (min, max, count = 2) => {
+    const chosen = [...groupStats].sort(() => Math.random() - 0.5).slice(0, Math.min(count, groupStats.length));
+    for (const statName of chosen) {
+      const amount = randomInt(min, max);
+      robot.stats[groupKey][statName] = clamp(Number(robot.stats[groupKey][statName] ?? 0) + amount, 0, GAME_CONFIG.customPartStatCap);
+      details.push(`${statName}+${amount}`);
+    }
+  };
+  if (template.effect === 'base') addGroup(1, 3, 2);
+  else if (template.effect === 'growth') {
+    const statName = pick(groupStats);
+    if (statName) {
+      const amount = randomFloat(0.025, 0.06);
+      robot.growthMultipliers[groupKey][statName] = clamp(Number(robot.growthMultipliers[groupKey][statName] ?? 1) + amount, GAME_CONFIG.growthMultiplierMin, GAME_CONFIG.awakeningGrowthMultiplierCap);
+      details.push(`${statName}の成長適性+${amount.toFixed(2)}`);
+    }
+  } else if (template.effect === 'weapon' || template.effect === 'weaponGrowth') {
+    const axis = pick(WEAPON_AXES);
+    if (template.effect === 'weapon') {
+      const amount = randomInt(1, 3);
+      robot.weaponStats[axis] = clamp(Number(robot.weaponStats[axis] ?? 0) + amount, 0, GAME_CONFIG.customPartStatCap);
+      robot.weaponCategoryStats[robot.weaponKey][axis] = robot.weaponStats[axis];
+      details.push(`${weapon.stats[axis]}+${amount}`);
+    } else {
+      const amount = randomFloat(0.025, 0.055);
+      robot.weaponGrowthMultipliers[axis] = clamp(Number(robot.weaponGrowthMultipliers[axis] ?? 1) + amount, GAME_CONFIG.growthMultiplierMin, GAME_CONFIG.awakeningGrowthMultiplierCap);
+      robot.weaponCategoryGrowthMultipliers[robot.weaponKey][axis] = robot.weaponGrowthMultipliers[axis];
+      details.push(`${weapon.stats[axis]}の成長適性+${amount.toFixed(2)}`);
+    }
+  } else if (template.effect === 'reliability') {
+    const amount = randomInt(2, 5);
+    robot.reliability = clamp(Number(robot.reliability ?? 50) + amount, 20, 100);
+    details.push(`信頼性+${amount}`);
+  } else if (template.effect === 'weakFix') {
+    const weakest = [...groupStats].sort((a, b) => Number(robot.stats[groupKey]?.[a] ?? 0) - Number(robot.stats[groupKey]?.[b] ?? 0))[0];
+    if (weakest) {
+      const amount = randomInt(2, 5);
+      robot.stats[groupKey][weakest] = clamp(Number(robot.stats[groupKey][weakest] ?? 0) + amount, 0, GAME_CONFIG.customPartStatCap);
+      details.push(`${weakest}+${amount}`);
+    }
+  }
+
+  // 一部の研究イベントは能力値だけでなく、実戦AIの学習結果として特殊能力へ接続する。
+  // 発生頻度は低めにして、イベントだけで特殊能力が飽和しないようにする。
+  let learnedAbilityId = null;
+  if (template.family === 'ability' && Math.random() < 0.24) learnedAbilityId = randomPositiveAbility(robot);
+  if (template.family === 'doctrine' && Math.random() < 0.18) {
+    const weaponCandidates = NORMAL_POSITIVE_ABILITY_IDS.filter((id) => {
+      const ability = SPECIAL_ABILITIES[id];
+      return !robot.specialAbilities?.includes(id) && (ability?.tags ?? []).includes(robot.weaponKey);
+    });
+    learnedAbilityId = weaponCandidates.length ? pick(weaponCandidates) : learnedAbilityId;
+  }
+  if (template.family === 'tournament' && Math.random() < 0.12 && !robot.specialAbilities?.includes('bigStage')) learnedAbilityId = 'bigStage';
+  if (learnedAbilityId) {
+    const change = addAbility(robot, learnedAbilityId);
+    if (change) details.push(`特殊能力「${SPECIAL_ABILITIES[learnedAbilityId].name}」を獲得`);
+  }
+  return details;
+}
+
+function expandedOperationalEvent(state) {
+  const eligible = EVENT_EXPANSION_TEMPLATES
+    .map((template) => ({ template, candidates: expandedEventCandidates(state, template) }))
+    .filter((entry) => entry.candidates.length);
+  if (!eligible.length) return individualBreakthroughEvent(state);
+  // 同じ研究系統ばかり連続しないよう、直近の発生履歴で重みを下げる。
+  // 完全なクールダウンにはせず、条件が限られる状況でもイベントが枯れないようにする。
+  const recentExpanded = (state.eventHistory ?? []).filter((event) => event?.type === 'operational-study').slice(0, 10);
+  const recentFamilies = recentExpanded.map((event) => event.expansionFamily);
+  const recentIds = new Set(recentExpanded.slice(0, 6).map((event) => event.expansionEventId));
+  const weighted = eligible.map((entry) => {
+    const familyHits = recentFamilies.filter((family) => family === entry.template.family).length;
+    const exactPenalty = recentIds.has(entry.template.id) ? 0.08 : 1;
+    const familyPenalty = familyHits === 0 ? 1 : familyHits === 1 ? 0.52 : familyHits === 2 ? 0.24 : 0.10;
+    return { value: entry, weight: Math.max(0.02, Number(entry.template.weight ?? 1) * familyPenalty * exactPenalty) };
+  });
+  const chosen = weightedPick(weighted);
+  const robot = pick(chosen.candidates);
+  const details = applyExpandedEventEffect(robot, chosen.template);
+  return eventResult(
+    'operational-study',
+    chosen.template.title,
+    `${chosen.template.description} 対象：${robotLabel(robot)}。${details.length ? details.join(' / ') : '運用設定を更新した。'}`,
+    { robotId: robot.id, expansionEventId: chosen.template.id, expansionFamily: chosen.template.family },
+  );
+}
+
 export function resolvePostTrainingEvent(state) {
   if (!state.roster.length) return null;
 
@@ -403,6 +528,7 @@ export function resolvePostTrainingEvent(state) {
     { value: 'aggressive', weight: 7 },
     { value: 'overcome', weight: 7 },
     { value: 'rarePrototype', weight: 2 },
+    { value: 'expanded', weight: 12 },
   ]);
 
   const event = {
@@ -418,6 +544,7 @@ export function resolvePostTrainingEvent(state) {
     aggressive: aggressiveTuningEvent,
     overcome: overcomeEvent,
     rarePrototype: rarePrototypeEvent,
+    expanded: expandedOperationalEvent,
   }[type](state);
 
   return rememberEvent(state, event);

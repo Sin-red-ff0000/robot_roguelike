@@ -2,9 +2,9 @@
 // The ninth generation continues clean-sheet naming and explicitly forbids inherited-name subtitles/suffixes.
 // Every series uses a standalone clean-sheet name: no inherited stem and no subtitle/suffix.
 
-import { MANUFACTURERS } from './manufacturers.js?v=4.6';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.6';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.6';
+import { MANUFACTURERS } from './manufacturers.js?v=4.7';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.7';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.7';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
 const MAKER_INDEX = new Map(MANUFACTURERS.map((maker, index) => [maker.id, index]));
@@ -106,7 +106,7 @@ export const NINTH_WAVE_SERIES_DEFINITIONS = EIGHTH_WAVE_SERIES_DEFINITIONS.map(
   const weakLabel=GROUP_LABEL[weak]??weak;
   const concept=`${nameKana}（${nameLatin}）は「${role.label}」を主題にした第9世代系列。${role.motif}。${maker?.name ?? predecessor.manufacturerId}の設計思想を受け継ぐ一方、第9世代では前身の外形や名称を守ること自体を目的にせず、必要な機能関係から機体を組み直すクリーンシート設計を採用した。`;
   const namingConcept=`名称「${nameKana} / ${nameLatin}」は前身${predecessor.nameKana ?? predecessor.nameLatin}の語幹・型式名・副名称を一切流用しない第9世代専用の新造語。既存名の後ろへ語を足す副名称方式も使用せず、「${role.label}」という設計像から音と綴りを新しく与えている。設計モチーフは「${role.image}」。名称と外観上のイメージを、性能ランクではなく機構の考え方へ直接結び付けることで、名前だけでも従来系列の延長ではないことが伝わるようにしている。`;
-  const developmentBackground=`第8世代までに育成・改修・兵装選択を製品仕様へ深く組み込んだ結果、系列名まで前身へ依存すると「新しい運用思想なのに旧型の派生に見える」という問題が生まれた。そこで第9世代では、系譜上の系譜上の前身#${predecessor.seriesNumber}はデータとして保持しながら、商品名・設計モチーフ・基本構成を独立させる方針へ転換。${role.label}を最初の設計条件に置き、そこから必要な構造を逆算している。`;
+  const developmentBackground=`第8世代までに育成・改修・兵装選択を製品仕様へ深く組み込んだ結果、系列名まで前身へ依存すると「新しい運用思想なのに旧型の派生に見える」という問題が生まれた。そこで第9世代では、系譜上の前身#${predecessor.seriesNumber}はデータとして保持しながら、商品名・設計モチーフ・基本構成を独立させる方針へ転換。${role.label}を最初の設計条件に置き、そこから必要な構造を逆算している。`;
   const engineeringNotes=`基礎設計は${primaryLabel}と${secondaryLabel}を中心に組むが、単純な二軸強化ではない。${role.motif}という考え方を成立させるため、${weakLabel}側には意図的な不足や調整余地が残りやすい。第9世代では「弱点を消して万能化する」より、どの条件で設計思想が最大効率になるかを明確にする方が完成形に近い。`;
   const trainingNotes=`成長曲線は「${CURVE_LABEL[role.curve] ?? role.curve}」、カスタム適性は「${CUSTOM_LABEL[role.custom] ?? role.custom}」。初期能力だけで採用を判断せず、3年間の成長曲線と改修適性を合わせて完成時の役割を決める。特に第9世代はクリーンシート設計のため、前身系列と同じ育成メニューを機械的に引き継ぐより、個体の基礎倍率・成長倍率・兵装適性を見て新しい運用を組む方が強みを引き出しやすい。`;
   const weaponDoctrine=`推奨兵装は${preferredWeapons.map(k=>WEAPON_LABEL[k]??k).join(' / ')}。${role.id==='asymmetricTwin'?'二つの兵装を同じ役割へ寄せず、異なる距離・比較軸を担当させる':role.id==='localOptimum'?'一兵装へ集中し、狭い条件で最大効率を取る':'系列の設計モチーフを戦闘中に最も再現しやすい兵装として選定されている'}。非推奨は${WEAPON_LABEL[avoided]??avoided}だが装備禁止ではなく、基礎能力やパーツで不足を補えば別路線も成立する。`;

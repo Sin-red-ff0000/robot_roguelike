@@ -1,9 +1,9 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { BASE_SYNERGY_RULES, RESISTANCE_BANDS } from '../data/battleRules.js?v=4.6';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
-import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.6';
-import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.6';
-import { clamp, randomFloat, shuffle } from '../utils/random.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { BASE_SYNERGY_RULES, RESISTANCE_BANDS, WEAPON_DOCTRINE_RULES } from '../data/battleRules.js?v=4.7';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
+import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
+import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.7';
+import { clamp, randomFloat, shuffle } from '../utils/random.js?v=4.7';
 
 function hasAbility(robot, id) {
   return robot.specialAbilities?.includes(id) ?? false;
@@ -33,6 +33,7 @@ function expandedAbilityMultiplier(robot, opponent, context, slot) {
   for (const id of robot.specialAbilities ?? []) {
     const a=SPECIAL_ABILITIES[id], e=a?.effect; if(!e) continue; let ok=false;
     if(e.kind==='group') ok=slot?.kind==='base'&&slot.groupKey===e.groupKey;
+    else if(e.kind==='baseStat') ok=slot?.kind==='base'&&slot.groupKey===e.groupKey&&slot.statName===e.statName;
     else if(e.kind==='weaponAxis') ok=slot?.kind==='weapon'&&robot.weaponKey===e.weaponKey&&slot.axis===e.axis;
     else if(e.kind==='global') {
       if(e.condition==='range') ok=weapon.range===e.value;
@@ -40,8 +41,8 @@ function expandedAbilityMultiplier(robot, opponent, context, slot) {
       else if(e.condition==='reliabilityMin') ok=robot.reliability>=Number(e.value);
       else if(e.condition==='reliabilityMax') ok=robot.reliability<=Number(e.value);
       else if(e.condition==='official') ok=Boolean(context.official)===Boolean(e.value);
-      else if(e.condition==='yearMin') ok=Number(robot.year??robot.grade??1)>=Number(e.value);
-      else if(e.condition==='yearMax') ok=Number(robot.year??robot.grade??1)<=Number(e.value);
+      else if(e.condition==='yearMin') ok=Number(robot.cohortYear??1)>=Number(e.value);
+      else if(e.condition==='yearMax') ok=Number(robot.cohortYear??1)<=Number(e.value);
       else if(e.condition==='underdog') ok=overallBaseScore(robot)<overallBaseScore(opponent);
     }
     if(ok){multiplier*=Number(e.multiplier??1);notes.push(`${a.name}×${Number(e.multiplier??1).toFixed(2)}`);}
@@ -236,6 +237,35 @@ function weaponAbilityMultiplier(robot, axis, selectedNames) {
   return { multiplier, notes };
 }
 
+function weaponDoctrineMultiplier(robot, opponent, axis, selectedNames) {
+  const rule = WEAPON_DOCTRINE_RULES[robot.weaponKey];
+  if (!rule) return { multiplier: 1, notes: [] };
+  let multiplier = 1;
+  const notes = [];
+  let active = true;
+  if (rule.conditionStats?.length) active = rule.conditionStats.some((name) => selectedNames.has(name));
+  if (active && rule.primaryAxes?.includes(axis)) { multiplier *= rule.bonus; notes.push(`${rule.label}×${rule.bonus.toFixed(2)}`); }
+  if (active && rule.secondaryAxis === axis) { multiplier *= rule.secondaryBonus; notes.push(`${rule.label}補助×${rule.secondaryBonus.toFixed(2)}`); }
+  if (rule.drawbackAxis === axis) { multiplier *= rule.drawback; notes.push(`${rule.label}反動×${rule.drawback.toFixed(2)}`); }
+  if (rule.engineStat && rule.primaryAxes?.includes(axis)) {
+    const value = Number(robot.stats?.engine?.[rule.engineStat] ?? 0);
+    if (value >= rule.engineThreshold && rule.engineBonus) { multiplier *= rule.engineBonus; notes.push(`${rule.engineStat}連携×${rule.engineBonus.toFixed(2)}`); }
+    else if (value < rule.engineThreshold && rule.enginePenalty) { multiplier *= rule.enginePenalty; notes.push(`${rule.engineStat}不足×${rule.enginePenalty.toFixed(2)}`); }
+  }
+  if (rule.computeStat && rule.primaryAxes?.includes(axis)) {
+    const value = Number(robot.stats?.compute?.[rule.computeStat] ?? 0);
+    if (value >= rule.computeThreshold && rule.computeBonus) { multiplier *= rule.computeBonus; notes.push(`${rule.computeStat}連携×${rule.computeBonus.toFixed(2)}`); }
+  }
+  if (rule.reliabilityMin && rule.primaryAxes?.includes(axis) && Number(robot.reliability ?? 0) >= rule.reliabilityMin) {
+    multiplier *= rule.reliabilityBonus; notes.push(`安定運用×${rule.reliabilityBonus.toFixed(2)}`);
+  }
+  if (rule.resistancePressure && rule.primaryAxes?.includes(axis)) {
+    const band = resistanceBand(effectiveResistance(opponent, rule.resistancePressure));
+    if (band.attackerMultiplier > 1 && rule.lowResistanceBonus) { multiplier *= rule.lowResistanceBonus; notes.push(`${rule.resistancePressure}攻略×${rule.lowResistanceBonus.toFixed(2)}`); }
+  }
+  return { multiplier, notes };
+}
+
 function weaponMultiplier(robot, opponent, axis, selectedNames) {
   const weaponDef = WEAPON_CATEGORIES[robot.weaponKey];
   let multiplier = 1;
@@ -247,6 +277,10 @@ function weaponMultiplier(robot, opponent, axis, selectedNames) {
     multiplier *= rule.multiplier;
     notes.push(`${rule.label}×${rule.multiplier.toFixed(2)}`);
   }
+
+  const doctrine = weaponDoctrineMultiplier(robot, opponent, axis, selectedNames);
+  multiplier *= doctrine.multiplier;
+  notes.push(...doctrine.notes);
 
   const ability = weaponAbilityMultiplier(robot, axis, selectedNames);
   multiplier *= ability.multiplier;

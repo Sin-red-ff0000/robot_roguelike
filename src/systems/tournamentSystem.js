@@ -1,6 +1,6 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=4.6';
-import { generateCustomPart } from './partSystem.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { TOURNAMENTS, TOURNAMENT_IDS } from '../data/tournamentDefinitions.js?v=4.7';
+import { generateCustomPart } from './partSystem.js?v=4.7';
 
 export function createTournamentYearState() {
   return Object.fromEntries(TOURNAMENT_IDS.map((id) => [id, {
@@ -11,6 +11,7 @@ export function createTournamentYearState() {
     losses: 0,
     bestRound: -1,
     champion: false,
+    resolvedTurn: null,
   }]));
 }
 
@@ -118,6 +119,7 @@ export function resolveTournamentMatch(state, match) {
   const round = def.rounds[context.roundIndex];
   match.tournamentResolved = true;
   entry.bestRound = Math.max(entry.bestRound ?? -1, context.roundIndex);
+  entry.resolvedTurn = Number(state.turn ?? 1);
   const logs = [];
 
   if (match.teamWon) {

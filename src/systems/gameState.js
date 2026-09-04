@@ -1,16 +1,16 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { MANUFACTURERS } from '../data/manufacturers.js?v=4.6';
-import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.6';
-import { randomFloat, randomInt } from '../utils/random.js?v=4.6';
-import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.6';
-import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.6';
-import { generateCohort } from './robotGenerator.js?v=4.6';
-import { generateTrainingChoices } from './trainingSystem.js?v=4.6';
-import { defaultFacilities, trainingChoiceCount, trainingLevelBias, updateFacilities } from './facilitySystem.js?v=4.6';
-import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.6';
-import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.6';
-import { createRobotSnapshot } from './recordSystem.js?v=4.6';
-import { getAnnualTrend } from './annualTrendSystem.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { MANUFACTURERS } from '../data/manufacturers.js?v=4.7';
+import { getSeriesDefinition, resolveSeriesProfile, seriesByNumber } from '../data/seriesDefinitions.js?v=4.7';
+import { randomFloat, randomInt } from '../utils/random.js?v=4.7';
+import { WEAPON_AXES, WEAPON_CATEGORIES, WEAPON_KEYS } from '../data/weaponDefinitions.js?v=4.7';
+import { generateInitialPartInventory, generateMemorialPart } from './partSystem.js?v=4.7';
+import { generateCohort } from './robotGenerator.js?v=4.7';
+import { generateTrainingChoices, generateTrainingChoicesWithCarryover } from './trainingSystem.js?v=4.7';
+import { defaultFacilities, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities } from './facilitySystem.js?v=4.7';
+import { ensureTournamentYear, markMissedTournaments } from './tournamentSystem.js?v=4.7';
+import { defaultSettings, normalizeSettings } from './settingsSystem.js?v=4.7';
+import { createRobotSnapshot, robotCareerHighlights } from './recordSystem.js?v=4.7';
+import { getAnnualTrend } from './annualTrendSystem.js?v=4.7';
 
 const MANUFACTURER_MAP = new Map(MANUFACTURERS.map((item) => [item.id, item]));
 
@@ -109,13 +109,24 @@ export function migrateState(state) {
   state.roster = (state.roster ?? []).map(normalizeRobot);
   state.retired = (state.retired ?? []).map(normalizeRobot);
   state.partInventory ??= generateInitialPartInventory(GAME_CONFIG.initialPartInventory);
-  state.teamRecord ??= { wins: 0, losses: 0 };
+  state.logisticsProcurement ??= { year:Number(state.year ?? 1), used:0, pending:null, history:[] };
+  state.logisticsProcurement.history ??= [];
+  if (Number(state.logisticsProcurement.year) !== Number(state.year ?? 1)) { state.logisticsProcurement.year = Number(state.year ?? 1); state.logisticsProcurement.used = 0; state.logisticsProcurement.pending = null; }
+  state.teamRecord ??= { wins: 0, losses: 0, streak: 0, recentResults: [] };
+  state.teamRecord.streak ??= 0;
+  state.teamRecord.recentResults ??= [];
+  state.rivalHistory ??= {};
   state.trainingModifiers ??= [];
   state.eventHistory ??= [];
   state.seriesEncounters ??= {};
   for (const robot of [...state.roster, ...state.retired]) if (robot.seriesId) state.seriesEncounters[robot.seriesId] = Math.max(1, Number(state.seriesEncounters[robot.seriesId] ?? 0));
   state.settings = normalizeSettings(state.settings ?? { growthMode: state.growthVisibility === 'visible' ? 'visible' : 'facility' });
   state.hallOfFame ??= [];
+  state.best15 ??= { manualIds: [], selectedMode: 'overall' };
+  state.best15.manualIds = [...new Set((state.best15.manualIds ?? []).filter((id) => state.retired.some((robot) => robot.id === id)))].slice(0, 15);
+  state.best15.selectedMode ??= 'overall';
+  state.exhibitionHistory ??= [];
+  state.lastExhibition ??= null;
   state.hallOfFame = state.hallOfFame.map((entry) => {
     if (entry?.snapshot) return { ...entry, snapshot: normalizeRobot(entry.snapshot) };
     const retiredRobot = state.retired.find((robot) => robot.id === entry?.robotId);
@@ -127,23 +138,34 @@ export function migrateState(state) {
   state.career.championships ??= 0;
   state.career.totalRetired ??= state.retired.length;
   state.facilities ??= defaultFacilities();
+  state.trainingControl ??= { year: Number(state.year ?? 1), turn: Number(state.turn ?? 1), rerollUsed: false, reserved: null };
+  state.trainingControl.year = Number(state.trainingControl.year ?? state.year ?? 1);
+  state.trainingControl.turn = Number(state.trainingControl.turn ?? state.turn ?? 1);
+  state.trainingControl.rerollUsed = Boolean(state.trainingControl.rerollUsed);
+  state.trainingControl.reserved ??= null;
+  state.weaponsLabControl ??= { targetWeaponKey: null };
+  if (!WEAPON_KEYS.includes(state.weaponsLabControl.targetWeaponKey)) state.weaponsLabControl.targetWeaponKey = null;
   state.tournamentHistory ??= [];
   state.retirementHistory ??= [];
   state.retirementHistory = state.retirementHistory.map((entry) => {
     const fallbackNumber = Number(entry?.seriesNumber ?? String(entry?.seriesName ?? '').match(/(\d+)/)?.[1] ?? 1);
     const def = getSeriesDefinition(entry?.seriesId) ?? seriesByNumber(entry?.manufacturerId, fallbackNumber);
-    return def ? {
+    const retiredRobot = state.retired.find((robot) => robot.id === entry?.robotId);
+    const base = def ? {
       ...entry,
       seriesId: def.id,
       seriesNumber: def.seriesNumber,
       seriesName: def.nameKana,
       seriesNameKana: def.nameKana,
       seriesNameLatin: def.nameLatin,
-    } : entry;
+    } : { ...entry };
+    if (!base.snapshot && retiredRobot) base.snapshot = createRobotSnapshot(retiredRobot);
+    if (!base.careerHighlights && retiredRobot) base.careerHighlights = robotCareerHighlights(retiredRobot);
+    return base;
   });
   ensureTournamentYear(state);
   updateFacilities(state);
-  state.trainingChoices = generateTrainingChoices(trainingChoiceCount(state), state.trainingModifiers ?? [], trainingLevelBias(state));
+  state.trainingChoices = generateTrainingChoices(trainingChoiceCount(state), state.trainingModifiers ?? [], trainingLevelBias(state), trainingChoiceContext(state));
   state.lastEvent ??= null;
   state.lastYearSummary ??= null;
   state.onboarding ??= { completed: Boolean(sourceVersion), step: 0 };
@@ -175,15 +197,21 @@ export function createInitialState() {
     roster,
     trainingModifiers: [],
     trainingChoices: [],
+    trainingControl: { year, turn: 1, rerollUsed: false, reserved: null },
     selectedRobotId: roster[0]?.id ?? null,
     battleOpponentId: roster[1]?.id ?? null,
     lastBattle: null,
     officialMatch: null,
-    teamRecord: { wins: 0, losses: 0 },
+    teamRecord: { wins: 0, losses: 0, streak: 0, recentResults: [] },
+    rivalHistory: {},
     growthVisibility: 'hidden',
     settings: defaultSettings(),
     hallOfFame: [],
+    best15: { manualIds: [], selectedMode: 'overall' },
+    exhibitionHistory: [],
+    lastExhibition: null,
     partInventory: generateInitialPartInventory(GAME_CONFIG.initialPartInventory),
+    logisticsProcurement: { year, used:0, pending:null, history:[] },
     eventHistory: [],
     lastEvent: null,
     career: { tournamentEntries: 0, tournamentWins: 0, championships: 0, totalRetired: 0 },
@@ -191,14 +219,14 @@ export function createInitialState() {
     tournamentHistory: [],
     retirementHistory: [],
     seriesEncounters: Object.fromEntries(roster.filter((robot) => robot.seriesId).map((robot) => [robot.seriesId, 1])),
-    log: ['v4.0を開始しました。第9世代400シリーズ、全41基礎ステータスと兵装の相乗関係、シリーズ設計解説の増補を追加し、4000シリーズになりました。'],
+    log: ['v4.7作業版を開始しました。10世代・4000シリーズを収録し、設備・練習・ライバル・歴代記録を拡張しています。'],
     lastYearSummary: null,
     onboarding: { completed: false, step: 0 },
     createdAt: new Date().toISOString(),
     retired: [],
   };
   ensureTournamentYear(state);
-  state.trainingChoices = generateTrainingChoices(trainingChoiceCount(state), [], trainingLevelBias(state));
+  state.trainingChoices = generateTrainingChoices(trainingChoiceCount(state), [], trainingLevelBias(state), trainingChoiceContext(state));
   return state;
 }
 
@@ -241,6 +269,8 @@ export function advanceYear(state) {
       record: { ...(robot.record ?? { wins: 0, losses: 0 }) },
       abilities: [...(robot.specialAbilities ?? [])],
       memorialPartName: memorialParts[index]?.name ?? null,
+      careerHighlights: robotCareerHighlights(robot),
+      snapshot: createRobotSnapshot(robot),
     });
   }
 
@@ -287,10 +317,15 @@ export function advanceYear(state) {
   nextState.tournamentYear = null;
   ensureTournamentYear(nextState);
   const unlocked = updateFacilities(nextState);
-  nextState.trainingChoices = generateTrainingChoices(
+  nextState.trainingControl ??= { year: nextState.year, turn: nextState.turn, rerollUsed: false, reserved: null };
+  const carriedTraining = nextState.trainingControl.reserved ?? null;
+  nextState.trainingControl = { year: nextState.year, turn: nextState.turn, rerollUsed: false, reserved: null };
+  nextState.trainingChoices = generateTrainingChoicesWithCarryover(
     trainingChoiceCount(nextState),
     nextState.trainingModifiers ?? [],
     trainingLevelBias(nextState),
+    trainingChoiceContext(nextState),
+    carriedTraining,
   );
   const facilityLogs = unlocked.map((item) => `設備拡充：${item.name} Lv${item.level}が利用可能になりました。`);
   nextState.log = [

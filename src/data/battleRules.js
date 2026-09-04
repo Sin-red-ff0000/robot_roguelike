@@ -51,3 +51,21 @@ export const RESISTANCE_BANDS = [
   { min: 25, attackerMultiplier: 1.10, defenderMultiplier: 1.00, label: '低い' },
   { min: -Infinity, attackerMultiplier: 1.20, defenderMultiplier: 1.00, label: '非常に低い' },
 ];
+
+
+// v4.7: 12兵装それぞれの「使い方」を比較値へ反映する軽量ドクトリン。
+// 新しい距離ステータス等は増やさず、既存6兵装軸・基礎能力・耐性・信頼性だけで個性を作る。
+export const WEAPON_DOCTRINE_RULES = {
+  blade: { label: '連続斬撃', primaryAxes: ['response','control'], bonus: 1.07, secondaryAxis: 'accuracy', secondaryBonus: 1.04, conditionStats: ['動作速度','微細制御'], description: '速度と制御が噛み合うほど手数で押す。' },
+  hammer: { label: '一撃突破', primaryAxes: ['power'], bonus: 1.13, secondaryAxis: 'stability', secondaryBonus: 1.05, drawbackAxis: 'accuracy', drawback: 0.96, conditionStats: ['瞬間出力','重心制御'], description: '威力へ大きく寄せる代わりに精度面の扱いが難しい。' },
+  lance: { label: '一点貫徹', primaryAxes: ['power','accuracy'], bonus: 1.07, resistancePressure: '貫通耐性', lowResistanceBonus: 1.06, conditionStats: ['加速性能','駆動精度'], description: '威力と精度を揃え、貫通耐性の薄い相手を突く。' },
+  beamBlade: { label: '高追従刃', primaryAxes: ['response','control'], bonus: 1.07, engineStat: '冷却性能', engineThreshold: 75, engineBonus: 1.05, enginePenalty: 0.95, description: '追従性が高いが、冷却不足では刃の維持が不安定になる。' },
+  rifle: { label: '精密射撃', primaryAxes: ['accuracy','efficiency'], bonus: 1.07, secondaryAxis: 'control', secondaryBonus: 1.03, conditionStats: ['測距性能','追跡性能'], description: '測距・追跡から精度と弾道補正へ繋ぐ安定型。' },
+  machineGun: { label: '継続制圧', primaryAxes: ['response','stability'], bonus: 1.07, reliabilityMin: 70, reliabilityBonus: 1.04, description: '連射速度と安定性で比較数を積み上げ、安定稼働機ほど強い。' },
+  cannon: { label: '重砲撃', primaryAxes: ['power','stability'], bonus: 1.09, drawbackAxis: 'response', drawback: 0.96, conditionStats: ['重心制御','負荷制御'], description: '重い一撃と発射安定性に優れるが、応答は犠牲になりやすい。' },
+  laser: { label: '高速照射', primaryAxes: ['accuracy','response'], bonus: 1.07, engineStat: '電力効率', engineThreshold: 75, engineBonus: 1.04, description: '高精度・高追従の照射を、電力効率で支える。' },
+  beamCannon: { label: '高出力収束', primaryAxes: ['power','control'], bonus: 1.10, engineStat: '冷却性能', engineThreshold: 80, engineBonus: 1.05, enginePenalty: 0.94, drawbackAxis: 'response', drawback: 0.97, description: '最大火力を狙えるが、冷却と応答の管理が必要。' },
+  missile: { label: '多目標誘導', primaryAxes: ['control','efficiency'], bonus: 1.08, computeStat: '並列処理', computeThreshold: 75, computeBonus: 1.05, description: '誘導と多目標処理を演算性能で底上げする。' },
+  emp: { label: '電子攪乱', primaryAxes: ['control','efficiency'], bonus: 1.07, resistancePressure: '電磁耐性', lowResistanceBonus: 1.09, computeStat: '情報統合', computeThreshold: 70, computeBonus: 1.04, description: '電磁耐性の穴を解析し、干渉制御で崩す。' },
+  drone: { label: '分散自律', primaryAxes: ['control','efficiency'], bonus: 1.08, computeStat: '並列処理', computeThreshold: 70, computeBonus: 1.04, reliabilityMin: 80, reliabilityBonus: 1.04, description: '並列処理と信頼性を土台に複数機を自律運用する。' },
+};

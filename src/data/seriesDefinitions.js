@@ -1,18 +1,20 @@
-import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.6';
-import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.6';
-import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.6';
-import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.6';
-import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.6';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.6';
-import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.6';
-import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.6';
-import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.6';
-import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.6';
-import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.6';
-import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.6';
-import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.6';
-import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.6';
-import { BASE_SYNERGY_RULES } from './battleRules.js?v=4.6';
+import { EXPANDED_SERIES_DEFINITIONS } from './seriesExpansionDefinitions.js?v=4.7';
+import { THIRD_WAVE_SERIES_DEFINITIONS } from './seriesThirdWaveDefinitions.js?v=4.7';
+import { FOURTH_WAVE_SERIES_DEFINITIONS } from './seriesFourthWaveDefinitions.js?v=4.7';
+import { FIFTH_WAVE_SERIES_DEFINITIONS } from './seriesFifthWaveDefinitions.js?v=4.7';
+import { SIXTH_WAVE_SERIES_DEFINITIONS } from './seriesSixthWaveDefinitions.js?v=4.7';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.7';
+import { EIGHTH_WAVE_SERIES_DEFINITIONS } from './seriesEighthWaveDefinitions.js?v=4.7';
+import { NINTH_WAVE_SERIES_DEFINITIONS } from './seriesNinthWaveDefinitions.js?v=4.7';
+import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.7';
+import { localizeSeriesName, seriesJapaneseDisplayIsValid } from './seriesNameLocalization.js?v=4.7';
+import { LEGACY_SERIES_REFIT_OVERRIDES } from './seriesLegacyRefitDefinitions.js?v=4.7';
+import { SECOND_GENERATION_REFIT_OVERRIDES } from './seriesSecondGenerationRefitDefinitions.js?v=4.7';
+import { THIRD_GENERATION_REFIT_OVERRIDES } from './seriesThirdGenerationRefitDefinitions.js?v=4.7';
+import { FOURTH_GENERATION_REFIT_OVERRIDES } from './seriesFourthGenerationRefitDefinitions.js?v=4.7';
+import { BASE_SYNERGY_RULES } from './battleRules.js?v=4.7';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.7';
+import { MANUFACTURERS } from './manufacturers.js?v=4.7';
 
 // Base first-generation catalog: 20 manufacturers x 20 series = 400 series.
 // v3.1 refits the original 400 entries; v3.2 applies the same review standard to the 400 second-generation entries.
@@ -9004,6 +9006,38 @@ const TENTH_GENERATION_SERIES = TENTH_WAVE_SERIES_DEFINITIONS.map((base) => ({ .
 
 SERIES_DEFINITIONS.push(...SECOND_GENERATION_SERIES, ...THIRD_GENERATION_SERIES, ...FOURTH_GENERATION_SERIES, ...FIFTH_GENERATION_SERIES, ...SIXTH_GENERATION_SERIES, ...SEVENTH_GENERATION_SERIES, ...EIGHTH_GENERATION_SERIES, ...NINTH_GENERATION_SERIES, ...TENTH_GENERATION_SERIES);
 
+
+const DOCTRINE_GROUP_LABEL = { output:'出力', mobility:'駆動', control:'制御', engine:'機関', compute:'演算', sensor:'センサー', ai:'AI' };
+const DOCTRINE_WEAPON_TEXT = {
+  blade:['踏み込みから斬撃までの動作を短くつなぎ、姿勢を崩さず次の攻撃へ移る','微細制御と動作同期を使い、相手の挙動を読んで刃を通す位置を先に作る'],
+  hammer:['瞬間出力を打撃へ集中し、重心移動と負荷制御で大振りの隙を抑える','一撃の威力だけでなく、姿勢保持とリスク判断を合わせて確実に衝撃を通す'],
+  lance:['加速中の姿勢と駆動精度を保ち、直線的な突入を高い貫徹力へ変換する','行動予測で進入線を先取りし、瞬間出力を接触の一点へ集める'],
+  beamBlade:['刃形成と機体動作を同期させ、熱負荷を抱え込む前に短い交戦を重ねる','動作速度と行動予測を優先し、エネルギー刃を必要な瞬間だけ最大効率で使う'],
+  rifle:['測距・追跡・微細制御を一つの射撃手順へまとめ、初弾から有効打を狙う','処理速度で照準更新を早め、相手の移動先へ精度の高い射線を置く'],
+  machineGun:['駆動応答と追跡を切らさず、連射中も照準修正を継続して圧力を維持する','動作速度と処理速度を連動させ、弾数ではなく追従し続ける時間で優位を作る'],
+  cannon:['重心制御と瞬間出力で発射姿勢を固め、反動を次の行動へ残さない','負荷制御とリスク判断を重ね、撃つべき局面へ大火力を限定して投入する'],
+  laser:['測距と追跡を絶えず更新し、短い照射を正確に重ねて熱余裕を守る','微細制御と冷却を両立させ、長時間照射より狙った箇所への収束を優先する'],
+  beamCannon:['電力供給・冷却・過負荷出力を一つの発射周期として管理する','高出力射撃の前後まで負荷制御し、機体全体を一門の砲として運用する'],
+  missile:['並列処理と情報統合で複数目標を整理し、誘導経路そのものに戦術性を持たせる','識別と追跡を先に確立し、発射数より有効なロックを維持することを優先する'],
+  emp:['相手システムの状態を読み、干渉が最も効く瞬間へ電子攻撃を集中する','負荷耐性を確保した上で情報統合とリスク判断を使い、自機への影響を抑えて機能停止を狙う'],
+  drone:['複数機の状態を並列管理し、本体の移動と無人機の展開を別々の軸で組み立てる','情報統合と識別を維持し、ドローンを火力ではなく戦場の選択肢を増やす手段として使う'],
+};
+const DOCTRINE_MAKER_MAP = new Map(MANUFACTURERS.map((m,i)=>[m.id,{...m,index:i}]));
+function buildSeriesWeaponDoctrine(series) {
+  const archetype = SERIES_ARCHETYPES[series.archetypeId] ?? {};
+  const preferred = [...new Set([...(series.preferredWeapons ?? []), ...Object.entries(series.weaponAdjustments ?? {}).filter(([,v])=>Number(v)>2).map(([k])=>k), ...(archetype.preferredWeapons ?? [])])].filter(k=>WEAPON_CATEGORIES[k]).slice(0,3);
+  if (!preferred.length) preferred.push(Object.keys(WEAPON_CATEGORIES)[Number(series.seriesNumber ?? 1)%Object.keys(WEAPON_CATEGORIES).length]);
+  const avoided = [...new Set([...(series.avoidedWeapons ?? []), ...Object.entries(series.weaponAdjustments ?? {}).filter(([,v])=>Number(v)<-2).map(([k])=>k)])].filter(k=>WEAPON_CATEGORIES[k] && !preferred.includes(k));
+  const mergedGroups={...(archetype.groupBias??{})}; for(const [k,v] of Object.entries(series.groupAdjustments??{})) mergedGroups[k]=Number(mergedGroups[k]??0)+Number(v??0);
+  const groups=Object.entries(mergedGroups).sort((a,b)=>Number(b[1])-Number(a[1])).filter(([,v])=>Number(v)>0).map(([k])=>DOCTRINE_GROUP_LABEL[k]??k).slice(0,2);
+  const maker=DOCTRINE_MAKER_MAP.get(series.manufacturerId); const seed=(Number(series.seriesNumber??0)+(maker?.index??0)*7)%2;
+  const weaponSentences=preferred.slice(0,2).map((k,i)=>`${WEAPON_CATEGORIES[k].label}では${DOCTRINE_WEAPON_TEXT[k][(seed+i)%2]}。`);
+  const opening=preferred.length>1?`主軸は${preferred.map(k=>WEAPON_CATEGORIES[k].label).join(' / ')}。兵装を同じ使い方へ寄せず、それぞれが得意な勝負の作り方を担当させる。`:`主軸は${WEAPON_CATEGORIES[preferred[0]].label}。この兵装で系列の長所を最も直接的に勝敗へ変える構成を基本とする。`;
+  const groupText=groups.length?`${groups.join('・')}系の基礎能力を兵装6軸へつなぎ、単独の高数値より「基礎能力→兵装性能→実戦での使い方」が切れないことを重視する。`:'個体の成長結果に応じて基礎能力と兵装6軸の接続を選び、固定された万能構成には寄せない。';
+  const avoidText=avoided.length?`一方、${avoided.slice(0,2).map(k=>WEAPON_CATEGORIES[k].label).join(' / ')}は系列の初期設計とは噛み合わせにくい。採用する場合は不足する基礎能力や兵装軸を育成・改修で補う前提になる。`:`非推奨兵装を固定せず、個体差と成長結果次第で別兵装への転向余地も残す。`;
+  return `${opening}${weaponSentences.join('')}${groupText}${avoidText}`;
+}
+
 // v3.7 Japanese-label repair: older generation data sometimes stored the Latin/original
 // name directly in nameKana.  Normalize the whole catalog once so both newly generated
 // robots and migrated saves use a Japanese-readable series label consistently.
@@ -9016,6 +9050,9 @@ for (const series of SERIES_DEFINITIONS) {
 for (const series of SERIES_DEFINITIONS) {
   series.nameKana = localizeSeriesName(series.nameLatin, series.nameKana, KNOWN_SERIES_KANA);
 }
+
+// v4.7: rebuild doctrine text from each series' actual weapon/group profile to avoid late-generation template repetition.
+for (const series of SERIES_DEFINITIONS) series.weaponDoctrine = buildSeriesWeaponDoctrine(series);
 
 
 export const SERIES_GROWTH_CURVES = {

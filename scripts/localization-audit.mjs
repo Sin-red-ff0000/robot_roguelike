@@ -1,7 +1,7 @@
-import { SERIES_DEFINITIONS, getSeriesForManufacturer } from '../src/data/seriesDefinitions.js?v=4.6';
-import { seriesJapaneseDisplayIsValid } from '../src/data/seriesNameLocalization.js?v=4.6';
-import { MANUFACTURERS } from '../src/data/manufacturers.js?v=4.6';
-import { seriesDisplayName } from '../src/systems/displaySystem.js?v=4.6';
+import { SERIES_DEFINITIONS, getSeriesForManufacturer } from '../src/data/seriesDefinitions.js?v=4.7';
+import { seriesJapaneseDisplayIsValid } from '../src/data/seriesNameLocalization.js?v=4.7';
+import { MANUFACTURERS } from '../src/data/manufacturers.js?v=4.7';
+import { seriesDisplayName } from '../src/systems/displaySystem.js?v=4.7';
 
 if (SERIES_DEFINITIONS.length !== 4000) throw new Error(`catalog size ${SERIES_DEFINITIONS.length}`);
 for (const maker of MANUFACTURERS) {

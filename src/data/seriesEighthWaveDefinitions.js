@@ -2,9 +2,9 @@
 // The eighth generation deliberately breaks the inherited-name-plus-suffix convention.
 // Every series receives a clean-sheet coined name that is independent from its predecessor.
 
-import { MANUFACTURERS } from './manufacturers.js?v=4.6';
-import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.6';
-import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.6';
+import { MANUFACTURERS } from './manufacturers.js?v=4.7';
+import { SEVENTH_WAVE_SERIES_DEFINITIONS } from './seriesSeventhWaveDefinitions.js?v=4.7';
+import { WEAPON_CATEGORIES } from './weaponDefinitions.js?v=4.7';
 
 const MAKER_MAP = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
 const MAKER_INDEX = new Map(MANUFACTURERS.map((maker, index) => [maker.id, index]));

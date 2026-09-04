@@ -1,11 +1,15 @@
-import { GAME_CONFIG } from '../config.js?v=4.6';
-import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.6';
-import { generateCohort } from './robotGenerator.js?v=4.6';
-import { simulateBattle } from './battleSystem.js?v=4.6';
-import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.6';
-import { clamp, randomInt } from '../utils/random.js?v=4.6';
-import { battleWinTable } from './settingsSystem.js?v=4.6';
-import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.6';
+import { GAME_CONFIG } from '../config.js?v=4.7';
+import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.7';
+import { WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.7';
+import { WEAPON_DOCTRINE_RULES } from '../data/battleRules.js?v=4.7';
+import { generateCohort } from './robotGenerator.js?v=4.7';
+import { simulateBattle } from './battleSystem.js?v=4.7';
+import { evaluateOfficialBoutAbilityChanges } from './specialAbilitySystem.js?v=4.7';
+import { clamp, randomInt } from '../utils/random.js?v=4.7';
+import { battleWinTable } from './settingsSystem.js?v=4.7';
+import { seriesGrowthMultiplier } from './trainingSystem.js?v=4.7';
+import { selectRivalTeam, rivalGenerationOptions, applyRivalTraits, rivalAnalysis, rivalManagerLine, rivalHistoryEntry, rivalryTier, recordRivalResult } from './rivalTeamSystem.js?v=4.7';
+import { combatResearchLevel } from './facilitySystem.js?v=4.7';
 
 function groupAverage(robot, groupKey) {
   const values = Object.values(robot.stats[groupKey]);
@@ -40,17 +44,48 @@ function applyEnemyDifficulty(robot, difficulty = 0) {
   return robot;
 }
 
-function createEnemyTeam(year, difficulty = 0) {
+function createEnemyTeam(year, difficulty = 0, rivalTeam = null) {
   const cohortCounts = [5, 5, 5];
   const enemies = [];
+  let slot = 0;
   for (let cohortYear = 1; cohortYear <= 3; cohortYear += 1) {
-    enemies.push(...generateCohort({ year, cohortYear, count: cohortCounts[cohortYear - 1] }));
+    for (let i = 0; i < cohortCounts[cohortYear - 1]; i += 1) {
+      const options = rivalTeam ? rivalGenerationOptions(rivalTeam, slot) : {};
+      enemies.push(generateCohort({ year, cohortYear, count: 1, ...options })[0]);
+      slot += 1;
+    }
   }
-  return enemies.map((robot, index) => applyEnemyDifficulty({
-    ...robot,
-    id: `enemy-${year}-${index}-${robot.id}`,
-    serial: `EN-${String(year).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`,
-  }, difficulty));
+  return enemies.map((robot, index) => {
+    const themed = rivalTeam ? applyRivalTraits(robot, rivalTeam, index) : robot;
+    return applyEnemyDifficulty({
+      ...themed,
+      id: `enemy-${year}-${index}-${themed.id}`,
+      serial: `EN-${String(year).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`,
+    }, difficulty);
+  });
+}
+
+
+function resistanceLabel(value) {
+  if (value >= 85) return '非常に高い';
+  if (value >= 70) return '高い';
+  if (value < 25) return '非常に低い';
+  if (value < 40) return '低い';
+  return '標準';
+}
+
+export function preMatchPairingInsight(ally, enemy, researchLevel = 0) {
+  if (!ally || !enemy || researchLevel < 3) return '';
+  const allyWeapon = WEAPON_CATEGORIES[ally.weaponKey];
+  const enemyWeapon = WEAPON_CATEGORIES[enemy.weaponKey];
+  const enemyRes = Number(enemy.resistances?.[allyWeapon.resistance] ?? 50);
+  const allyRes = Number(ally.resistances?.[enemyWeapon.resistance] ?? 50);
+  const ownDoctrine = WEAPON_DOCTRINE_RULES[ally.weaponKey];
+  const parts = [];
+  if (researchLevel >= 3) parts.push(`${allyWeapon.label}→相手${allyWeapon.resistance}：${resistanceLabel(enemyRes)}`);
+  if (researchLevel >= 4) parts.push(`相手${enemyWeapon.label}→自機${enemyWeapon.resistance}：${resistanceLabel(allyRes)}`);
+  if (researchLevel >= 5 && ownDoctrine) parts.push(`運用焦点：${ownDoctrine.label}`);
+  return parts.join(' / ');
 }
 
 export function createOfficialMatch(state, { difficulty = 0, context = null } = {}) {
@@ -60,7 +95,10 @@ export function createOfficialMatch(state, { difficulty = 0, context = null } = 
     .slice(0, GAME_CONFIG.officialMatchSize)
     .map((robot) => robot.id);
 
-  const enemyRoster = createEnemyTeam(state.year, difficulty)
+  const rivalTeam = selectRivalTeam(state, context);
+  const researchLevel = combatResearchLevel(state);
+  const history = rivalHistoryEntry(state, rivalTeam.id);
+  const enemyRoster = createEnemyTeam(state.year, difficulty, rivalTeam)
     .sort((a, b) => robotSelectionScore(b) - robotSelectionScore(a));
   state.seriesEncounters ??= {};
   for (const enemy of enemyRoster) {
@@ -79,7 +117,7 @@ export function createOfficialMatch(state, { difficulty = 0, context = null } = 
     substitutionsRemaining: GAME_CONFIG.officialMatchSubstitutions,
     results: [],
     difficulty,
-    context,
+    context: { ...(context ?? {}), rivalTeamId: rivalTeam.id, rivalTeamName: rivalTeam.name, rivalRank: rivalTeam.rankLabel, rivalRankScore: rivalTeam.rankScore, rivalRelationship: rivalryTier(history).label, rivalRivalryPoints: history.rivalryPoints ?? 0, rivalAnalysis: rivalAnalysis(rivalTeam, researchLevel, history), rivalManagerLine: rivalManagerLine(rivalTeam, researchLevel, history), rivalTraits: rivalTeam.traits, rivalMeetingsBefore: history.meetings, rivalWinsBefore: history.wins, rivalLossesBefore: history.losses },
   };
 }
 
@@ -226,9 +264,20 @@ export function runNextBout(state, match) {
     match.status = 'complete';
     match.teamWon = match.allyWins > match.enemyWins;
     if (progressionMatch) {
-      state.teamRecord ??= { wins: 0, losses: 0 };
-      if (match.teamWon) state.teamRecord.wins += 1;
-      else state.teamRecord.losses += 1;
+      state.teamRecord ??= { wins: 0, losses: 0, streak: 0, recentResults: [] };
+      state.teamRecord.recentResults ??= [];
+      state.teamRecord.streak ??= 0;
+      if (match.teamWon) {
+        state.teamRecord.wins += 1;
+        state.teamRecord.streak = state.teamRecord.streak >= 0 ? state.teamRecord.streak + 1 : 1;
+        state.teamRecord.recentResults.push('W');
+      } else {
+        state.teamRecord.losses += 1;
+        state.teamRecord.streak = state.teamRecord.streak <= 0 ? state.teamRecord.streak - 1 : -1;
+        state.teamRecord.recentResults.push('L');
+      }
+      state.teamRecord.recentResults = state.teamRecord.recentResults.slice(-10);
+      recordRivalResult(state, match);
     }
   }
 

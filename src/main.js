@@ -1,40 +1,45 @@
-import { GAME_CONFIG } from './config.js?v=4.6';
-import { MANUFACTURERS } from './data/manufacturers.js?v=4.6';
-import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.6';
-import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.6';
-import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.6';
-import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.6';
-import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.6';
-import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.6';
-import { applyTrainingTurn, generateTrainingChoices, individualTrainingOptions } from './systems/trainingSystem.js?v=4.6';
-import { simulateBattle } from './systems/battleSystem.js?v=4.6';
-import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=4.6';
-import { PART_RARITIES } from './data/partDefinitions.js?v=4.6';
-import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=4.6';
-import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=4.6';
-import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=4.6';
-import { analysisLevel, trainingChoiceCount, trainingLevelBias, updateFacilities } from './systems/facilitySystem.js?v=4.6';
-import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=4.6';
-import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=4.6';
-import { careerRecordSummary, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo } from './systems/recordSystem.js?v=4.6';
-import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=4.6';
-import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=4.6';
-import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=4.6';
-import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=4.6';
-import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=4.6';
-import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=4.6';
+import { GAME_CONFIG } from './config.js?v=4.7';
+import { MANUFACTURERS } from './data/manufacturers.js?v=4.7';
+import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.7';
+import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.7';
+import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.7';
+import { WEAPON_DOCTRINE_RULES } from './data/battleRules.js?v=4.7';
+import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.7';
+import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.7';
+import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.7';
+import { applyTrainingTurn, generateTrainingChoices, generateTrainingChoicesWithCarryover, individualTrainingOptions, seriesGrowthMultiplier } from './systems/trainingSystem.js?v=4.7';
+import { simulateBattle } from './systems/battleSystem.js?v=4.7';
+import { SPECIAL_ABILITIES } from './data/specialAbilities.js?v=4.7';
+import { PART_RARITIES } from './data/partDefinitions.js?v=4.7';
+import { adjustedCustomPartEffects, generateCustomPart, useCustomPart } from './systems/partSystem.js?v=4.7';
+import { PROCUREMENT_ROUTES, chooseProcurement, procurementStatus, requestProcurement } from './systems/logisticsSystem.js?v=4.7';
+import { resolvePostTrainingEvent, tickTrainingModifiers } from './systems/eventSystem.js?v=4.7';
+import { describeAbilityChange } from './systems/specialAbilitySystem.js?v=4.7';
+import { analysisLevel, trainingChoiceCount, trainingLevelBias, trainingChoiceContext, updateFacilities, weaponsLabLevel } from './systems/facilitySystem.js?v=4.7';
+import { battleWinTable, normalizeSettings, trainingTurnsForState } from './systems/settingsSystem.js?v=4.7';
+import { manufacturerDisplayName, seriesDisplayName, robotDisplayName, robotFormalName } from './systems/displaySystem.js?v=4.7';
+import { careerRecordSummary, extendedCareerRecordSummary, robotCareerHighlights, manufacturerRecords, seriesRecords, seriesDiscoverySummary, isHallOfFame, toggleHallOfFame, updateHallMemo, BEST15_MODES, historicalBest15, isManualBest15, toggleManualBest15 } from './systems/recordSystem.js?v=4.7';
+import { rivalArchiveRows } from './systems/rivalTeamSystem.js?v=4.7';
+import { exhibitionTeamOptions, exhibitionHistoryRows, simulateExhibitionMatch } from './systems/exhibitionSystem.js?v=4.7';
+import { downloadSave, readSaveFile } from './systems/saveSystem.js?v=4.7';
+import { ensureTournamentYear, resolveTournamentMatch, tournamentEntry, tournamentMatchOptions, tournamentAvailableTurn } from './systems/tournamentSystem.js?v=4.7';
+import { MANAGER_CONTEXT_LABELS, MANAGER_PERSONALITIES, MANAGER_TEMPLATE_TOKENS } from './data/managerDefinitions.js?v=4.7';
+import { MANAGER_CUSTOM_MAX_LENGTH, MANAGER_CUSTOM_MAX_LINES, MANAGER_LINE_MODES, clearManagerCustomLines, loadManagerProfile, managerLine, managerRobotInsightContext, parseCustomLines, renderManagerTemplate, resizeImageFile, saveManagerProfile, setManagerCustomLines, standardManagerLines } from './systems/managerSystem.js?v=4.7';
+import { MANAGER_PRESET_LIMIT, applyManagerPreset, createManagerPreset, downloadManagerProfile, loadManagerPresets, readManagerProfileFile, removeManagerPreset, saveManagerPresets, upsertManagerPreset } from './systems/managerPresetSystem.js?v=4.7';
+import { pwaInstallMessage, pwaInstallState, requestPwaInstall } from './systems/pwaSystem.js?v=4.7';
 import {
   arrangeLineup,
   autoSelectLineup,
   availableBenchRobots,
   createOfficialMatch,
   moveLineupSlot,
+  preMatchPairingInsight,
   robotSelectionScore,
   runNextBout,
   startOfficialMatch,
   substituteFutureSlot,
   updateLineupSlot,
-} from './systems/teamMatchSystem.js?v=4.6';
+} from './systems/teamMatchSystem.js?v=4.7';
 
 const loadedState = loadState();
 let state = migrateState(loadedState) ?? createInitialState();
@@ -75,6 +80,10 @@ const uiState = {
   seriesCompareMakerA: MANUFACTURERS[0]?.id ?? '',
   seriesCompareMakerB: MANUFACTURERS[1]?.id ?? MANUFACTURERS[0]?.id ?? '',
   statusGuideOpen: false,
+  exhibitionLeft: 'active',
+  exhibitionRight: 'best15:overall',
+  retirementHistoryExpanded: false,
+  rivalArchiveExpanded: false,
 };
 
 const PART_RARITY_RANK = Object.fromEntries(Object.keys(PART_RARITIES).map((key, index) => [key, index]));
@@ -128,8 +137,8 @@ const TUTORIAL_STEPS = [
   },
   {
     title: '公式戦は15機・15戦',
-    body: '大会では所属機から15機を選抜し、1機1戦で15戦行います。相手15機は事前に確認できますが、内部ステータスの解説はありません。並び順と回数制限付き交代が采配になります。',
-    hint: '試合は優勢/劣勢と勝敗だけを短く表示し、残りを一括スキップすることもできます。',
+    body: '大会では所属機から15機を選抜し、1機1戦で15戦行います。序盤は相手の詳細情報が少なく、戦闘研究棟が発展すると戦闘思想・主力兵装・耐性との噛み合わせなどが段階的に分かるようになります。並び順と回数制限付き交代が采配になります。',
+    hint: '研究棟は正解編成を自動表示しません。得られた情報から15機の順番を考える設備です。',
   },
   {
     title: '個体差は育てて見抜く',
@@ -143,8 +152,8 @@ const TUTORIAL_STEPS = [
   },
   {
     title: '長期プレイは環境が成長',
-    body: '長く遊んでも新人の基礎能力そのものは永久強化されません。代わりに設備、情報、練習選択肢、パーツ入手機会、歴代記録が充実します。覚醒や当たり年による世代ドラマを残していきましょう。',
-    hint: '設定から番狂わせ率・イベント頻度・年間練習回数なども変更できます。',
+    body: '長く遊んでも新人の基礎能力そのものは永久強化されません。代わりに設備が育ち、成長解析、練習候補の引き直し・保留、試験兵装指定、相手分析、選択式の技術物資調達、歴代ベスト15など新しい判断手段が増えていきます。',
+    hint: '設備・記録画面では、次のLvで何が解禁されるかも確認できます。',
   },
 ];
 
@@ -202,6 +211,12 @@ function setManagerMessage(context = 'generic', variables = {}) {
   uiState.managerContext = context;
   uiState.managerVariables = resolved;
   uiState.managerLine = managerLine(managerProfile, context, resolved);
+}
+
+
+function setManagerRobotMessage(robot) {
+  if (!robot) return;
+  setManagerMessage(managerRobotInsightContext(robot), { robotObject: robot });
 }
 
 function persistManagerProfile() {
@@ -328,6 +343,48 @@ function commit() {
   render();
 }
 
+function trainingControlState() {
+  state.trainingControl ??= { year: state.year, turn: state.turn, rerollUsed: false, reserved: null };
+  if (Number(state.trainingControl.year) !== Number(state.year) || Number(state.trainingControl.turn) !== Number(state.turn)) {
+    state.trainingControl = { year: state.year, turn: state.turn, rerollUsed: false, reserved: state.trainingControl.reserved ?? null };
+  }
+  return state.trainingControl;
+}
+
+function refreshTrainingChoices({ preserveCarryover = true } = {}) {
+  const control = trainingControlState();
+  const carried = preserveCarryover ? state.trainingChoices.find((item) => item.reservedCarryover) ?? null : null;
+  state.trainingChoices = generateTrainingChoicesWithCarryover(
+    trainingChoiceCount(state),
+    state.trainingModifiers ?? [],
+    trainingLevelBias(state),
+    trainingChoiceContext(state),
+    carried,
+  );
+  control.year = state.year;
+  control.turn = state.turn;
+}
+
+function rerollTrainingChoices() {
+  const control = trainingControlState();
+  if ((state.facilities?.training ?? 0) < 2 || control.rerollUsed) return;
+  refreshTrainingChoices({ preserveCarryover: true });
+  control.rerollUsed = true;
+  state.log = ['統合訓練設備：このターンの練習候補を引き直しました。', ...state.log].slice(0, 28);
+  commit();
+}
+
+function reserveTrainingChoice(trainingId) {
+  const control = trainingControlState();
+  if ((state.facilities?.training ?? 0) < 4) return;
+  const training = state.trainingChoices.find((item) => item.id === trainingId);
+  if (!training) return;
+  const { reservedCarryover, ...snapshot } = training;
+  control.reserved = snapshot;
+  state.log = [`統合訓練設備：${training.label} Lv${training.level}を次ターンへ保留しました。`, ...state.log].slice(0, 28);
+  commit();
+}
+
 function chooseTraining(training) {
   const trainingLock = trainingLockInfo();
   if (trainingLock.locked) {
@@ -336,7 +393,16 @@ function chooseTraining(training) {
     commit();
     return;
   }
-  const logs = applyTrainingTurn(state.roster, training);
+  const control = trainingControlState();
+  if (control.reserved?.id === training.id) control.reserved = null;
+  const labTarget = weaponsLabLevel(state) >= 3 ? state.weaponsLabControl?.targetWeaponKey : null;
+  const appliedTraining = training.weaponLab && labTarget ? { ...training, testWeaponKey: labTarget } : training;
+  const logs = applyTrainingTurn(state.roster, appliedTraining);
+  if (training.weaponLab && labTarget) {
+    const label = WEAPON_CATEGORIES[labTarget]?.label ?? labTarget;
+    logs.unshift(`兵装試験場：指定していた${label}を装備変更なしで試験対象にしました。`);
+    state.weaponsLabControl.targetWeaponKey = null;
+  }
   // 現在ターンで効いていた期間限定強化を1ターン消費した後、イベントを抽選する。
   tickTrainingModifiers(state);
   const event = resolvePostTrainingEvent(state);
@@ -358,9 +424,11 @@ function chooseTraining(training) {
       retired: state.lastYearSummary?.retiredCount ?? 0,
     });
   } else {
+    const reservedTraining = control.reserved ?? null;
     state.turn += 1;
     ensureTournamentYear(state);
-    state.trainingChoices = generateTrainingChoices(trainingChoiceCount(state), state.trainingModifiers ?? [], trainingLevelBias(state));
+    state.trainingControl = { year: state.year, turn: state.turn, rerollUsed: false, reserved: null };
+    state.trainingChoices = generateTrainingChoicesWithCarryover(trainingChoiceCount(state), state.trainingModifiers ?? [], trainingLevelBias(state), trainingChoiceContext(state), reservedTraining);
   }
   commit();
 }
@@ -592,6 +660,17 @@ function groupGrowthAverage(robot, groupKey) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+function totalBaseGrowthMultiplier(robot, groupKey, statName, options = {}) {
+  const base = Number(robot.growthMultipliers?.[groupKey]?.[statName] ?? 1);
+  return base * seriesGrowthMultiplier(robot, groupKey, options);
+}
+
+function groupTotalGrowthAverage(robot, groupKey, options = {}) {
+  const stats = STAT_GROUPS[groupKey]?.stats ?? [];
+  if (!stats.length) return 1;
+  return stats.reduce((sum, statName) => sum + totalBaseGrowthMultiplier(robot, groupKey, statName, options), 0) / stats.length;
+}
+
 const BASE_ABILITY_REFERENCE = 60;
 function baseAbilityMultiplier(value) {
   return Number(value || 0) / BASE_ABILITY_REFERENCE;
@@ -610,7 +689,7 @@ function renderGroupCards(robot) {
         <div class="group-title">${group.label}<strong>${grade(value)}</strong></div>
         <div class="group-value">${value.toFixed(1)}</div>
         <small class="base-hint">基礎 ×${baseAbilityMultiplier(value).toFixed(2)}</small>
-        ${state.settings?.growthMode !== 'hidden' && (analysisLevel(state) >= 1 || state.settings?.growthMode === 'visible') ? `<small class="growth-hint">成長 ${growthBand(groupGrowthAverage(robot, groupKey), Math.max(1, analysisLevel(state)))}</small>` : ''}
+        ${state.settings?.growthMode !== 'hidden' && (analysisLevel(state) >= 1 || state.settings?.growthMode === 'visible') ? `<small class="growth-hint">総合成長 ${growthBand(groupTotalGrowthAverage(robot, groupKey), Math.max(1, analysisLevel(state)))}${analysisLevel(state) >= 4 || state.settings?.growthMode === 'visible' ? ` / 基礎成長×${groupGrowthAverage(robot, groupKey).toFixed(2)}` : ''}</small>` : ''}
       </div>
     `;
   }).join('');
@@ -674,6 +753,42 @@ function adjustedEffectText(effect, adjusted) {
   if (!adjusted || Number(adjusted.amount) === Number(effect.amount)) return effectText(effect);
   const sign = adjusted.amount >= 0 ? '+' : '';
   return `${effectText(effect)} → 適性補正後 ${sign}${adjusted.amount}`;
+}
+
+function renderProcurementPanel() {
+  const status = procurementStatus(state);
+  if (status.level <= 0) return '<div class="procurement-panel"><strong>技術物資ネットワーク</strong><small>Lv1で比較調達を利用できます。</small></div>';
+  const pending = status.pending;
+  const routeOptions = Object.values(PROCUREMENT_ROUTES)
+    .filter((route) => route.minLevel <= status.level)
+    .map((route) => `<option value="${route.id}">${route.label} — ${route.description}</option>`).join('');
+  const makerOptions = MANUFACTURERS.map((maker) => `<option value="${maker.id}">${maker.name}</option>`).join('');
+  const choices = pending?.choices ?? [];
+  return `
+    <div class="procurement-panel">
+      <div class="procurement-head"><div><strong>技術物資ネットワーク</strong><small>今年の調達依頼 ${status.used}/${status.limit}回</small></div></div>
+      ${pending ? `
+        <p>${escapeHtml(pending.routeLabel)}の候補です。受け取れるのは1つだけです。</p>
+        <div class="procurement-choices">
+          ${choices.map((part) => {
+            const ability = part.abilityId ? SPECIAL_ABILITIES[part.abilityId] : null;
+            const positiveTotal = (part.effects ?? []).reduce((sum, effect) => sum + Math.max(0, effect.amount), 0);
+            const negativeTotal = Math.abs((part.negatives ?? []).reduce((sum, effect) => sum + Math.min(0, effect.amount), 0));
+            return `<article class="part-card ${part.challenge ? 'challenge' : ''}">
+              <div class="part-card-head"><div><span class="part-rarity">${part.rarityLabel}${part.challenge ? ' / 挑戦的' : ''}</span><strong>${part.name}</strong><small>総強化 +${positiveTotal}${negativeTotal ? ` / 代償 -${negativeTotal}` : ''}</small></div><button class="mini-button procurement-choose" data-procurement-part="${part.id}">これを受け取る</button></div>
+              <div class="part-effects positive">${(part.effects ?? []).map(effectText).map((text) => `<span>${text}</span>`).join('')}</div>
+              ${(part.negatives ?? []).length ? `<div class="part-effects negative">${part.negatives.map(effectText).map((text) => `<span>${text}</span>`).join('')}</div>` : ''}
+              ${ability ? `<div class="part-ability"><b>${ability.name}</b><span>${ability.description}</span></div>` : ''}
+            </article>`;
+          }).join('')}
+        </div>` : `
+        <div class="procurement-controls">
+          <select id="procurement-route">${routeOptions}</select>
+          ${status.level >= 2 ? `<select id="procurement-maker"><option value="">メーカー指定なし</option>${makerOptions}</select>` : ''}
+          <button id="procurement-request" class="mini-button" ${status.remaining <= 0 ? 'disabled' : ''}>候補を取り寄せる</button>
+        </div>
+        <small>${status.remaining > 0 ? '調達は能力倍率を上げず、候補から選ぶ機会そのものを増やします。' : '今年の調達依頼回数を使い切りました。次年度に回復します。'}</small>`}
+    </div>`;
 }
 
 function renderPartInventory(robot) {
@@ -851,6 +966,65 @@ function weaponCategoryAverage(robot, weaponKey) {
 function weaponCategoryGrowthAverage(robot, weaponKey) {
   const values = WEAPON_AXES.map((axis) => Number(weaponCategoryGrowth(robot, weaponKey)?.[axis] ?? 1));
   return values.reduce((sum, value) => sum + value, 0) / Math.max(1, values.length);
+}
+
+const WEAPON_LINKED_GROUP_UI = {
+  blade:'control', hammer:'output', lance:'mobility', beamBlade:'engine', rifle:'sensor', machineGun:'mobility',
+  cannon:'control', laser:'sensor', beamCannon:'engine', missile:'compute', emp:'ai', drone:'compute',
+};
+
+function growthAnalysisRows(robot) {
+  const rows = [];
+  for (const groupKey of GROUP_KEYS) {
+    for (const statName of STAT_GROUPS[groupKey].stats) {
+      rows.push({ groupKey, statName, total: totalBaseGrowthMultiplier(robot, groupKey, statName), current: Number(robot.stats[groupKey][statName] ?? 0) });
+    }
+  }
+  return rows.sort((a,b) => b.total - a.total);
+}
+
+function renderGrowthAnalysisInsight(robot) {
+  const level = analysisLevel(state);
+  if (level < 2) return '';
+  const rows = growthAnalysisRows(robot);
+  const best = rows.slice(0, level >= 4 ? 3 : 2);
+  const weak = [...rows].sort((a,b) => a.total - b.total).slice(0, level >= 4 ? 3 : 2);
+  const spread = best[0]?.total - weak[0]?.total;
+  const direction = spread >= 0.45 ? '成長差が大きい特化型' : spread >= 0.22 ? '得意不得意が出る準特化型' : '成長差が小さい均衡型';
+  const fmt = (item) => `${item.statName}${level >= 4 ? ` ×${item.total.toFixed(2)}` : `（${growthBand(item.total, level)}）`}`;
+  return `<section class="analysis-insight-card">
+    <div><span>成長解析室 Lv${level}</span><strong>${direction}</strong></div>
+    <p>伸びやすい：${best.map(fmt).join(' / ')}</p>
+    <p>伸びにくい：${weak.map(fmt).join(' / ')}</p>
+    ${level >= 3 ? `<small>現在値ではなく、系列特性・個体差を含めた総合成長倍率から見た育成方向です。</small>` : ''}
+  </section>`;
+}
+
+function weaponTestScore(robot, weaponKey) {
+  const current = weaponCategoryAverage(robot, weaponKey);
+  const growth = weaponCategoryGrowthAverage(robot, weaponKey);
+  const preferred = (robot.seriesPreferredWeapons ?? []).includes(weaponKey) ? 6 : 0;
+  const avoided = (robot.seriesAvoidedWeapons ?? []).includes(weaponKey) ? -5 : 0;
+  const linked = WEAPON_LINKED_GROUP_UI[weaponKey];
+  const linkedValue = linked ? groupAverage(robot, linked) : 0;
+  return current * 0.62 + growth * 24 + linkedValue * 0.14 + preferred + avoided;
+}
+
+function renderWeaponLabInsight(robot) {
+  const level = weaponsLabLevel(state);
+  if (level < 2) return '';
+  const currentKey = robot.weaponKey;
+  const linked = WEAPON_LINKED_GROUP_UI[currentKey];
+  const linkedLabel = STAT_GROUPS[linked]?.label ?? '基礎能力';
+  const target = state.weaponsLabControl?.targetWeaponKey;
+  const ranked = Object.keys(WEAPON_CATEGORIES).map((weaponKey) => ({ weaponKey, score: weaponTestScore(robot, weaponKey), current: weaponCategoryAverage(robot, weaponKey), growth: weaponCategoryGrowthAverage(robot, weaponKey) })).sort((a,b) => b.score - a.score);
+  const top = ranked.slice(0, level >= 5 ? 3 : 1);
+  return `<section class="analysis-insight-card weapon-lab-insight">
+    <div><span>兵装試験場 Lv${level}</span><strong>${WEAPON_CATEGORIES[currentKey].label}試験レポート</strong></div>
+    <p>現在兵装の連携基礎：${linkedLabel}系 / 兵装平均 ${weaponCategoryAverage(robot, currentKey).toFixed(1)}${level >= 4 ? ` / 成長 ${growthBand(weaponCategoryGrowthAverage(robot,currentKey), 4)}` : ''}</p>
+    ${level >= 4 ? `<p>試験候補：${top.map((item) => `${WEAPON_CATEGORIES[item.weaponKey].label}（現在${item.current.toFixed(1)} / 成長×${item.growth.toFixed(2)}）`).join(' / ')}</p>` : ''}
+    ${level >= 3 ? `<small>${target ? `次の兵装試験対象：${WEAPON_CATEGORIES[target]?.label ?? target}` : '試験兵装を指定すると、装備変更なしで次の兵装試験カードだけその兵装へ適用できます。'}</small>` : ''}
+  </section>`;
 }
 
 function chartCeiling(values, minimum = 100) {
@@ -1110,6 +1284,7 @@ function renderUnitOverview(robot) {
           <div><span>特殊能力</span><strong>${robot.specialAbilities?.length ?? 0}</strong></div>
         </div>
         <div class="group-grid overview-group-grid">${renderGroupCards(robot)}</div>
+        <div class="unit-analysis-insights">${renderGrowthAnalysisInsight(robot)}${renderWeaponLabInsight(robot)}</div>
       </section>
     </div>`;
 }
@@ -1120,12 +1295,15 @@ function renderBaseAbilityDetail(robot) {
     const stats = group.stats.map((statName) => {
       const value = robot.stats[groupKey][statName];
       const growth = robot.growthMultipliers[groupKey][statName];
-      const growthText = state.settings?.growthMode !== 'hidden' && (analysisLevel(state) >= 2 || state.settings?.growthMode === 'visible') ? growthBand(growth) : '';
-      return `<li><span>${statName}</span><strong>${value.toFixed(1)}</strong><em>${growthText ? growthText : ''}</em></li>`;
+      const totalGrowth = totalBaseGrowthMultiplier(robot, groupKey, statName);
+      const growthVisible = state.settings?.growthMode !== 'hidden' && (analysisLevel(state) >= 2 || state.settings?.growthMode === 'visible');
+      const totalGrowthText = growthVisible ? growthBand(totalGrowth) : '';
+      const baseGrowthText = growthVisible && (analysisLevel(state) >= 4 || state.settings?.growthMode === 'visible') ? `基礎成長×${growth.toFixed(2)}` : '';
+      return `<li><span>${statName}</span><strong>${value.toFixed(1)}</strong><em>${totalGrowthText ? `総合 ${totalGrowthText}${baseGrowthText ? ` / ${baseGrowthText}` : ''}` : ''}</em></li>`;
     }).join('');
     return `
       <section class="unit-stat-group">
-        <div class="unit-stat-group-head"><strong>${group.label}</strong><span>${groupAverage(robot, groupKey).toFixed(1)} / ${grade(groupAverage(robot, groupKey))} / 基礎×${baseAbilityMultiplier(groupAverage(robot, groupKey)).toFixed(2)}</span></div>
+        <div class="unit-stat-group-head"><strong>${group.label}</strong><span>${groupAverage(robot, groupKey).toFixed(1)} / ${grade(groupAverage(robot, groupKey))}${state.settings?.growthMode !== 'hidden' && (analysisLevel(state) >= 1 || state.settings?.growthMode === 'visible') ? ` / 総合成長 ${growthBand(groupTotalGrowthAverage(robot, groupKey), Math.max(1, analysisLevel(state)))}${analysisLevel(state) >= 4 || state.settings?.growthMode === 'visible' ? ` / 基礎成長×${groupGrowthAverage(robot, groupKey).toFixed(2)}` : ''}` : ''}</span></div>
         <ul class="stat-list">${stats}</ul>
       </section>`;
   }).join('');
@@ -1150,6 +1328,7 @@ function renderWeaponAptitudeCard(robot, weaponKey) {
         <span>対応耐性：${weapon.resistance}</span>
         ${growthVisible ? `<span>成長 ${growthBand(growthAverage, Math.max(1, analysisLevel(state)))}</span>` : ''}
       </div>
+      ${WEAPON_DOCTRINE_RULES[weaponKey] ? `<p class="weapon-doctrine-note"><b>${WEAPON_DOCTRINE_RULES[weaponKey].label}</b>：${WEAPON_DOCTRINE_RULES[weaponKey].description}</p>` : ''}
       <div class="weapon-aptitude-actions">
         ${weaponKey === robot.weaponKey ? '<button class="weapon-equip-from-card equipped" disabled>使用中</button>' : `<button class="weapon-equip-from-card" data-equip-weapon="${weaponKey}">この兵装を使用</button>`}
       </div>
@@ -1231,13 +1410,75 @@ function renderUnitDetailPage(robot) {
     <div class="unit-detail-content">${content}</div>`;
 }
 
+function trainingTargetLabel(training) {
+  if (training.specialMode === 'weakest') return '各機体の弱点グループ';
+  if (training.specialMode === 'rookieFoundation') return '1年目機体の弱点グループ';
+  if (training.specialMode === 'favorite') return '各機体の得意グループ';
+  if (training.specialMode === 'reliability') return '信頼性・状態調整';
+  if (training.specialMode === 'finalTune') return '各機体の仕上げ対象';
+  if (training.weaponLab) {
+    const target = weaponsLabLevel(state) >= 3 ? state.weaponsLabControl?.targetWeaponKey : null;
+    return `${target ? WEAPON_CATEGORIES[target]?.label ?? target : '現在兵装'}＋連携基礎能力`;
+  }
+  return `${STAT_GROUPS[training.groupKey]?.label ?? '特殊'}系`;
+}
+
+function trainingEffectSummary(training) {
+  if (training.specialMode === 'weakest') return '各機体で最も低い基礎グループを補強';
+  if (training.specialMode === 'rookieFoundation') return '1年目機体だけを対象に、最も低い基礎グループを底上げ';
+  if (training.specialMode === 'favorite') return '各機体の得意グループを重点強化';
+  if (training.specialMode === 'reliability') return '能力成長を抑え、信頼性の回復・安定化を優先';
+  if (training.specialMode === 'finalTune') return '3年目機体だけを対象に、得意分野を最終仕上げ';
+  if (training.weaponLab) {
+    const target = weaponsLabLevel(state) >= 3 ? state.weaponsLabControl?.targetWeaponKey : null;
+    return `${target ? WEAPON_CATEGORIES[target]?.label ?? target : '現在兵装'}と対応する基礎グループを同時訓練${target ? '（装備変更なし）' : ''}`;
+  }
+  return `全機体の${STAT_GROUPS[training.groupKey]?.label ?? '特殊'}系が小成長${training.focusStats?.length ? ` / ${training.focusStats.join('・')}を重点強化` : ''}`;
+}
+
+function trainingCardAnalysis(training) {
+  const level = analysisLevel(state);
+  const bits = [];
+  if (level >= 1) bits.push(`対象：${trainingTargetLabel(training)}`);
+  if (level >= 2) bits.push(`性質：${training.nature ?? '標準'}`);
+  if (level >= 3) bits.push(`傾向：${training.stability ?? '安定'}${training.reservedCarryover ? ' / 前ターンから保留' : training.facilityPromotion ? ` / 設備派生（${training.promotedFromLabel}から置換）` : training.advanced ? ' / 上位派生' : ''}`);
+  if (level >= 4 && training.risk?.reliability) bits.push('追加：低確率で信頼性低下');
+  if (level >= 5) bits.push(`出現：${training.rarity ?? '標準'} / ${training.source ?? '通常'}`);
+  return bits.length ? ` / ${bits.join(' / ')}` : '';
+}
+
+function renderTrainingChoiceControls() {
+  const level = Number(state.facilities?.training ?? 0);
+  const labLevel = weaponsLabLevel(state);
+  const control = trainingControlState();
+  const controls = [];
+  if (level >= 2) {
+    const reroll = `<button id="training-reroll" class="ghost compact-button" ${control.rerollUsed ? 'disabled' : ''}>${control.rerollUsed ? '候補引き直し済み' : '候補を1回引き直す'}</button>`;
+    controls.push(reroll);
+    if (level >= 4) {
+      const options = state.trainingChoices.map((item) => `<option value="${item.id}" ${control.reserved?.id === item.id ? 'selected' : ''}>${escapeHtml(item.label)} Lv${item.level}</option>`).join('');
+      controls.push(`<label class="training-reserve-control"><span>次ターンへ保留</span><select id="training-reserve-select"><option value="">選択...</option>${options}</select><button id="training-reserve" class="ghost compact-button">保留する</button></label>`);
+    }
+  }
+  if (labLevel >= 3) {
+    const target = state.weaponsLabControl?.targetWeaponKey ?? '';
+    const weaponOptions = Object.entries(WEAPON_CATEGORIES).map(([key, weapon]) => `<option value="${key}" ${target === key ? 'selected' : ''}>${weapon.label}</option>`).join('');
+    controls.push(`<label class="training-reserve-control"><span>試験兵装指定</span><select id="weapon-test-target"><option value="">指定なし（現在兵装）</option>${weaponOptions}</select><button id="weapon-test-target-save" class="ghost compact-button">指定</button></label>`);
+  }
+  if (!controls.length) return '';
+  const notes = [];
+  if (level >= 2) notes.push(`訓練Lv${level}：引き直し${level >= 4 ? '・1枚保留' : ''}`);
+  if (labLevel >= 3) notes.push(`兵装試験場Lv${labLevel}：次に選ぶ兵装試験カードの対象を予約`);
+  return `<div class="training-choice-tools">${controls.join('')}<small>${notes.join(' / ')}</small></div>`;
+}
+
 function renderTrainingChoices() {
   const lock = trainingLockInfo();
   return state.trainingChoices.map((training) => `
     <button class="training-card ${lock.locked ? 'locked' : ''}" data-training-id="${training.id}" ${lock.locked ? 'disabled aria-disabled="true"' : ''}>
       <span>${training.label}</span>
       <strong>Lv${training.level}</strong>
-      <small>${lock.locked ? '大会期間中のため練習停止' : `全機体の${STAT_GROUPS[training.groupKey].label}系が小成長${training.focusStats?.length ? ` / ${training.focusStats.join('・')}を重点強化` : ''}`}</small>
+      <small>${lock.locked ? '大会期間中のため練習停止' : `${trainingEffectSummary(training)}${trainingCardAnalysis(training)}`}</small>
     </button>
   `).join('');
 }
@@ -1315,8 +1556,11 @@ function robotOption(robot, selected = false) {
 
 function renderOfficialSetup(match) {
   const enemyMap = new Map(match.enemyRoster.map((robot) => [robot.id, robot]));
+  const researchLevel = Number(state.facilities?.combatResearch ?? 0);
   const rows = match.lineupIds.map((robotId, index) => {
     const enemy = enemyMap.get(match.enemyLineupIds[index]);
+    const ally = state.roster.find((robot) => robot.id === robotId);
+    const insight = preMatchPairingInsight(ally, enemy, researchLevel);
     const options = state.roster.map((robot) => robotOption(robot, robot.id === robotId)).join('');
     return `
       <div class="lineup-row setup-row">
@@ -1332,6 +1576,7 @@ function renderOfficialSetup(match) {
         <div class="enemy-card">
           <strong>${robotLabel(enemy)}</strong>
           <small>${enemy.cohortYear}年目 / ${enemy.weaponName}</small>
+          ${insight ? `<small class="pairing-insight">${insight}</small>` : ''}
         </div>
       </div>
     `;
@@ -1339,6 +1584,7 @@ function renderOfficialSetup(match) {
   const benchCount = state.roster.length - GAME_CONFIG.officialMatchSize;
   return `
     ${match.context?.type === 'tournament' ? `<div class="tournament-match-banner"><b>${match.context.tournamentName}</b><span>${match.context.roundName}</span></div>` : ''}
+    <div class="rival-analysis-card"><span class="eyebrow">対戦チーム分析${match.context?.rivalRank ? ` / ${match.context.rivalRank}` : ''}${match.context?.rivalRelationship ? ` / ${match.context.rivalRelationship}` : ''}</span><h3>${match.context?.rivalTeamName ?? '対戦チーム'}</h3>${Number(match.context?.rivalMeetingsBefore ?? 0) > 0 ? `<small>対戦履歴：${match.context.rivalMeetingsBefore}戦 ${match.context.rivalWinsBefore ?? 0}勝 ${match.context.rivalLossesBefore ?? 0}敗 / 因縁度 ${match.context.rivalRivalryPoints ?? 0}</small>` : '<small>初対戦</small>'}<p>${match.context?.rivalAnalysis ?? '分析情報なし'}</p><blockquote>${match.context?.rivalManagerLine ?? ''}</blockquote></div>
     <div class="official-toolbar enhanced">
       <div><strong>15機を選抜</strong><span>補欠 ${Math.max(0, benchCount)}機 / 相手の15機は全て確認可能</span></div>
       <div class="lineup-quick-tools">
@@ -1539,10 +1785,12 @@ function renderTournamentPanel() {
 
 function facilityNextHint(id, level) {
   const hints = {
-    analysis: ['公式戦3勝でLv1', '公式戦10勝または4年目以降', '大会優勝2回または7年目以降', '大会優勝4回または12年目以降', '最大Lv'],
-    training: ['公式戦5勝でLv1', '公式戦15勝または大会優勝でLv2', '公式戦35勝または大会優勝5回でLv3', '最大Lv'],
-    logistics: ['売却5機または公式戦8勝でLv1', '売却15機または大会優勝でLv2', '売却35機または大会優勝4回でLv3', '最大Lv'],
-    archive: ['売却5機または3年目以降でLv1', '売却18機または6年目以降でLv2', '売却40機または11年目以降でLv3', '最大Lv'],
+    analysis: ['公式戦3勝または3年目でLv1','公式戦10勝または5年目でLv2','大会優勝2回または8年目でLv3','大会優勝4回または11年目でLv4','大会優勝7回または15年目でLv5','最大Lv'],
+    training: ['公式戦5勝でLv1','公式戦15勝または優勝でLv2','公式戦25勝または優勝2回でLv3','公式戦40勝または優勝4回でLv4','公式戦60勝または優勝7回でLv5','最大Lv'],
+    weaponsLab: ['公式戦4勝でLv1','公式戦12勝でLv2','公式戦24勝または優勝でLv3','公式戦38勝または優勝3回でLv4','公式戦55勝または優勝6回でLv5','最大Lv'],
+    combatResearch: ['公式戦2勝でLv1','公式戦8勝でLv2','公式戦18勝または優勝でLv3','公式戦32勝または優勝3回でLv4','公式戦50勝または優勝5回でLv5','最大Lv'],
+    logistics: ['売却5機または公式戦8勝でLv1','売却15機または優勝でLv2','売却25機または優勝2回でLv3','売却35機または優勝4回でLv4','売却50機または優勝7回でLv5','最大Lv'],
+    archive: ['売却5機または3年目でLv1','売却18機または6年目でLv2','売却30機または8年目でLv3','売却40機または11年目でLv4','売却55機または14年目でLv5','最大Lv'],
   };
   return hints[id]?.[level] ?? '';
 }
@@ -1575,25 +1823,36 @@ function renderRetirementHistory() {
   const history = state.retirementHistory ?? [];
   if (!history.length) return '<p class="history-empty">まだ3年目機の売却記録はありません。</p>';
   const archive = state.facilities?.archive ?? 0;
-  const limit = archive >= 3 ? history.length : archive === 2 ? 20 : archive === 1 ? 8 : 3;
-  return `<div class="retirement-list">${history.slice(0, limit).map((item) => {
+  const unlockedLimit = archive >= 3 ? history.length : archive === 2 ? 20 : archive === 1 ? 8 : 3;
+  const longPlayLimit = archive >= 3 && !uiState.retirementHistoryExpanded ? Math.min(unlockedLimit, 50) : unlockedLimit;
+  const visibleHistory = history.slice(0, longPlayLimit);
+  const hiddenCount = Math.max(0, unlockedLimit - visibleHistory.length);
+  const rows = visibleHistory.map((item) => {
     const retiredRobot = (state.retired ?? []).find((robot) => robot.id === item.robotId);
     const formal = `${item.manufacturerName} ${state.settings?.seriesLabelMode === 'latin' ? (item.seriesNameLatin ?? item.seriesName) : (item.seriesNameKana ?? item.seriesName)}`;
     const display = retiredRobot ? robotLabel(retiredRobot) : (item.nickname || formal);
     const hall = isHallOfFame(state, item.robotId);
+    const best15 = isManualBest15(state, item.robotId);
     return `
     <div class="retirement-row">
       <span>${item.year}年目</span>
       <strong>${display}</strong>
       <small>${item.serial} / ${item.record.wins}勝${item.record.losses}敗</small>
+      <em>${escapeHtml((item.careerHighlights ?? (retiredRobot ? robotCareerHighlights(retiredRobot) : [])).join(' / ') || '記録なし')}</em>
       <em>${item.memorialPartName ?? '記念パーツなし'}</em>
       <button class="mini-button hall-toggle" data-retired-id="${item.robotId}">${hall ? '殿堂解除' : '殿堂入り'}</button>
+      ${archive >= 5 ? `<button class="mini-button best15-toggle" data-best15-id="${item.robotId}">${best15 ? 'ベスト15解除' : 'ベスト15登録'}</button>` : ''}
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
+  const toggle = archive >= 3 && unlockedLimit > 50
+    ? `<div class="history-list-footer"><span>${uiState.retirementHistoryExpanded ? `${unlockedLimit}件すべて表示中` : `最新${visibleHistory.length}件を表示 / 残り${hiddenCount}件`}</span><button id="retirement-history-toggle" class="primary-compact">${uiState.retirementHistoryExpanded ? '最新50件に戻す' : '売却履歴をすべて表示'}</button></div>`
+    : '';
+  return `<div class="retirement-list">${rows}</div>${toggle}`;
 }
 
 function renderCareerRecords() {
   const summary = careerRecordSummary(state);
+  const extended = extendedCareerRecordSummary(state);
   const topRate = summary.bestWinRate;
   const topRateGames = topRate ? (topRate.record?.wins ?? 0) + (topRate.record?.losses ?? 0) : 0;
   const manufacturerRows = manufacturerRecords(state).slice(0, 8).map((row) => {
@@ -1608,11 +1867,83 @@ function renderCareerRecords() {
       <article><span>最多特殊能力</span><strong>${recordRobotName(summary.mostAbilities)}</strong><b>${summary.mostAbilities?.specialAbilities?.length ?? 0}個</b></article>
       <article><span>歴代最高個別値</span><strong>${recordRobotName(summary.highestStatRobot)}</strong><b>${summary.highestStat ? `${summary.highestStat.label} ${Number(summary.highestStat.value).toFixed(1)}` : '---'}</b></article>
     </div>
+    <div class="record-highlight-grid secondary-records">
+      <article><span>歴代最多出場</span><strong>${recordRobotName(extended.mostAppearances)}</strong><b>${extended.mostAppearances ? ((extended.mostAppearances.record?.wins ?? 0) + (extended.mostAppearances.record?.losses ?? 0)) : 0}戦</b></article>
+      <article><span>最多カスタム</span><strong>${recordRobotName(extended.mostCustomizations)}</strong><b>${extended.mostCustomizations?.customHistory?.length ?? 0}回</b></article>
+      <article><span>最多覚醒</span><strong>${recordRobotName(extended.mostAwakenings)}</strong><b>${extended.mostAwakenings?.awakenings?.length ?? 0}回</b></article>
+      <article><span>最高信頼性</span><strong>${recordRobotName(extended.highestReliability)}</strong><b>${extended.highestReliability ? Number(extended.highestReliability.reliability ?? 0).toFixed(1) : '---'}</b></article>
+    </div>
     <details class="record-table-wrap" open>
       <summary>メーカー別通算成績</summary>
       <table class="record-table"><thead><tr><th>メーカー</th><th>在籍機</th><th>個人戦績</th><th>勝率</th></tr></thead><tbody>${manufacturerRows}</tbody></table>
     </details>
   `;
+}
+
+function renderBest15Archive() {
+  const level = Number(state.facilities?.archive ?? 0);
+  if (level < 5) return '<p class="history-empty">戦績・設計アーカイブLv5で「歴代ベスト15」が解禁されます。</p>';
+  state.best15 ??= { manualIds: [], selectedMode: 'overall' };
+  const mode = state.best15.selectedMode ?? 'overall';
+  const rows = historicalBest15(state, mode);
+  const manualCount = state.best15.manualIds?.length ?? 0;
+  const options = [`<option value="manual" ${mode==='manual'?'selected':''}>手動登録</option>`, ...BEST15_MODES.map((item)=>`<option value="${item.id}" ${mode===item.id?'selected':''}>自動：${item.label}</option>`)].join('');
+  const body = rows.length ? rows.map(({robot, rank}) => {
+    const games = Number(robot.record?.wins ?? 0) + Number(robot.record?.losses ?? 0);
+    const rate = games ? `${(100 * Number(robot.record?.wins ?? 0) / games).toFixed(1)}%` : '---';
+    const peak = highestStatForBest15(robot);
+    const highlights = robotCareerHighlights(robot).join(' / ');
+    return `<tr><td>${rank}</td><td><strong>${escapeHtml(robotLabel(robot))}</strong><small>${escapeHtml(robot.manufacturerName ?? '')} / ${escapeHtml(robot.seriesNameKana ?? robot.seriesName ?? '')}</small></td><td>${robot.record?.wins ?? 0}勝${robot.record?.losses ?? 0}敗</td><td>${rate}</td><td>${robot.specialAbilities?.length ?? 0}</td><td>${escapeHtml(peak.label)} ${Number(peak.value ?? 0).toFixed(1)}</td><td>${Number(robot.reliability ?? 0).toFixed(1)}</td><td>${escapeHtml(highlights)}</td></tr>`;
+  }).join('') : '<tr><td colspan="8">対象となる売却済み機体がまだありません。</td></tr>';
+  return `<div class="best15-controls"><label>選出方法<select id="best15-mode">${options}</select></label><span>手動登録 ${manualCount}/15</span><small>手動登録は売却履歴の「ベスト15登録」から変更できます。</small></div><div class="record-table-wrap"><table class="record-table"><thead><tr><th>#</th><th>機体</th><th>戦績</th><th>勝率</th><th>特殊</th><th>最高個別値</th><th>信頼性</th><th>主な記録</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+
+function renderExhibitionArchive() {
+  const level = Number(state.facilities?.archive ?? 0);
+  if (level < 5) return '<p class="history-empty">戦績・設計アーカイブLv5で、歴代チームのエキシビション戦が解禁されます。</p>';
+  const options = exhibitionTeamOptions(state);
+  if (options.length < 2) return '<p class="history-empty">エキシビションには、15機以上の現役チームまたは十分な売却済み機体が必要です。</p>';
+  const ids = new Set(options.map((o)=>o.id));
+  if (!ids.has(uiState.exhibitionLeft)) uiState.exhibitionLeft = options[0].id;
+  if (!ids.has(uiState.exhibitionRight) || uiState.exhibitionRight === uiState.exhibitionLeft) uiState.exhibitionRight = options.find((o)=>o.id!==uiState.exhibitionLeft)?.id ?? options[0].id;
+  const optHtml = (selected)=>options.map((o)=>`<option value="${escapeHtml(o.id)}" ${o.id===selected?'selected':''}>${escapeHtml(o.label)}</option>`).join('');
+  const last = state.lastExhibition;
+  const lastHtml = last ? `<div class="exhibition-result"><strong>${escapeHtml(last.leftLabel)} ${last.leftWins} - ${last.rightWins} ${escapeHtml(last.rightLabel)}</strong><span>${last.leftWins > last.rightWins ? escapeHtml(last.leftLabel) : escapeHtml(last.rightLabel)} 勝利</span></div>` : '<p class="history-empty compact">まだエキシビション戦は行われていません。</p>';
+  const history = exhibitionHistoryRows(state).slice(0,10);
+  const historyHtml = history.length ? `<div class="record-table-wrap"><table class="record-table"><thead><tr><th>年</th><th>左</th><th>結果</th><th>右</th></tr></thead><tbody>${history.map((r)=>`<tr><td>${r.year}</td><td>${escapeHtml(r.leftLabel)}</td><td><strong>${r.leftWins}-${r.rightWins}</strong></td><td>${escapeHtml(r.rightLabel)}</td></tr>`).join('')}</tbody></table></div>` : '';
+  return `<div class="best15-controls exhibition-controls"><label>左チーム<select id="exhibition-left">${optHtml(uiState.exhibitionLeft)}</select></label><label>右チーム<select id="exhibition-right">${optHtml(uiState.exhibitionRight)}</select></label><button id="run-exhibition" class="primary-compact">15対15で対戦</button><small>能力成長・戦績・特殊能力獲得は発生しない記録用の模擬戦です。</small></div>${lastHtml}${historyHtml}`;
+}
+
+function highestStatForBest15(robot) {
+  let best = { value:-Infinity, label:'---' };
+  for (const group of Object.values(robot.stats ?? {})) for (const [label,value] of Object.entries(group ?? {})) if (Number(value) > best.value) best = { value:Number(value), label };
+  for (const [axis,value] of Object.entries(robot.weaponStats ?? {})) if (Number(value) > best.value) best = { value:Number(value), label:WEAPON_CATEGORIES[robot.weaponKey]?.stats?.[axis] ?? '兵装能力' };
+  if (!Number.isFinite(best.value)) return { value:0, label:'---' };
+  return best;
+}
+
+function renderRivalArchive() {
+  const level = Number(state.facilities?.archive ?? 0);
+  if (level < 3) return '<p class="history-empty">戦績・設計アーカイブLv3で、対戦相手との因縁記録を閲覧できます。</p>';
+  const rows = rivalArchiveRows(state);
+  if (!rows.length) return '<p class="history-empty">まだ記録されたライバル対戦はありません。</p>';
+  const baseLimit = level >= 5 ? rows.length : level >= 4 ? 20 : 8;
+  const renderLimit = level >= 5 && !uiState.rivalArchiveExpanded ? Math.min(baseLimit, 40) : baseLimit;
+  const visible = rows.slice(0, renderLimit);
+  const hiddenCount = Math.max(0, baseLimit - visible.length);
+  const body = visible.map(({ team, entry, tier }) => {
+    const games = Number(entry.meetings ?? 0);
+    const detail = level >= 5
+      ? `${entry.closeGames ?? 0}僅差 / 大会${entry.tournamentMeetings ?? 0}戦 / 決勝${entry.finalMeetings ?? 0}戦 / 優勝阻止${entry.titleDenied ?? 0}回`
+      : `${entry.lastTournamentName || '通常戦'} ${entry.lastRoundName || ''} / 前回 ${entry.lastScore || '---'} ${entry.lastResult === 'W' ? '勝' : entry.lastResult === 'L' ? '敗' : ''}`;
+    return `<tr><td><strong>${escapeHtml(team.name)}</strong><small>${escapeHtml(team.rankLabel ?? '')}</small></td><td>${tier.label || '対戦記録'}</td><td>${games}戦 ${entry.wins ?? 0}勝${entry.losses ?? 0}敗</td><td>${entry.rivalryPoints ?? 0}</td><td>${escapeHtml(detail)}</td></tr>`;
+  }).join('');
+  return `<div class="record-highlight-grid">
+    <article><span>記録済みライバル</span><strong>${rows.length}チーム</strong><b>対戦履歴を保存</b></article>
+    <article><span>宿敵以上</span><strong>${rows.filter((row)=>row.tier.rank>=3).length}チーム</strong><b>因縁度10以上</b></article>
+    <article><span>最大の宿敵</span><strong>${rows.filter((row)=>row.tier.rank>=4).length}チーム</strong><b>因縁度20以上</b></article>
+  </div><div class="record-table-wrap long-record-table"><table class="record-table"><thead><tr><th>チーム</th><th>関係</th><th>通算</th><th>因縁度</th><th>${level >= 5 ? '詳細因縁' : '直近対戦'}</th></tr></thead><tbody>${body}</tbody></table></div>${level >= 5 && rows.length > 40 ? `<div class="history-list-footer"><span>${uiState.rivalArchiveExpanded ? `${rows.length}チームすべて表示中` : `上位${visible.length}チームを表示 / 残り${hiddenCount}チーム`}</span><button id="rival-archive-toggle" class="primary-compact">${uiState.rivalArchiveExpanded ? '上位40件に戻す' : 'ライバル記録をすべて表示'}</button></div>` : ''}`;
 }
 
 function renderSeriesEncyclopedia() {
@@ -1957,6 +2288,89 @@ function renderPageHeader(title, viewId, actionHtml = '') {
   return `<header class="page-header"><div><p class="eyebrow">${APP_VIEWS.find((item) => item.id === viewId)?.short ?? ''}</p><h2>${title}</h2><p>${pageDescription(viewId)}</p></div>${actionHtml}</header>`;
 }
 
+function gameplayGuideItems() {
+  const totalOfficial = Number(state.teamRecord?.wins ?? 0) + Number(state.teamRecord?.losses ?? 0);
+  const customCount = state.roster.reduce((sum, robot) => sum + (robot.customHistory?.length ?? 0), 0);
+  const retiredCount = Number(state.career?.totalRetired ?? state.retired?.length ?? 0);
+  const facilityLevels = state.facilities ?? {};
+  const facilityTotal = Object.values(facilityLevels).reduce((sum, value) => sum + Number(value ?? 0), 0);
+  const completedTraining = Math.max(0, Number(state.turn ?? 1) - 1);
+  return [
+    {
+      id: 'training',
+      done: completedTraining > 0,
+      title: '全体練習を1回選ぶ',
+      detail: '個別練習は自動で進むので、まずは全体練習を1枚選べばOK。',
+      view: 'training',
+      action: completedTraining > 0 ? '育成を見る' : '最初の練習へ',
+    },
+    {
+      id: 'unit',
+      done: Boolean(state.onboarding?.unitViewed),
+      title: '機体詳細で能力を見る',
+      detail: '基礎能力・12兵装適性・特殊能力を1画面から確認できます。',
+      view: 'unit',
+      action: '機体詳細へ',
+    },
+    {
+      id: 'custom',
+      done: customCount > 0,
+      title: 'カスタムパーツを1個使う',
+      detail: 'パーツは消費型。使用した強化はその機体へ永久反映されます。',
+      view: 'custom',
+      action: 'カスタムへ',
+    },
+    {
+      id: 'competition',
+      done: totalOfficial > 0,
+      title: '15機編成で公式戦を経験する',
+      detail: '大会時期になると通常練習が停止し、大会画面へ案内されます。',
+      view: 'competition',
+      action: '大会を見る',
+    },
+    {
+      id: 'history',
+      done: facilityTotal > 0 || retiredCount > 0,
+      title: '設備と歴代記録を確認する',
+      detail: '長期プレイでは能力倍率ではなく、新しい情報・操作・選択肢が解禁されます。',
+      view: 'history',
+      action: '設備・記録へ',
+    },
+  ];
+}
+
+function facilityFeatureTips() {
+  const f = state.facilities ?? {};
+  const tips = [];
+  if ((f.analysis ?? 0) >= 2) tips.push({ label: '成長解析', text: '選択機体の伸びやすい能力・伸びにくい能力を育成判断に使えます。', view: 'unit' });
+  if ((f.training ?? 0) >= 2) tips.push({ label: '練習引き直し', text: '統合訓練設備Lv2以上なら、各ターン1回だけ候補を引き直せます。', view: 'training' });
+  if ((f.training ?? 0) >= 4) tips.push({ label: '練習保留', text: 'Lv4以上なら候補1枚を次ターンへLvごと持ち越せます。', view: 'training' });
+  if ((f.weaponsLab ?? 0) >= 3) tips.push({ label: '試験兵装指定', text: '装備を変えず、次の兵装試験だけ別兵装を育成対象へ指定できます。', view: 'unit' });
+  if ((f.combatResearch ?? 0) >= 3) tips.push({ label: '対戦枠分析', text: '大会編成で自軍兵装と相手耐性の噛み合わせを確認できます。', view: 'competition' });
+  if ((f.logistics ?? 0) >= 1) tips.push({ label: '選択式調達', text: '技術物資ネットワークから候補を取り寄せ、比較して1つ選べます。', view: 'custom' });
+  if ((f.archive ?? 0) >= 5) tips.push({ label: '歴代ベスト15', text: '歴代機を自動・手動で15機選び、エキシビション戦に出せます。', view: 'history' });
+  return tips.slice(-4).reverse();
+}
+
+function renderGameplayGuide() {
+  const items = gameplayGuideItems();
+  const unfinished = items.filter((item) => !item.done);
+  const featureTips = facilityFeatureTips();
+  if (!unfinished.length && !featureTips.length) return '';
+  if (unfinished.length) {
+    const completed = items.length - unfinished.length;
+    return `<section class="panel dashboard-guide">
+      <div class="panel-title"><div><p class="eyebrow">プレイガイド</p><h2>最初に覚える5つ</h2></div><span>${completed} / ${items.length}</span></div>
+      <div class="dashboard-guide-progress"><span style="width:${(completed / items.length) * 100}%"></span></div>
+      <div class="dashboard-guide-list">${items.map((item) => `<article class="dashboard-guide-item ${item.done ? 'done' : ''}"><i>${item.done ? '✓' : '○'}</i><div><strong>${item.title}</strong><small>${item.detail}</small></div><button class="view-tab mini-button ${item.done ? 'ghost' : ''}" data-view="${item.view}" data-guide-action="${item.id}">${item.action}</button></article>`).join('')}</div>
+    </section>`;
+  }
+  return `<section class="panel dashboard-guide dashboard-feature-guide">
+    <div class="panel-title"><div><p class="eyebrow">解禁機能</p><h2>今使える便利機能</h2></div><span>設備連動</span></div>
+    <div class="dashboard-feature-list">${featureTips.map((item) => `<button class="view-tab dashboard-feature-tip" data-view="${item.view}"><strong>${item.label}</strong><span>${item.text}</span><em>開く →</em></button>`).join('')}</div>
+  </section>`;
+}
+
 function renderDashboard(robot) {
   const cohortCounts = [1, 2, 3].map((cohortYear) => state.roster.filter((item) => item.cohortYear === cohortYear).length);
   const tournaments = currentTournamentSummary();
@@ -1976,6 +2390,7 @@ function renderDashboard(robot) {
       <div><span>次の行動</span><h3>${nextTitle}</h3><p>${state.officialMatch?.status === 'running' ? '現在の試合を完了すると大会進行へ戻れます。' : tournaments.available.length || tournaments.active ? '大会は練習ターンを消費しません。編成を確認して挑戦できます。' : '個別練習は自動で進みます。全体練習だけ選べば次のターンへ進みます。'}</p></div>
       <button class="view-tab primary-cta" data-view="${nextView}">${nextView === 'competition' ? '大会画面へ' : '育成を進める'} →</button>
     </section>
+    ${renderGameplayGuide()}
     <section class="dashboard-stats">
       <article><span>所属機体</span><strong>${state.roster.length}</strong><small>1年 ${cohortCounts[0]} / 2年 ${cohortCounts[1]} / 3年 ${cohortCounts[2]}</small></article>
       <article><span>パーツ在庫</span><strong>${state.partInventory?.length ?? 0}</strong><small>使用上限なし</small></article>
@@ -2003,9 +2418,6 @@ function renderDashboard(robot) {
     </div>`;
 }
 
-function renderSeasonOverview() {
-  return '';
-}
 
 function renderTutorialOverlay() {
   if (!uiState.tutorialOpen) return '';
@@ -2216,6 +2628,7 @@ function renderActiveView(robot) {
           </section>
           <section id="parts-section" class="panel parts-panel">
             <div class="panel-title"><div><p class="eyebrow">パーツ一覧</p><h2>カスタムパーツ</h2></div><small class="panel-note">使用した時点で消費され、機体へ永久反映されます。</small></div>
+            ${renderProcurementPanel()}
             ${renderPartInventory(robot)}
           </section>
         </div>`;
@@ -2237,7 +2650,7 @@ function renderActiveView(robot) {
         </section>
         <section id="records-section" class="panel records-panel view-wide">
           <div class="panel-title"><div><p class="eyebrow">歴代記録</p><h2>歴代記録・殿堂</h2></div></div>
-          ${renderCareerRecords()}<details class="history-details" open><summary>シリーズ図鑑・シリーズ別戦績</summary>${renderSeriesEncyclopedia()}</details><details class="history-details"><summary>殿堂入り機体</summary>${renderHallOfFame()}</details><details class="history-details"><summary>年度別大会履歴</summary>${renderTournamentHistory()}</details>
+          ${renderCareerRecords()}<details class="history-details" open><summary>歴代ベスト15</summary>${renderBest15Archive()}</details><details class="history-details" open><summary>歴代チーム・エキシビション</summary>${renderExhibitionArchive()}</details><details class="history-details"><summary>歴代ライバル・宿敵</summary>${renderRivalArchive()}</details><details class="history-details" open><summary>シリーズ図鑑・シリーズ別戦績</summary>${renderSeriesEncyclopedia()}</details><details class="history-details"><summary>殿堂入り機体</summary>${renderHallOfFame()}</details><details class="history-details"><summary>年度別大会履歴</summary>${renderTournamentHistory()}</details>
         </section>`;
     case 'settings':
       return `${renderPageHeader('設定', 'settings')}<section id="settings-section" class="panel settings-panel view-wide"><div class="panel-title"><div><p class="eyebrow">ゲーム設定</p><h2>プレイ設定・セーブ</h2></div></div>${renderSettingsPanel()}<div class="danger-zone"><div><strong>ゲームデータの初期化</strong><small>現在の進行データを削除して最初から開始します。マネージャー設定は別保存です。</small></div><button id="reset-button" class="danger-button">ゲームをリセット</button></div></section>`;
@@ -2248,7 +2661,7 @@ function renderActiveView(robot) {
         <div class="training-action-grid">
           <section id="training-section" class="panel training-panel">
             <div class="panel-title training-panel-head"><div><p class="eyebrow">第${state.turn}ターン / 全${trainingTurnsForState(state)}ターン</p><h2>全体練習を選択</h2></div><div class="training-head-actions"><button id="team-radar-open" class="ghost compact-button">チーム傾向を見る</button><div class="turn-progress"><span style="width:${Math.min(100, (state.turn / trainingTurnsForState(state)) * 100)}%"></span></div></div></div>
-            ${renderTrainingLockNotice()}<div class="training-modifier-list">${renderTrainingModifiers()}</div><div class="training-grid training-grid-stacked">${renderTrainingChoices()}</div>
+            ${renderTrainingLockNotice()}<div class="training-modifier-list">${renderTrainingModifiers()}</div>${renderTrainingChoiceControls()}<div class="training-grid training-grid-stacked">${renderTrainingChoices()}</div>
           </section>
           <section class="panel event-panel training-event-top"><div class="panel-title"><div><p class="eyebrow">イベント</p><h2>イベント</h2></div></div>${renderEventPanel()}</section>
         </div>
@@ -2284,6 +2697,11 @@ function render() {
   document.querySelectorAll('.view-tab').forEach((button) => {
     button.addEventListener('click', () => {
       uiState.activeView = button.dataset.view || 'training';
+      if (uiState.activeView === 'unit') {
+        state.onboarding ??= { completed: true, step: 0 };
+        state.onboarding.unitViewed = true;
+        saveState();
+      }
       render();
     });
   });
@@ -2326,7 +2744,7 @@ function render() {
       state.selectedRobotId = chosen.id;
       state.battleOpponentId = battleOpponent()?.id ?? null;
       state.lastBattle = null;
-      setManagerMessage('robotSelected', { robotObject: chosen });
+      setManagerRobotMessage(chosen);
       commit();
     });
   });
@@ -2353,7 +2771,7 @@ function render() {
     state.selectedRobotId = chosen.id;
     state.battleOpponentId = battleOpponent()?.id ?? null;
     state.lastBattle = null;
-    setManagerMessage('robotSelected', { robotObject: chosen });
+    setManagerRobotMessage(chosen);
     commit();
   });
 
@@ -2364,7 +2782,7 @@ function render() {
     state.selectedRobotId = chosen.id;
     state.battleOpponentId = battleOpponent()?.id ?? null;
     state.lastBattle = null;
-    setManagerMessage('robotSelected', { robotObject: chosen });
+    setManagerRobotMessage(chosen);
     commit();
   });
 
@@ -2375,7 +2793,7 @@ function render() {
       const nextOpponent = battleOpponent();
       state.battleOpponentId = nextOpponent?.id ?? null;
       state.lastBattle = null;
-      setManagerMessage('robotSelected', { robotObject: chosen });
+      setManagerRobotMessage(chosen);
       commit();
     });
   });
@@ -2385,6 +2803,21 @@ function render() {
       const training = state.trainingChoices.find((item) => item.id === button.dataset.trainingId);
       chooseTraining(training);
     });
+  });
+
+  document.querySelector('#training-reroll')?.addEventListener('click', rerollTrainingChoices);
+  document.querySelector('#training-reserve')?.addEventListener('click', () => {
+    const id = document.querySelector('#training-reserve-select')?.value;
+    if (id) reserveTrainingChoice(id);
+  });
+  document.querySelector('#weapon-test-target-save')?.addEventListener('click', () => {
+    if (weaponsLabLevel(state) < 3) return;
+    state.weaponsLabControl ??= { targetWeaponKey: null };
+    const value = document.querySelector('#weapon-test-target')?.value || null;
+    state.weaponsLabControl.targetWeaponKey = WEAPON_CATEGORIES[value] ? value : null;
+    const label = state.weaponsLabControl.targetWeaponKey ? WEAPON_CATEGORIES[state.weaponsLabControl.targetWeaponKey].label : '現在兵装';
+    state.log = [`兵装試験場：次の兵装試験対象を「${label}」に設定しました。`, ...state.log].slice(0, 28);
+    commit();
   });
 
   const bindUiValue = (selector, key) => {
@@ -2494,6 +2927,50 @@ function render() {
     });
   });
 
+  document.querySelector('#retirement-history-toggle')?.addEventListener('click', () => {
+    uiState.retirementHistoryExpanded = !uiState.retirementHistoryExpanded;
+    render();
+  });
+  document.querySelector('#rival-archive-toggle')?.addEventListener('click', () => {
+    uiState.rivalArchiveExpanded = !uiState.rivalArchiveExpanded;
+    render();
+  });
+
+  document.querySelector('#exhibition-left')?.addEventListener('change', (event) => {
+    uiState.exhibitionLeft = event.target.value;
+    render();
+  });
+  document.querySelector('#exhibition-right')?.addEventListener('change', (event) => {
+    uiState.exhibitionRight = event.target.value;
+    render();
+  });
+  document.querySelector('#run-exhibition')?.addEventListener('click', () => {
+    if (uiState.exhibitionLeft === uiState.exhibitionRight) {
+      alert('左右で異なるチームを選択してください。');
+      return;
+    }
+    const result = simulateExhibitionMatch(state, uiState.exhibitionLeft, uiState.exhibitionRight);
+    if (!result.ok) {
+      alert('15機を揃えられないため、エキシビション戦を開始できません。');
+      return;
+    }
+    state.log = [`エキシビション：${result.record.leftLabel} ${result.record.leftWins}-${result.record.rightWins} ${result.record.rightLabel}`, ...state.log].slice(0,32);
+    commit();
+  });
+
+  document.querySelector('#best15-mode')?.addEventListener('change', (event) => {
+    state.best15 ??= { manualIds: [], selectedMode: 'overall' };
+    state.best15.selectedMode = event.target.value;
+    commit();
+  });
+  document.querySelectorAll('.best15-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+      const result = toggleManualBest15(state, button.dataset.best15Id);
+      if (result.reason === 'full') alert('手動の歴代ベスト15は15機までです。登録済み機体を1機解除してから追加してください。');
+      else commit();
+    });
+  });
+
   document.querySelectorAll('.hall-toggle').forEach((button) => {
     button.addEventListener('click', () => {
       toggleHallOfFame(state, button.dataset.retiredId);
@@ -2512,6 +2989,27 @@ function render() {
       const memo = prompt('この機体について残すメモ（160文字まで）', entry?.memo ?? '');
       if (memo === null) return;
       updateHallMemo(state, button.dataset.hallId, memo);
+      commit();
+    });
+  });
+
+  document.querySelector('#procurement-request')?.addEventListener('click', () => {
+    const routeId = document.querySelector('#procurement-route')?.value ?? 'standard';
+    const makerId = document.querySelector('#procurement-maker')?.value || null;
+    const result = requestProcurement(state, routeId, makerId);
+    if (!result.ok) {
+      state.log = [`調達依頼：${result.reason}`, ...state.log].slice(0, 28);
+    } else {
+      state.log = [`技術物資ネットワークで「${result.pending.routeLabel}」を実施。候補から1つ選択してください。`, ...state.log].slice(0, 28);
+    }
+    commit();
+  });
+
+  document.querySelectorAll('.procurement-choose').forEach((button) => {
+    button.addEventListener('click', () => {
+      const result = chooseProcurement(state, button.dataset.procurementPart);
+      if (!result.ok) return;
+      state.log = [`調達候補から${result.part.name}を受領。`, ...state.log].slice(0, 28);
       commit();
     });
   });
