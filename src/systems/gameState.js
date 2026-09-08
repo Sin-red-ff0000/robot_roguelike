@@ -33,6 +33,11 @@ function normalizeRobot(robot) {
   robot.seriesDevelopmentBackground = formalProfile?.developmentBackground ?? robot.seriesDevelopmentBackground ?? '';
   robot.seriesEngineeringNotes = formalProfile?.engineeringNotes ?? robot.seriesEngineeringNotes ?? '';
   robot.seriesTrainingNotes = formalProfile?.trainingNotes ?? robot.seriesTrainingNotes ?? '';
+  robot.libidoBodyArchetypeId = formalProfile?.libidoBodyArchetypeId ?? robot.libidoBodyArchetypeId ?? '';
+  robot.libidoBodyArchetype = formalProfile?.libidoBodyArchetype ?? robot.libidoBodyArchetype ?? '';
+  robot.libidoBodyCombatRole = formalProfile?.libidoBodyCombatRole ?? robot.libidoBodyCombatRole ?? '';
+  robot.libidoBodyFeatureTags = [...(formalProfile?.libidoBodyFeatureTags ?? robot.libidoBodyFeatureTags ?? [])];
+  robot.libidoBodyMechanicsScale = Number(formalProfile?.libidoBodyMechanicsScale ?? robot.libidoBodyMechanicsScale ?? 0);
   robot.seriesLegacyRefit = Boolean(formalProfile?.legacyRefit ?? robot.seriesLegacyRefit);
   robot.seriesRefitGeneration = Number(formalProfile?.refitGeneration ?? (formalProfile?.legacyRefit ? 1 : robot.seriesRefitGeneration ?? 0));
   robot.seriesRefitVersion = formalProfile?.refitVersion ?? (formalProfile?.legacyRefit ? '3.1' : robot.seriesRefitVersion ?? '');

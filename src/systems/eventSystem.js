@@ -15,6 +15,7 @@ import {
   removeAbility,
   upgradeAbility,
 } from './specialAbilitySystem.js?v=4.8';
+import { getLibidoBodyOperation } from '../data/libidoBodyOperations.js?v=4.8';
 import { eventChanceMultiplier } from './settingsSystem.js?v=4.8';
 
 function eventId(prefix) {
@@ -487,6 +488,59 @@ function applyExpandedEventEffect(robot, template) {
   return details;
 }
 
+function libidoBodyOperationEvent(state) {
+  const candidates = (state.roster ?? []).filter((robot) => robot?.libidoBodyArchetypeId && Number(robot.libidoBodyMechanicsScale ?? 0) > 0);
+  if (!candidates.length) return expandedOperationalEvent(state);
+  const robot = pick(candidates);
+  const op = getLibidoBodyOperation(robot.libidoBodyArchetypeId);
+  const scale = Math.min(1, Math.max(0.35, Number(robot.libidoBodyMechanicsScale ?? 1)));
+  const goodChance = clamp(0.68 - Number(op.burden ?? 0) * 0.06 + Number(robot.reliability ?? 70) / 1000, 0.45, 0.82);
+  const good = Math.random() < goodChance;
+  const groupKey = op.trainingGroup;
+  const groupStats = STAT_GROUPS[groupKey]?.stats ?? [];
+  const details = [];
+
+  if (good) {
+    const chosen = [...groupStats].sort(() => Math.random() - 0.5).slice(0, Math.min(2, groupStats.length));
+    for (const statName of chosen) {
+      const amount = Math.max(1, Math.round(randomInt(1, 3) * scale));
+      robot.stats[groupKey][statName] = clamp(Number(robot.stats[groupKey][statName] ?? 0) + amount, 0, GAME_CONFIG.customPartStatCap);
+      details.push(`${statName}+${amount}`);
+    }
+    if (Math.random() < 0.32) {
+      const statName = pick(groupStats);
+      if (statName) {
+        const amount = Number((randomFloat(0.02, 0.045) * scale).toFixed(3));
+        robot.growthMultipliers[groupKey][statName] = clamp(Number(robot.growthMultipliers[groupKey][statName] ?? 1) + amount, GAME_CONFIG.growthMultiplierMin, GAME_CONFIG.awakeningGrowthMultiplierCap);
+        details.push(`${statName}成長適性+${amount.toFixed(3)}`);
+      }
+    }
+  } else {
+    const chosen = [...groupStats].sort(() => Math.random() - 0.5).slice(0, 1);
+    for (const statName of chosen) {
+      const amount = Math.max(1, Math.round(scale));
+      robot.stats[groupKey][statName] = clamp(Number(robot.stats[groupKey][statName] ?? 0) + amount, 0, GAME_CONFIG.customPartStatCap);
+      details.push(`${statName}+${amount}`);
+    }
+    robot.reliability = clamp(Number(robot.reliability ?? 70) + 1, 20, 100);
+    details.push('信頼性+1');
+  }
+
+  const title = good ? `身体構造適応 ― ${op.trainingLabel}` : `セクサロイド仕上げ調整 ― ${robot.libidoBodyArchetype}`;
+  const bodyText = good ? op.eventGood : `${op.eventBad} 設計側の工夫：${op.maintenance}。`;
+  return eventResult(
+    'libido-body-operation',
+    title,
+    `${robotLabel(robot)}。${bodyText}${details.length ? ` ${details.join(' / ')}` : ''}`,
+    {
+      robotId: robot.id,
+      libidoBodyArchetypeId: robot.libidoBodyArchetypeId,
+      libidoBodyOutcome: good ? 'benefit' : 'burden',
+      libidoBodyBurden: Number(op.burden ?? 0),
+    },
+  );
+}
+
 function expandedOperationalEvent(state) {
   const eligible = EVENT_EXPANSION_TEMPLATES
     .map((template) => ({ template, candidates: expandedEventCandidates(state, template) }))
@@ -537,6 +591,7 @@ export function resolvePostTrainingEvent(state) {
     { value: 'overcome', weight: 7 },
     { value: 'rarePrototype', weight: 2 },
     { value: 'expanded', weight: 12 },
+    { value: 'libidoBody', weight: (state.roster ?? []).some((robot) => robot?.libidoBodyArchetypeId) ? 5 : 0 },
   ]);
 
   const event = {
@@ -553,6 +608,7 @@ export function resolvePostTrainingEvent(state) {
     overcome: overcomeEvent,
     rarePrototype: rarePrototypeEvent,
     expanded: expandedOperationalEvent,
+    libidoBody: libidoBodyOperationEvent,
   }[type](state);
 
   return rememberEvent(state, event);

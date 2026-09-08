@@ -1,3 +1,4 @@
+import { applyLibidoBodyMechanics } from './libidoBodyMechanics.js?v=4.8';
 // v4.8 eleventh generation: 19 bilateral joint-development series + 1 all-company common-standard series per manufacturer.
 import { MANUFACTURERS } from './manufacturers.js?v=4.8';
 import { TENTH_WAVE_SERIES_DEFINITIONS } from './seriesTenthWaveDefinitions.js?v=4.8';
@@ -85,7 +86,7 @@ function bilateralSeries(maker, partner, slotIndex) {
   const ownStrengthText = ownStrengths.map((k)=>GROUP_LABEL[k]).join('・') || '総合運用';
   const partnerStrengthText = partnerStrengths.map((k)=>GROUP_LABEL[k]).join('・') || '総合運用';
   const weaponText = preferredWeapons.slice(0,3).map((k)=>WEAPON_LABEL[k]).join(' / ') || '汎用兵装';
-  return {
+  const series = {
     ...predecessor,
     id:`${maker.id}-g11-${n}`,
     seriesNumber:n,
@@ -119,6 +120,9 @@ function bilateralSeries(maker, partner, slotIndex) {
     collaborationPartnerSeriesId:partnerReference?.id ?? null,
     collaborationLeadManufacturerId:maker.id,
   };
+  if (maker.id==='libido') return applyLibidoBodyMechanics(series, 1);
+  if (partner.id==='libido') return applyLibidoBodyMechanics(series, 0.35);
+  return series;
 }
 
 function consortiumSeries(maker) {

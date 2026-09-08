@@ -32,6 +32,8 @@
     "journey-audit": "node scripts/gameplay-journey-audit.mjs",
     "g11-audit": "node scripts/g11-collaboration-audit.mjs",
     "quirky-maker-audit": "node scripts/quirky-manufacturer-audit.mjs",
-    "g11-naming-audit": "node scripts/g11-naming-audit.mjs"
+    "g11-naming-audit": "node scripts/g11-naming-audit.mjs",
+    "libido-body-mechanics-audit": "node scripts/libido-body-mechanics-audit.mjs",
+    "libido-body-operations-audit": "node scripts/libido-body-operations-audit.mjs"
   }
 }

@@ -2,6 +2,7 @@ import { GAME_CONFIG } from '../config.js?v=4.8';
 import { BASE_SYNERGY_RULES, RESISTANCE_BANDS, WEAPON_DOCTRINE_RULES } from '../data/battleRules.js?v=4.8';
 import { GROUP_KEYS, STAT_GROUPS } from '../data/statDefinitions.js?v=4.8';
 import { WEAPON_AXES, WEAPON_CATEGORIES } from '../data/weaponDefinitions.js?v=4.8';
+import { getLibidoBodyOperation } from '../data/libidoBodyOperations.js?v=4.8';
 import { SPECIAL_ABILITIES } from '../data/specialAbilities.js?v=4.8';
 import { clamp, randomFloat, shuffle } from '../utils/random.js?v=4.8';
 
@@ -301,18 +302,30 @@ function weaponMultiplier(robot, opponent, axis, selectedNames) {
   };
 }
 
+function libidoBodyBattleMultiplier(robot, slot) {
+  if (!robot?.libidoBodyArchetypeId || Number(robot.libidoBodyMechanicsScale ?? 0) <= 0) return { multiplier: 1, notes: [] };
+  const op = getLibidoBodyOperation(robot.libidoBodyArchetypeId);
+  const scale = Math.min(1, Math.max(0, Number(robot.libidoBodyMechanicsScale ?? 1)));
+  const slotGroup = slot.kind === 'base' ? slot.groupKey : null;
+  const applies = slotGroup === op.battleGroup;
+  if (!applies) return { multiplier: 1, notes: [] };
+  const multiplier = 1 + (Number(op.battleMult ?? 1) - 1) * scale;
+  return { multiplier, notes: [`${op.battleLabel}×${multiplier.toFixed(3)}`] };
+}
+
 function baseValue(robot, opponent, slot, reliabilityModifiers, context) {
   const global = globalAbilityMultiplier(robot, opponent, context);
   const ability = baseAbilityMultiplier(robot, slot);
   const expanded = expandedAbilityMultiplier(robot, opponent, context, slot);
+  const body = libidoBodyBattleMultiplier(robot, slot);
   const multiplier = clamp(
-    global.multiplier * ability.multiplier * expanded.multiplier,
+    global.multiplier * ability.multiplier * expanded.multiplier * body.multiplier,
     GAME_CONFIG.battleMultiplierMin,
     GAME_CONFIG.battleMultiplierMax,
   );
   return {
     value: robot.stats[slot.groupKey][slot.statName] * reliabilityModifiers[slot.groupKey] * multiplier,
-    notes: [...global.notes, ...ability.notes, ...expanded.notes],
+    notes: [...global.notes, ...ability.notes, ...expanded.notes, ...body.notes],
   };
 }
 

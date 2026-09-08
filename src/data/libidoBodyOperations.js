@@ -1,0 +1,22 @@
+// LIBIDO FRAME LAB: body architecture is completed first as an adult companion design, with practical handling aggressively engineered away; its overengineered body-expression mechanisms then become incidental combat advantages.
+// Values are intentionally modest. These are flavor-linked tradeoffs, not a second manufacturer bonus layer.
+const OPS = {
+  adult_humanoid:{maintenance:'標準規格に近く設備互換性が高い',burden:0,trainingGroup:'ai',trainingLabel:'対人応答の微調整',battleGroup:'control',battleMult:1.018,battleLabel:'自然姿勢制御',eventGood:'人間向け設備をそのまま使えるため短時間で調整が完了した。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  lamia:{maintenance:'長大な蛇身を日常空間でも滑らかに扱えるよう、静音駆動・自己診断・分割保守を徹底',burden:0,trainingGroup:'control',trainingLabel:'蛇身の多関節同期',battleGroup:'control',battleMult:1.035,battleLabel:'長大多関節同期',eventGood:'蛇身を床面へ預けた姿勢で多数の駆動節を同期し、制御学習が大きく進んだ。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  harpy:{maintenance:'大きな翼肢を美しく自然に扱えるよう、軽量化・静音関節・自己診断を徹底',burden:0,trainingGroup:'mobility',trainingLabel:'翼肢姿勢制御',battleGroup:'mobility',battleMult:1.032,battleLabel:'翼肢姿勢変換',eventGood:'翼を含めた全身姿勢の同期が進み、方向転換の無駄が減った。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  arachne:{maintenance:'多脚を生活空間でも自然に扱えるよう、接地制御・自己診断・局所交換性を徹底',burden:0,trainingGroup:'sensor',trainingLabel:'多脚接地感覚の統合',battleGroup:'sensor',battleMult:1.034,battleLabel:'多脚分散感覚',eventGood:'複数脚から得る接地情報を統合し、周囲の変化を早く拾えるようになった。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  slime:{maintenance:'可変外装の状態管理が必要だが局所交換は容易',burden:0,trainingGroup:'control',trainingLabel:'可変形状の再学習',battleGroup:'control',battleMult:1.03,battleLabel:'可変形状制御',eventGood:'形状変化の学習データが蓄積し、姿勢遷移が滑らかになった。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  beastkin:{maintenance:'耳・尾など表情肢の感覚器を含めた微細校正が必要',burden:0,trainingGroup:'sensor',trainingLabel:'感覚器と瞬発肢の連携',battleGroup:'sensor',battleMult:1.028,battleLabel:'追跡感覚',eventGood:'耳尾の感覚入力と脚部反応がうまく同期し、追従精度が上がった。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  dragonnewt:{maintenance:'豊かな造形と高荷重骨格を両立しつつ、熱源を触感領域から逃がす放熱設計を徹底',burden:0,trainingGroup:'engine',trainingLabel:'高負荷放熱試験',battleGroup:'output',battleMult:1.034,battleLabel:'高荷重骨格',eventGood:'大出力を受け止める骨格と放熱系を同時に追い込み、高負荷時の安定性が増した。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  aquatic:{maintenance:'耐水・耐湿シールと流体用感覚器の定期点検が必要',burden:0,trainingGroup:'sensor',trainingLabel:'環境感覚の補正',battleGroup:'sensor',battleMult:1.03,battleLabel:'環境適応感覚',eventGood:'湿度や気流まで含めた環境情報の補正が進み、索敵の再現性が上がった。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  multiarm:{maintenance:'腕数に比例して関節・把持部の同期点検が増える',burden:0,trainingGroup:'control',trainingLabel:'多肢並列同期',battleGroup:'compute',battleMult:1.032,battleLabel:'多肢並列処理',eventGood:'複数腕の仕事を分担する制御が洗練され、並列処理の競合が減った。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  plant:{maintenance:'広い表皮感覚面の清掃と環境センサー校正に時間を使う',burden:0,trainingGroup:'sensor',trainingLabel:'広域表皮感覚の整理',battleGroup:'sensor',battleMult:1.029,battleLabel:'広域環境感知',eventGood:'表皮全体から拾う微細な環境変化を整理し、待機中の感覚精度が向上した。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  crustacean:{maintenance:'外殻は頑丈だが大型パネル交換に専用治具を要する',burden:0,trainingGroup:'engine',trainingLabel:'外殻荷重分散試験',battleGroup:'engine',battleMult:1.033,battleLabel:'外殻荷重分散',eventGood:'外殻へ荷重を逃がす制御が改善し、重兵装時の姿勢が安定した。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  centaur:{maintenance:'大型四脚体を日常でも優雅に扱えるよう、自動姿勢補正と自己校正を徹底',burden:0,trainingGroup:'mobility',trainingLabel:'四脚走行同期',battleGroup:'mobility',battleMult:1.034,battleLabel:'四脚加速姿勢',eventGood:'四脚の接地タイミングが揃い、加減速時の姿勢乱れが減った。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  demon:{maintenance:'尾・翼など表情肢と人格AIの同期確認が欠かせない',burden:0,trainingGroup:'ai',trainingLabel:'表情肢と対人予測の同期',battleGroup:'ai',battleMult:1.03,battleLabel:'対人挙動予測',eventGood:'表情肢と視線・姿勢を一体で学習し、相手の反応予測が洗練された。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  spectral:{maintenance:'投影・半実体部の基準座標を定期的に再同期する必要がある',burden:0,trainingGroup:'compute',trainingLabel:'分散投影同期',battleGroup:'compute',battleMult:1.033,battleLabel:'分散投影演算',eventGood:'投影座標と本体制御の同期が進み、見かけと実体の切替が滑らかになった。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+  anomalous:{maintenance:'作者専用の異形構造を妥協なく成立させつつ、モジュール化と自己診断で扱いやすさも確保',burden:0,trainingGroup:'control',trainingLabel:'非定型構造の再学習',battleGroup:'control',battleMult:1.036,battleLabel:'非定型可変支持',eventGood:'定型姿勢を捨てた独自構造の学習が進み、作者設計の強みがそのまま動きへ現れた。',eventBad:'作者が求める身体の見え方・触感・仕草を崩さないよう、静音性と全身協調を再調整した。'},
+};
+
+export function getLibidoBodyOperation(archetypeId){ return OPS[archetypeId] ?? OPS.adult_humanoid; }
+export const LIBIDO_BODY_OPERATIONS=OPS;

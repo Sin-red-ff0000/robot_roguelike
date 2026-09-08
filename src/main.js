@@ -3,8 +3,10 @@ import { MANUFACTURERS } from './data/manufacturers.js?v=4.8';
 import { GROUP_KEYS, STAT_GROUPS, RESISTANCE_STATS } from './data/statDefinitions.js?v=4.8';
 import { GROUP_GUIDE, STAT_GUIDE, WEAPON_AXIS_GUIDE, RESISTANCE_GUIDE, SYSTEM_GUIDE } from './data/statGuideDefinitions.js?v=4.8';
 import { WEAPON_CATEGORIES, WEAPON_AXES } from './data/weaponDefinitions.js?v=4.8';
+import { getLibidoBodyOperation } from './data/libidoBodyOperations.js?v=4.8';
 import { WEAPON_DOCTRINE_RULES } from './data/battleRules.js?v=4.8';
 import { TOURNAMENTS, TOURNAMENT_IDS } from './data/tournamentDefinitions.js?v=4.8';
+import { SERIES_DEFINITIONS } from './data/seriesDefinitions.js?v=4.8';
 import { FACILITY_DEFINITIONS } from './data/facilityDefinitions.js?v=4.8';
 import { createInitialState, advanceYear, migrateState } from './systems/gameState.js?v=4.8';
 import { applyTrainingTurn, generateTrainingChoices, generateTrainingChoicesWithCarryover, individualTrainingOptions, seriesGrowthMultiplier } from './systems/trainingSystem.js?v=4.8';
@@ -1271,6 +1273,7 @@ function renderUnitOverview(robot) {
           <div><span>特殊能力傾向</span><strong>${escapeHtml(seriesAbilityTagLabel(robot.seriesAbilityTendencyTags))} 系を取得しやすい</strong></div>
           <div><span>製造年度</span><strong>${robot.productionYear ?? '---'}年 / ${escapeHtml(robot.annualTrend?.label ?? '年度補正なし')}${robot.annualTrend?.seriesYearEvent?.type !== 'normal' ? ` / ${escapeHtml(robot.annualTrend.seriesYearEvent.description ?? '')}` : ''}</strong></div>
           ${robot.seriesJackpot ? `<div><span>個体特記</span><strong>${escapeHtml(robot.seriesJackpot.label ?? '系列平均から外れた当たり個体')}</strong></div>` : ''}
+          ${robot.libidoBodyArchetypeId ? (() => { const op = getLibidoBodyOperation(robot.libidoBodyArchetypeId); return `<div><span>特殊身体の運用</span><strong>${escapeHtml(robot.libidoBodyArchetype)} / 戦闘転用：${escapeHtml(robot.libidoBodyCombatRole || op.battleLabel)} / 整備：${escapeHtml(op.maintenance)}</strong></div>`; })() : ''}
         </div>
         <details class="series-lore-details">
           <summary><span>シリーズ設計解説</span>${robot.seriesRefitGeneration === 9 ? '<em>第9世代クリーンシート</em>' : robot.seriesRefitGeneration === 8 ? '<em>第8世代クリーンシート</em>' : robot.seriesRefitGeneration === 7 ? '<em>第7世代新設計</em>' : robot.seriesRefitGeneration === 6 ? '<em>第6世代新設計</em>' : robot.seriesRefitGeneration === 5 ? '<em>第5世代新設計</em>' : robot.seriesRefitGeneration === 4 ? '<em>第4世代再設計</em>' : robot.seriesRefitGeneration === 3 ? '<em>第3世代再設計</em>' : robot.seriesRefitGeneration === 2 ? '<em>第2世代再設計</em>' : robot.seriesLegacyRefit ? '<em>初期系列再設計</em>' : ''}</summary>
@@ -1992,7 +1995,7 @@ function renderSeriesEncyclopedia() {
     <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
-    <button type="button" id="series-dex-clear" class="ghost compact-button series-dex-clear">条件クリア</button>
+    <button type="button" id="series-dex-clear" class="ghost compact-button series-dex-clear">条件クリア</button><button type="button" id="series-dex-unlock-all" class="compact-button">カタログ全開放</button>
   </div>
   <p class="series-dex-help">名称検索は発見済み系列だけが対象です。成長曲線・カスタム適性は自軍加入で解析済みの系列だけを絞り込みます。</p>`;
 
@@ -2887,6 +2890,12 @@ function render() {
   document.querySelector('#series-dex-clear')?.addEventListener('click', () => {
     Object.assign(uiState, { seriesDexSearch:'', seriesDexDiscovery:'all', seriesDexGeneration:'all', seriesDexGrowth:'all', seriesDexCustom:'all', seriesDexSort:'number' });
     render();
+  });
+  document.querySelector('#series-dex-unlock-all')?.addEventListener('click', () => {
+    state.seriesEncounters ??= {};
+    for (const def of SERIES_DEFINITIONS) state.seriesEncounters[def.id] = Math.max(1, Number(state.seriesEncounters[def.id] ?? 0));
+    state.log = [`シリーズカタログを全開放しました。${SERIES_DEFINITIONS.length}系列の基本情報を閲覧できます。`, ...state.log].slice(0, 28);
+    commit();
   });
   document.querySelectorAll('[data-series-maker]').forEach((button) => { button.addEventListener('click', () => { uiState.seriesDexManufacturer = button.dataset.seriesMaker || 'all'; render(); }); });
   document.querySelector('#part-filter-clear')?.addEventListener('click', () => {

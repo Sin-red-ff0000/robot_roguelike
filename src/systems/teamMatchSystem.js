@@ -66,6 +66,25 @@ function createEnemyTeam(year, difficulty = 0, rivalTeam = null) {
 }
 
 
+function teamTop15Strength(roster = []) {
+  const scores = roster.map(robotSelectionScore).sort((a,b)=>b-a).slice(0, GAME_CONFIG.officialMatchSize);
+  return scores.length ? scores.reduce((a,b)=>a+b,0) / scores.length : 0;
+}
+
+function scaleTournamentEnemyToPlayer(enemyRoster, state, context) {
+  if (context?.type !== 'tournament' || !enemyRoster?.length) return { roster: enemyRoster, scaleDelta: 0, target: 0 };
+  const player = teamTop15Strength(state.roster);
+  const enemy = teamTop15Strength(enemyRoster);
+  if (!player || !enemy) return { roster: enemyRoster, scaleDelta: 0, target: enemy };
+  const prestige = Number(context.prestige ?? 1);
+  const roundIndex = Number(context.roundIndex ?? 0);
+  const targetFactor = clamp(0.92 + prestige * 0.018 + roundIndex * 0.018, 0.94, 1.10);
+  const target = player * targetFactor;
+  const delta = clamp(target - enemy, -10, 32);
+  if (Math.abs(delta) >= 0.35) for (const robot of enemyRoster) applyEnemyDifficulty(robot, delta);
+  return { roster: enemyRoster, scaleDelta: Math.abs(delta) >= 0.35 ? delta : 0, target };
+}
+
 function resistanceLabel(value) {
   if (value >= 85) return '非常に高い';
   if (value >= 70) return '高い';
@@ -98,8 +117,10 @@ export function createOfficialMatch(state, { difficulty = 0, context = null } = 
   const rivalTeam = selectRivalTeam(state, context);
   const researchLevel = combatResearchLevel(state);
   const history = rivalHistoryEntry(state, rivalTeam.id);
-  const enemyRoster = createEnemyTeam(state.year, difficulty, rivalTeam)
+  let enemyRoster = createEnemyTeam(state.year, difficulty, rivalTeam)
     .sort((a, b) => robotSelectionScore(b) - robotSelectionScore(a));
+  const tournamentScaling = scaleTournamentEnemyToPlayer(enemyRoster, state, context);
+  enemyRoster = tournamentScaling.roster.sort((a, b) => robotSelectionScore(b) - robotSelectionScore(a));
   state.seriesEncounters ??= {};
   for (const enemy of enemyRoster) {
     if (enemy.seriesId) state.seriesEncounters[enemy.seriesId] = Number(state.seriesEncounters[enemy.seriesId] ?? 0) + 1;
@@ -117,6 +138,7 @@ export function createOfficialMatch(state, { difficulty = 0, context = null } = 
     substitutionsRemaining: GAME_CONFIG.officialMatchSubstitutions,
     results: [],
     difficulty,
+    tournamentScaling: context?.type === 'tournament' ? { delta: tournamentScaling.scaleDelta, target: tournamentScaling.target, player: teamTop15Strength(state.roster), enemy: teamTop15Strength(enemyRoster) } : null,
     context: { ...(context ?? {}), rivalTeamId: rivalTeam.id, rivalTeamName: rivalTeam.name, rivalRank: rivalTeam.rankLabel, rivalRankScore: rivalTeam.rankScore, rivalRelationship: rivalryTier(history).label, rivalRivalryPoints: history.rivalryPoints ?? 0, rivalAnalysis: rivalAnalysis(rivalTeam, researchLevel, history), rivalManagerLine: rivalManagerLine(rivalTeam, researchLevel, history), rivalTraits: rivalTeam.traits, rivalMeetingsBefore: history.meetings, rivalWinsBefore: history.wins, rivalLossesBefore: history.losses },
   };
 }
