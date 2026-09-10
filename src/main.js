@@ -2016,7 +2016,7 @@ function renderSeriesEncyclopedia() {
     if (uiState.seriesDexGrowth !== 'all' && !((row.joined > 0 || catalogFullUnlock) && row.profile?.growthCurveId === uiState.seriesDexGrowth)) return false;
     if (uiState.seriesDexCustom !== 'all' && !((row.joined > 0 || catalogFullUnlock) && row.profile?.customAptitudeId === uiState.seriesDexCustom)) return false;
     if (search) {
-      if (row.discovery === 'unseen') return false;
+      if (row.discovery === 'unseen' && !catalogFullUnlock) return false;
       const maker = makerMap.get(row.manufacturerId);
       const basic = [visibleName(row), row.nameKana, row.nameLatin, maker?.name, maker?.nameEn, row.seriesNumber].join(' ').toLocaleLowerCase('ja');
       const deep = (row.joined > 0 || catalogFullUnlock) ? [row.profile?.summary, row.profile?.marketPosition, row.profile?.concept, row.profile?.namingConcept, row.profile?.developmentBackground, row.profile?.engineeringNotes, row.profile?.trainingNotes, row.profile?.weaponDoctrine, row.profile?.intrinsicTrait?.label, row.profile?.growthCurve?.label, row.profile?.customAptitude?.label].join(' ').toLocaleLowerCase('ja') : '';
@@ -2041,14 +2041,15 @@ function renderSeriesEncyclopedia() {
     const maker = makerMap.get(row.manufacturerId);
     const makerDisplay = state.settings?.manufacturerLabelMode === 'original' ? (maker?.originalName ?? maker?.name ?? row.manufacturerId) : (maker?.name ?? row.manufacturerId);
     const makerLabel = includeMaker ? `${escapeHtml(makerDisplay)} / ` : '';
-    if (row.discovery === 'unseen') return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>${makerLabel}#${row.seriesNumber} ???</strong><small>第${generationOf(row)}世代 / 未解析</small><em>大会・新人加入で発見</em></div>`;
+    if (row.discovery === 'unseen' && !catalogFullUnlock) return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>${makerLabel}#${row.seriesNumber} ???</strong><small>第${generationOf(row)}世代 / 未解析</small><em>大会・新人加入で発見</em></div>`;
     const games=row.wins+row.losses; const rate=games?`${(row.wins/games*100).toFixed(1)}%`:'---';
     const visibleDeep = row.joined > 0 || catalogFullUnlock;
+    const displayStatus = row.discovery === 'unseen' && catalogFullUnlock ? 'カタログ開放' : statusLabel[row.discovery];
     const seriesName = visibleName(row);
-    if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / 詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
+    if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${displayStatus}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / 詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
     const lore = row.profile ?? {};
     return `<details class="series-dex-expand ${row.discovery}">
-      <summary class="series-dex-row"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / ${escapeHtml(lore.marketPosition ?? '')} / ${escapeHtml(lore.growthCurve?.label ?? '')} / ${escapeHtml(lore.customAptitude?.label ?? '')}</small><em>加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}</em></summary>
+      <summary class="series-dex-row"><span class="series-dex-status">${displayStatus}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / ${escapeHtml(lore.marketPosition ?? '')} / ${escapeHtml(lore.growthCurve?.label ?? '')} / ${escapeHtml(lore.customAptitude?.label ?? '')}</small><em>加入${row.joined} / ${row.wins}-${row.losses} / 勝率${rate} / 平均${row.averageOverall.toFixed(1)} / 最高${row.bestOverall.toFixed(1)}${row.hall ? ` / 殿堂${row.hall}` : ''}</em></summary>
       <div class="series-dex-lore">
         <p><b>系列要約</b>${escapeHtml(lore.summary ?? '')}</p>
         ${lore.namingConcept ? `<p><b>名称と設計モチーフ</b>${escapeHtml(lore.namingConcept)}</p>` : ''}
