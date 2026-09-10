@@ -15,6 +15,7 @@ export function defaultSettings() {
     customUpset: { ...GAME_CONFIG.battleFavoredWinChanceByMargin },
     eventFrequency: 'standard',
     trainingTurns: GAME_CONFIG.trainingTurnsPerYear,
+    seriesCatalogFullUnlock: false,
   };
 }
 
@@ -22,6 +23,7 @@ export function normalizeSettings(settings = {}) {
   const base = defaultSettings();
   const merged = { ...base, ...settings };
   merged.customUpset = { ...base.customUpset, ...(settings.customUpset ?? {}) };
+  merged.seriesCatalogFullUnlock = Boolean(merged.seriesCatalogFullUnlock);
   const turns = Number(merged.trainingTurns);
   if (turns === 30) merged.trainingTurns = 36;
   else if (![12, 24, 36, 48, 60].includes(turns)) merged.trainingTurns = GAME_CONFIG.trainingTurnsPerYear;

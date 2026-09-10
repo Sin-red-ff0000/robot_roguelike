@@ -1978,13 +1978,14 @@ function renderSeriesEncyclopedia() {
   const summary = seriesDiscoverySummary(state, rows);
   const statusLabel = { seen:'遭遇', joined:'加入', retired:'育成完了', hall:'殿堂', unseen:'未発見' };
   const joinedStatuses = new Set(['joined','retired','hall']);
+  const catalogFullUnlock = Boolean(state.settings?.seriesCatalogFullUnlock);
   const makerMap = new Map(MANUFACTURERS.map((maker) => [maker.id, maker]));
   const makerDexName = (maker) => state.settings?.manufacturerLabelMode === 'original' ? (maker?.originalName ?? maker?.name ?? '') : (maker?.name ?? '');
   const generationOf = (row) => Number(row.seriesNumber ?? 1) >= 201 ? 11 : Math.max(1, Math.ceil(Number(row.seriesNumber ?? 1) / 20));
   const visibleName = (row) => state.settings?.seriesLabelMode === 'latin' ? row.nameLatin : row.nameKana;
-  const growthOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.growthCurveId, row.profile?.growthCurve?.label]).filter(([id,label]) => id && label)).entries()]
+  const growthOptions = [...new Map(rows.filter((row) => row.joined > 0 || catalogFullUnlock).map((row) => [row.profile?.growthCurveId, row.profile?.growthCurve?.label]).filter(([id,label]) => id && label)).entries()]
     .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
-  const customOptions = [...new Map(rows.filter((row) => row.joined > 0).map((row) => [row.profile?.customAptitudeId, row.profile?.customAptitude?.label]).filter(([id,label]) => id && label)).entries()]
+  const customOptions = [...new Map(rows.filter((row) => row.joined > 0 || catalogFullUnlock).map((row) => [row.profile?.customAptitudeId, row.profile?.customAptitude?.label]).filter(([id,label]) => id && label)).entries()]
     .sort((a,b)=>String(a[1]).localeCompare(String(b[1]), 'ja'));
 
   const selector = `<div class="series-dex-toolbar series-dex-toolbar-advanced">
@@ -1995,9 +1996,9 @@ function renderSeriesEncyclopedia() {
     <label>成長曲線<select id="series-dex-growth"><option value="all" ${uiState.seriesDexGrowth==='all'?'selected':''}>すべて</option>${growthOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexGrowth===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>カスタム適性<select id="series-dex-custom"><option value="all" ${uiState.seriesDexCustom==='all'?'selected':''}>すべて</option>${customOptions.map(([id,label])=>`<option value="${id}" ${uiState.seriesDexCustom===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}</select></label>
     <label>並び順<select id="series-dex-sort"><option value="number" ${uiState.seriesDexSort==='number'?'selected':''}>シリーズ番号</option><option value="name" ${uiState.seriesDexSort==='name'?'selected':''}>シリーズ名</option><option value="discovery" ${uiState.seriesDexSort==='discovery'?'selected':''}>発見段階</option><option value="wins" ${uiState.seriesDexSort==='wins'?'selected':''}>通算勝利</option><option value="winrate" ${uiState.seriesDexSort==='winrate'?'selected':''}>勝率</option><option value="average" ${uiState.seriesDexSort==='average'?'selected':''}>平均総合評価</option><option value="best" ${uiState.seriesDexSort==='best'?'selected':''}>最高総合評価</option></select></label>
-    <button type="button" id="series-dex-clear" class="ghost compact-button series-dex-clear">条件クリア</button><button type="button" id="series-dex-unlock-all" class="compact-button">カタログ全開放</button>
+    <button type="button" id="series-dex-clear" class="ghost compact-button series-dex-clear">条件クリア</button><button type="button" id="series-dex-unlock-all" class="compact-button">${catalogFullUnlock ? 'カタログ全開放済み' : 'カタログ全開放'}</button>
   </div>
-  <p class="series-dex-help">名称検索は発見済み系列だけが対象です。成長曲線・カスタム適性は自軍加入で解析済みの系列だけを絞り込みます。</p>`;
+  <p class="series-dex-help">${catalogFullUnlock ? 'カタログ全開放中：全系列の名称・成長曲線・カスタム適性・設計説明文を閲覧できます。戦績や加入・殿堂実績は実プレイ記録のままです。' : '名称検索は発見済み系列だけが対象です。成長曲線・カスタム適性・設計説明文は自軍加入で解析されます。'}</p>`;
 
   const summaryHtml = `<div class="series-dex-summary"><div><span>発見</span><strong>${summary.discovered}</strong><small>/ ${summary.total}</small></div><div><span>遭遇のみ</span><strong>${summary.seen}</strong></div><div><span>自軍加入</span><strong>${summary.joined + summary.retired + summary.hall}</strong></div><div><span>育成完了</span><strong>${summary.retired + summary.hall}</strong></div><div><span>殿堂</span><strong>${summary.hall}</strong></div></div>`;
 
@@ -2012,13 +2013,13 @@ function renderSeriesEncyclopedia() {
     if (uiState.seriesDexDiscovery === 'completed' && !['retired','hall'].includes(row.discovery)) return false;
     if (uiState.seriesDexDiscovery === 'hall' && row.discovery !== 'hall') return false;
     if (uiState.seriesDexGeneration !== 'all' && generationOf(row) !== Number(uiState.seriesDexGeneration)) return false;
-    if (uiState.seriesDexGrowth !== 'all' && !(row.joined > 0 && row.profile?.growthCurveId === uiState.seriesDexGrowth)) return false;
-    if (uiState.seriesDexCustom !== 'all' && !(row.joined > 0 && row.profile?.customAptitudeId === uiState.seriesDexCustom)) return false;
+    if (uiState.seriesDexGrowth !== 'all' && !((row.joined > 0 || catalogFullUnlock) && row.profile?.growthCurveId === uiState.seriesDexGrowth)) return false;
+    if (uiState.seriesDexCustom !== 'all' && !((row.joined > 0 || catalogFullUnlock) && row.profile?.customAptitudeId === uiState.seriesDexCustom)) return false;
     if (search) {
       if (row.discovery === 'unseen') return false;
       const maker = makerMap.get(row.manufacturerId);
       const basic = [visibleName(row), row.nameKana, row.nameLatin, maker?.name, maker?.nameEn, row.seriesNumber].join(' ').toLocaleLowerCase('ja');
-      const deep = row.joined > 0 ? [row.profile?.summary, row.profile?.marketPosition, row.profile?.concept, row.profile?.namingConcept, row.profile?.developmentBackground, row.profile?.engineeringNotes, row.profile?.trainingNotes, row.profile?.weaponDoctrine, row.profile?.intrinsicTrait?.label, row.profile?.growthCurve?.label, row.profile?.customAptitude?.label].join(' ').toLocaleLowerCase('ja') : '';
+      const deep = (row.joined > 0 || catalogFullUnlock) ? [row.profile?.summary, row.profile?.marketPosition, row.profile?.concept, row.profile?.namingConcept, row.profile?.developmentBackground, row.profile?.engineeringNotes, row.profile?.trainingNotes, row.profile?.weaponDoctrine, row.profile?.intrinsicTrait?.label, row.profile?.growthCurve?.label, row.profile?.customAptitude?.label].join(' ').toLocaleLowerCase('ja') : '';
       if (!`${basic} ${deep}`.includes(search)) return false;
     }
     return true;
@@ -2042,7 +2043,7 @@ function renderSeriesEncyclopedia() {
     const makerLabel = includeMaker ? `${escapeHtml(makerDisplay)} / ` : '';
     if (row.discovery === 'unseen') return `<div class="series-dex-row unseen"><span class="series-dex-status">未発見</span><strong>${makerLabel}#${row.seriesNumber} ???</strong><small>第${generationOf(row)}世代 / 未解析</small><em>大会・新人加入で発見</em></div>`;
     const games=row.wins+row.losses; const rate=games?`${(row.wins/games*100).toFixed(1)}%`:'---';
-    const visibleDeep = row.joined > 0;
+    const visibleDeep = row.joined > 0 || catalogFullUnlock;
     const seriesName = visibleName(row);
     if (!visibleDeep) return `<div class="series-dex-row ${row.discovery}"><span class="series-dex-status">${statusLabel[row.discovery]}</span><strong>${makerLabel}#${row.seriesNumber} ${escapeHtml(seriesName)}</strong><small>第${generationOf(row)}世代 / 詳細は自軍加入で解析</small><em>遭遇 ${row.encounters}回</em></div>`;
     const lore = row.profile ?? {};
@@ -2894,7 +2895,9 @@ function render() {
   document.querySelector('#series-dex-unlock-all')?.addEventListener('click', () => {
     state.seriesEncounters ??= {};
     for (const def of SERIES_DEFINITIONS) state.seriesEncounters[def.id] = Math.max(1, Number(state.seriesEncounters[def.id] ?? 0));
-    state.log = [`シリーズカタログを全開放しました。${SERIES_DEFINITIONS.length}系列の基本情報を閲覧できます。`, ...state.log].slice(0, 28);
+    state.settings ??= {};
+    state.settings.seriesCatalogFullUnlock = true;
+    state.log = [`シリーズカタログを全開放しました。${SERIES_DEFINITIONS.length}系列の名称・成長特性・設計説明文を閲覧できます。`, ...state.log].slice(0, 28);
     commit();
   });
   document.querySelectorAll('[data-series-maker]').forEach((button) => { button.addEventListener('click', () => { uiState.seriesDexManufacturer = button.dataset.seriesMaker || 'all'; render(); }); });
